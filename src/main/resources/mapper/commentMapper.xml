@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="syh.toyproject.repository.mybatis.CommentMapper">
+
+    <insert id="addComment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into comment (post_id, member_id, writing_date, last_edit_date, comment_content)
+        values (#{postId}, #{memberId}, now(), now(), #{commentContent})
+    </insert>
+
+    <update id="editComment">
+        update comment
+        set comment_content = #{commentEditDto.commentContent},
+            last_edit_date = now() + 0.00001
+        where comment_id = #{commentId}
+    </update>
+
+    <select id="findAll" resultType="Comment">
+        select comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
+        from comment
+    </select>
+
+    <select id="findByPostIdAll" resultType="Comment">
+        select comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
+        from comment
+        where post_id = #{postId}
+    </select>
+
+    <select id="findByMemberIdAll" resultType="Comment">
+        select comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
+        from comment
+        where member_id = #{memberId}
+    </select>
+
+    <select id="findByCommentId" resultType="Comment">
+        select comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
+        from comment
+        where comment_id = #{commentId}
+    </select>
+
+
+    <delete id="deleteComment">
+        delete from comment
+        where comment_id = #{commentId}
+    </delete>
+
+</mapper>

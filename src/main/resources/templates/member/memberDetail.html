@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+    <title>회원 상세 페이지</title>
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>회원 상세</h2>
+    </div>
+
+    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2><!-- 삭제 예정 -->
+
+    <div>
+        <label for="memberId">회원 번호</label>
+        <input type="text" id="memberId" class="form-control" value="1" th:field="${memberDetail.memberId}" disabled>
+    </div>
+    <br>
+    <div>
+        <label for="signupDate">가입 일자</label>
+        <input type="text" id="signupDate" name="signupDate" class="form-control" value="23-05-31 12:42:15" th:value="${#temporals.format(memberDetail.signupDate, 'yy-MM-dd HH:mm:ss')}" disabled>
+    </div>
+    <br>
+    <div>
+        <label for="loginId">로그인 ID</label>
+        <input type="text" id="loginId" class="form-control" value="abcd1234" th:field="${memberDetail.loginId}" disabled>
+    </div>
+    <br>
+    <div>
+        <label for="password">비밀번호</label>
+        <input type="text" id="password" class="form-control" th:field="${memberDetail.password}" disabled>
+    </div>
+    <br>
+    <div>
+        <label for="username">닉네임</label>
+        <input type="text" id="username" class="form-control" value="홍길동" th:field="${memberDetail.username}" disabled>
+    </div>
+
+    <!-- single checkbox -->
+<!--    <div>판매 여부</div>-->
+<!--    <div>-->
+<!--        <div class="form-check">-->
+<!--            <input type="checkbox" id="open" th:field="${item.open}" class="form-check-input" disabled>-->
+<!--            <label for="open" class="form-check-label">판매 오픈</label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; multi checkbox &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>등록 지역</div>-->
+<!--        <div th:each="region : ${regions}" class="form-check form-check-inline">-->
+<!--            <input type="checkbox" th:field="${item.regions}" th:value="${region.key}" class="form-check-input" disabled>-->
+<!--            <label th:for="${#ids.prev('regions')}"-->
+<!--                   th:text="${region.value}" class="form-check-label">서울</label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; radio button &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>상품 종류</div>-->
+<!--        <div th:each="type : ${itemTypes}" class="form-check form-check-inline">-->
+<!--            <input type="radio" th:field="${item.itemType}" th:value="${type.name()}" class="form-check-input" disabled>-->
+<!--            <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">-->
+<!--                BOOK-->
+<!--            </label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; SELECT &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>배송 방식</div>-->
+<!--        <select th:field="${item.deliveryCode}" class="form-select" disabled>-->
+<!--            <option value="">==배송 방식 선택==</option>-->
+<!--            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"-->
+<!--                    th:text="${deliveryCode.displayName}">FAST</option>-->
+<!--        </select>-->
+<!--    </div>-->
+    <hr class="my-4">
+    <div class="row">
+        <div class="col">
+            <button class="w-70 btn btn-primary float-start" onclick="location.href='members.html'"
+                    th:onclick="|location.href='@{/member}'|" type="button">회원 목록</button>
+        </div>
+        <div class="col" th:if="${status?.authority == true}">
+            <button class="w-70 btn btn-secondary" onclick="location.href='editForm.html'"
+                    th:onclick="|location.href='@{|/member/${memberDetail.memberId}/edit|}'|" type="button">회원 수정</button>
+        </div>
+        <div class="col">
+            <button class="w-70 btn btn-primary float-end" onclick="location.href='postHome.html'"
+                    th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
+        </div>
+    </div>
+
+    <form th:object="${status}">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+        </div>
+    </form>
+
+    <div class="py-5 text-center">
+        <!-- th:if 사용해서 게시글 목록 또는 댓글 목록 표시할 수 있도록 설정하기 -->
+        <hr class="my-4">
+        <p th:text="|작성 게시글 목록 (${#lists.size(postList)} 개)|">작성 게시글 목록</p>
+        <table class="table" th:if="${#lists.size(postList) == 0}">
+            <tbody>
+            <br>
+            <p>작성한 게시글이 없습니다.</p>
+            </tbody>
+        </table>
+        <table class="table" th:if="${#lists.size(postList) != 0}">
+            <thead>
+            <tr>
+                <td>제목</td>
+                <td>내용</td>
+                <td>작성일</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="post : ${postList}">
+                <td><a href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a></td>
+                <td><p th:text="${post.postContent}">내용</p></td>
+                <td><p th:text="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr class="my-4">
+        <p th:text="|작성 댓글 목록 (${#lists.size(commentList)} 개)|">작성 댓글 목록</p>
+        <table class="table" th:if="${#lists.size(commentList) == 0}">
+            <tbody>
+            <br>
+            <p>작성한 댓글이 없습니다.</p>
+            </tbody>
+        </table>
+        <table class="table" th:if="${#lists.size(commentList) != 0}">
+            <thead>
+            <tr>
+                <td>내용</td>
+                <td>작성일</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment : ${commentList}">
+                <td><a href="" th:href="@{|/post/${comment.postId}|}" th:text="${comment.commentContent}">내용</a></td>
+                <td><p th:text="${#temporals.format(comment.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

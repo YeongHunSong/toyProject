@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+    <title th:text="${post.postTitle}">게시글 제목</title>
+<!--    <title th:text="${postEditDto.postTitle}">게시글 제목</title>-->
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2 th:text="${post.postTitle}">게시글 상세</h2>
+<!--        <h2 th:text="${postEditDto.postTitle}">게시글 상세</h2>-->
+    </div>
+
+    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2>
+
+    <div>
+        <label for="postTitle">제목</label>
+        <input type="text" id="postTitle" class="form-control" value="제목" th:field="${post.postTitle}" disabled>
+<!--        <input type="text" id="postTitle" class="form-control" value="제목" th:field="${postEditDto.postTitle}" disabled>-->
+    </div>
+    <div>
+        <label for="postContent">내용</label>
+        <input type="text" id="postContent" class="form-control" value="내용" th:field="${post.postContent}" disabled>
+<!--        <input type="text" id="postContent" class="form-control" value="내용" th:field="${postEditDto.postContent}" disabled>-->
+    </div>
+    <div>
+        <label for="writingDate">작성일</label>
+        <input type="text" id="writingDate" name="writingDate" class="form-control" value="23-06-04 15:06:33" th:value="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm:ss')}" disabled>
+<!--        <input type="text" id="writingDate" name="writingDate" class="form-control" value="23-06-04 15:06:33" th:value="${#temporals.format(postEditDto.writingDate, 'yy-MM-dd HH:mm:ss')}" disabled>-->
+    </div>
+    <div>
+        <label for="username">작성자</label>
+        <input type="text" id="username" class="form-control" th:field="${post.username}" disabled>
+<!--        <input type="text" id="username" class="form-control" th:field="${postEditDto.username}" disabled>-->
+    </div>
+
+
+    <div>
+        <br>
+        <div class="float-start">
+            <p th:text="|조회수 : ${post.viewCount}|">조회수</p>
+        </div>
+        <div class="float-end">
+            <p th:text="|추천수 : ${post.recommendCount}|">추천수</p>
+        </div>
+        <br>
+    </div>
+
+
+<!--    <div>-->
+<!--        <label for="username">회원 이름</label>-->
+<!--        <input type="text" id="username" class="form-control" value="홍길동" th:field="${member.username}" readonly>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <label for="nickname">회원 별칭</label>-->
+<!--        <input type="text" id="nickname" class="form-control" value="암행어사" th:field="${member.nickname}" readonly>-->
+<!--    </div>-->
+
+    <!-- single checkbox -->
+<!--    <div>판매 여부</div>-->
+<!--    <div>-->
+<!--        <div class="form-check">-->
+<!--            <input type="checkbox" id="open" th:field="${item.open}" class="form-check-input" disabled>-->
+<!--            <label for="open" class="form-check-label">판매 오픈</label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; multi checkbox &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>등록 지역</div>-->
+<!--        <div th:each="region : ${regions}" class="form-check form-check-inline">-->
+<!--            <input type="checkbox" th:field="${item.regions}" th:value="${region.key}" class="form-check-input" disabled>-->
+<!--            <label th:for="${#ids.prev('regions')}"-->
+<!--                   th:text="${region.value}" class="form-check-label">서울</label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; radio button &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>상품 종류</div>-->
+<!--        <div th:each="type : ${itemTypes}" class="form-check form-check-inline">-->
+<!--            <input type="radio" th:field="${item.itemType}" th:value="${type.name()}" class="form-check-input" disabled>-->
+<!--            <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">-->
+<!--                BOOK-->
+<!--            </label>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; SELECT &ndash;&gt;-->
+<!--    <div>-->
+<!--        <div>배송 방식</div>-->
+<!--        <select th:field="${item.deliveryCode}" class="form-select" disabled>-->
+<!--            <option value="">==배송 방식 선택==</option>-->
+<!--            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"-->
+<!--                    th:text="${deliveryCode.displayName}">FAST</option>-->
+<!--        </select>-->
+<!--    </div>-->
+
+
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col">
+            <button class="w-30 btn btn-secondary float-start" onclick="location.href='postHome.html'"
+                    th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
+        </div>
+        <div class="col">
+            <form th:action="@{|/post/${postId}/recommend|}" method="post">
+                <button class="w-30 btn btn-primary float-start" type="submit">추천</button>
+            </form>
+        </div>
+        <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
+            <button class="w-30 btn btn-primary float-end"
+                    th:onclick="|location.href='@{|/post/${postId}/edit|}'|" type="button">수정</button>
+        </div>
+        <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
+            <form th:action="@{|/post/${postId}/delete|}" method="post">
+                <button class="w-30 btn btn-primary float-end" type="submit">삭제</button>
+            </form>
+        </div>
+
+        <div th:object="${postEditStatus}">
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <br>
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">게시글 수정 오류 메시지</p>
+            </div>
+        </div>
+<!--        <div class="col">-->
+<!--            <button class="w-70 btn btn-secondary float-end" onclick="location.href='member/members.html'"-->
+<!--                    th:onclick="|location.href='@{/member}'|" type="button">회원 목록</button>-->
+<!--        </div>-->
+    </div>
+    <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
+    <div class="py-5 text-center">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>작성자</td>
+                <td>댓글</td>
+                <td>작성일</td>
+                <td></td>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="comment : ${commentList}" >
+                <td><a href="" th:href="@{|/member/${comment.memberId}|}" th:text="${comment.username}">작성자</a></td>
+                <td><p th:text="${#temporals.format(comment.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
+                <td th:if="${commentEditStatus?.flag == false or commentEditStatus?.commentId != comment.commentId}">
+                    <p th:text="${comment.commentContent}">댓글 내용</p></td>
+                <td>
+                    <form th:action="@{|/post/${postId}/${comment.commentId}/edit|}" method="post" th:object="${commentEditDto}"
+                          th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
+                        <input type="text" class="form-control" th:field="*{commentContent}">
+                        <div class="field-error" th:errors="*{commentContent}">댓글 수정 오류</div>
+                        <button class="w-10 btn btn-primary" type="submit">저장</button>
+                        <button class="w-10 btn btn-secondary" th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
+                    </form>
+                    <form th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
+                          th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
+                        <button class="w-10 btn btn-primary float-start" type="submit">수정</button>
+                    </form>
+                    <form th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
+                          th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
+                        <button class="w-10 btn btn-secondary float-end" type="submit">삭제</button>
+                    </form>
+                    <div th:object="${commentEditDto}">
+                        <div th:if="${#fields.hasGlobalErrors() and commentEditStatus?.commentId == comment.commentId}">
+                            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+                        </div>
+                    </div>
+                    <!-- 수정 옆에는 삭제 넣기 -->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <form th:action th:object="${commentAddDto}" method="post">
+            <div class="row">
+                <div class="col">
+                    <input type="text" id="commentWriter" class="form-control" placeholder="닉네임" th:field="*{commentWriter}" th:errorclass="field-error" readonly>
+                    <div class="field-error" th:errors="*{commentWriter}">닉네임 작성 오류</div>
+                </div>
+                <div class="col">
+                    <label for="commentContent">
+                        <input type="text" id="commentContent" class="form-control" placeholder="댓글을 입력해주세요" th:field="*{commentContent}" th:errorclass="field-error">
+                        <div class="field-error" th:errors="*{commentContent}">댓글 작성 오류</div>
+                    </label>
+                </div>
+                <div class="col">
+                    <button class="w-20 btn btn-primary" type="submit">작성</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="syh.toyproject.repository.mybatis.PostMapper">
+
+    <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
+        insert into POST (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
+        values (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0, 0)
+    </insert>
+
+    <update id="editPost">
+        update POST
+        set post_title = #{postEditDto.postTitle},
+            post_content = #{postEditDto.postContent},
+            last_edit_date = now() + 0.00001
+
+        where post_id = #{postId}
+    </update>
+
+    <select id="findAll" resultType="Post">
+        select member_id, post_id, post_title, post_content, view_count, recommend_count, writing_date, last_edit_date
+        from POST
+    </select>
+
+    <select id="findByMemberIdAll" resultType="Post">
+        select writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
+        from POST
+        where member_id = #{memberId}
+    </select>
+
+    <select id="findByPostId" resultType="Post">
+        select POST.member_id, POST.post_id, POST.post_title, POST.post_content, POST.view_count,
+        count(RECOMMEND.post_id) recommend_count, POST.writing_date, POST.last_edit_date
+        from POST
+        left join POST_RECOMMEND as RECOMMEND
+        on POST.post_id = RECOMMEND.post_id
+        where POST.post_id = #{postId}
+        group by POST.post_id
+        order by POST.post_id
+    </select>
+
+    <delete id="deletePost">
+        delete from POST
+        where post_id = #{postId}
+    </delete>
+
+    <update id="addViewCount">
+        update POST
+        set view_count = view_count + 1
+        where post_id = #{postId}
+    </update>
+
+    <insert id="recommendPost">
+        insert into POST_RECOMMEND (post_id, recommender_id, recommend_date)
+        values (#{postId}, #{recommenderId}, now())
+    </insert>
+
+    <select id="recommendCounting" resultType="Long">
+        <!-- 필요없으면 삭제 하기 -->
+        select count(post_id) from POST_RECOMMEND
+        where post_id = #{postId}
+    </select>
+
+    <select id="recommendDuplicateCheck" resultType="Int">
+        select count(recommender_id)
+        from POST_RECOMMEND
+        where post_id = #{postId}
+        and recommender_id = #{recommenderId}
+    </select>
+
+</mapper>

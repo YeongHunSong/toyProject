@@ -1,0 +1,39 @@
+#ErrorMessage 연결
+spring:
+  messages:
+    basename: errors
+
+  #liveReLoad
+  devtools:
+    livereload:
+      enabled: true
+
+#H2 DB 설정
+    profiles: H2
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+
+#SessionTrackingMode Off
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
+
+
+#MyBatis
+mybatis:
+  type-aliases-package: syh.toyProject.domain
+
+  configuration:
+    map-underscore-to-camel-case: true
+
+  mapper-locations: classpath:mapper/**/*.xml
+
+logging:
+  level:
+    syh:
+      toyProject:
+        repository:
+          mybatis: trace
+

@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="utf-8">
+    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+    </style>
+    <title>회원 목록</title>
+</head>
+<body>
+    <div class="container" style="max-width: 600px">
+        <div class="py-5 text-center">
+            <h2>회원 목록</h2>
+        </div>
+        <div class="row">
+            <div class="col" th:if="${session?.username == null}">
+                <button class="w-30 btn btn-primary float-start"
+                        th:onclick="|location.href='@{/member/signup}'|" type="button">회원 가입</button>
+            </div>
+            <div class="col" th:if="${session?.username == null}">
+                <button class="w-30 btn btn-secondary float-start"
+                        th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
+            </div>
+
+            <div class="col" th:if="${session?.username != null}">
+                <button class="w-30 btn btn-primary float-start"
+                        th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
+                <p th:text="|${session?.username} 님|"></p>
+            </div>
+            <div class="col" th:if="${session?.username != null}">
+                <form th:action="@{/logout}" method="post">
+                    <button class="w-70 btn btn-secondary float-start" type="submit">로그아웃</button>
+                </form>
+            </div>
+
+            <div class="col">
+                <button class="w-50 btn btn-secondary float-end"
+                        th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>번호</td>
+                    <td>로그인 ID</td>
+                    <td>닉네임</td>
+                    <td>가입일</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="member : ${memberList}"> <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
+                    <td><p th:text="${memberStat.count}">회원 번호</p></td>
+                    <td><p th:text="${member.loginId}">회원 로그인 ID값</p></td>
+<!--                    <td><a href="" th:href="@{|/member/${member.memberId}|}" th:text="${member.loginId}">회원 로그인 ID값</a></td>-->
+                    <td><a href="" th:href="@{|/member/${member.memberId}|}" th:text="${member.username}">닉네임</a></td>
+                    <td><p th:text="${#temporals.format(member.signupDate, 'yy-MM-dd HH:mm')}">가입일</p></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div> <!-- /container -->
+</body>
+</html>
