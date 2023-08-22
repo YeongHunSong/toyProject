@@ -16,19 +16,29 @@
         <h2>게시판 목록</h2>
     </div>
     <div class="row">
-        <div class="col">
-            <button class="w-50 btn btn-primary float-start"
-                    th:onclick="|location.href='@{/post/add}'|" type="button">글쓰기</button>
+        <div class="col" th:if="${session?.username != null}">
+            <button class="w-80 btn btn-primary float-start" th:text="|${session?.username} 님|"
+                    th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
         </div>
         <div class="col" th:if="${session?.username == null}">
-            <button class="w-30 btn btn-secondary float-start"
+            <button class="w-30 btn btn-secondary float-end"
                     th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
         </div>
         <div class="col" th:if="${session?.username != null}">
-            <p th:text="|${session?.username} 님|"></p>
             <form th:action="@{/logout}" method="post">
-                <button class="w-70 btn btn-secondary float-start" type="submit">로그아웃</button>
+                <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>
             </form>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            <button class="w-70 btn btn-primary float-start"
+                    th:onclick="|location.href='@{/post/add}'|" type="button">게시글 검색</button>
+        </div>
+        <div class="col" th:if="${session?.username != null}">
+            <button class="w-60 btn btn-primary float-start"
+                    th:onclick="|location.href='@{/post/add}'|" type="button">글쓰기</button>
         </div>
         <div class="col">
             <button class="w-70 btn btn-secondary float-end"
@@ -51,7 +61,8 @@
                 <td>제목</td>
                 <td>작성자</td>
                 <td>작성일</td>
-                <td>조회수</td>
+                <td>조회</td>
+                <td>추천</td>
             </tr>
             </thead>
             <tbody>
@@ -62,8 +73,9 @@
                 <td><a href="" th:href="@{|/member/${post.memberId}|}" th:text="${post.username}">작성자 이름</a></td>
 <!--                <td><p th:text="${post.nickname}">회원 별칭값</p></td>-->
                 <!-- 작성글 목록 볼 수 있는 팝업창이 나오도록 하기 -->
-                <td><p th:text="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td> <!-- 날짜 포맷 수정 -->
+                <td><p th:text="${#temporals.format(post.writingDate, 'MM-dd HH:mm')}">작성일</p></td> <!-- 날짜 포맷 수정 -->
                 <td><p th:text="|${post.viewCount}|">조회수</p></td>
+                <td><p th:text="|${post.recommendCount}|"></p></td>
             </tr>
             </tbody>
         </table>

@@ -3,10 +3,11 @@ package syh.toyproject.service.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import syh.toyproject.domain.post.Post;
 import syh.toyproject.Dto.post.PostBoardDto;
-import syh.toyproject.repository.post.PostRepository;
+import syh.toyproject.domain.post.Post;
+import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
+import syh.toyproject.repository.post.PostRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
 
     public Post addPost(Post post) {
         return postRepository.addPost(post);
@@ -49,7 +51,6 @@ public class PostService {
     }
 
     public void recommendPost(Long postId, Long memberId) {
-        log.info("개추");
         postRepository.recommendPost(postId, memberId);
     }
 
@@ -59,6 +60,7 @@ public class PostService {
 
     public void deletePost(Long postId) {
         postRepository.deletePost(postId);
+        commentRepository.deleteAllCommentByPostId(postId);
     }
 
 

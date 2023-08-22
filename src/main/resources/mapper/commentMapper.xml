@@ -44,4 +44,9 @@
         where comment_id = #{commentId}
     </delete>
 
+    <delete id="deleteAllCommentByPostId">
+        delete from comment
+        where post_id = #{postId}
+    </delete>
+
 </mapper>

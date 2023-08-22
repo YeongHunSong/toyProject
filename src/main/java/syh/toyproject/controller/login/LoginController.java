@@ -6,7 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import syh.toyproject.Dto.login.LoginDto;
 import syh.toyproject.Dto.login.LoginToMainDto;
 import syh.toyproject.argumentResolver.Login;
@@ -68,5 +71,7 @@ public class LoginController {
         HttpSession session = request.getSession(false); // false 일 경우, 세션이 없을 때는 null 만 반환.
         if (session != null) session.invalidate();
         return "redirect:/member";
+        
+        // requestURI 받아와서 그거 하기
     }
 }

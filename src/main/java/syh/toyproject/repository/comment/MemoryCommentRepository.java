@@ -2,7 +2,6 @@ package syh.toyproject.repository.comment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.comment.Comment;
 
 import java.time.LocalDateTime;
@@ -65,6 +64,11 @@ public class MemoryCommentRepository implements CommentRepository {
     @Override
     public void deleteComment(Long commentId) {
         store.remove(commentId);
+    }
+
+    @Override
+    public void deleteAllCommentByPostId(Long postId) {
+
     }
 
     public void clear() {

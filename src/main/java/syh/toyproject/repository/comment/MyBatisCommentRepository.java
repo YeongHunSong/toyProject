@@ -51,4 +51,9 @@ public class MyBatisCommentRepository implements CommentRepository {
     public void deleteComment(Long commentId) {
         commentMapper.deleteComment(commentId);
     }
+
+    @Override
+    public void deleteAllCommentByPostId(Long postId) {
+        commentMapper.deleteAllCommentByPostId(postId);
+    }
 }

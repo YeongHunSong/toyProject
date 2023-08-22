@@ -18,8 +18,13 @@
     </update>
 
     <select id="findAll" resultType="Post">
-        select member_id, post_id, post_title, post_content, view_count, recommend_count, writing_date, last_edit_date
+        select POST.member_id, POST.post_id, POST.post_title, POST.post_content, POST.view_count,
+        count(RECOMMEND.post_id) recommend_count, POST.writing_date, POST.last_edit_date
         from POST
+        left join POST_RECOMMEND as RECOMMEND
+        on POST.post_id = RECOMMEND.post_id
+        group by POST.post_id
+        order by POST.post_id
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">

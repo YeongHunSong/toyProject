@@ -13,7 +13,7 @@ import syh.toyproject.domain.comment.Comment;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @Transactional
@@ -103,6 +103,23 @@ class CommentRepositoryTest {
         Comment findComment = commentRepository.findByCommentId(comment1.getCommentId());
 
         assertThat(findComment).isNull();
+    }
+
+    @Test
+    void deleteAllCommentByPostIdTest() {
+        Comment comment1 = newComment(1L);
+        Comment comment2 = newComment(1L);
+        Comment comment3 = newComment(1L);
+
+        commentRepository.deleteAllCommentByPostId(comment1.getPostId());
+
+        Comment findComment1 = commentRepository.findByCommentId(comment1.getCommentId());
+        Comment findComment2 = commentRepository.findByCommentId(comment2.getCommentId());
+        Comment findComment3 = commentRepository.findByCommentId(comment3.getCommentId());
+
+        assertThat(findComment1).isNull();
+        assertThat(findComment2).isNull();
+        assertThat(findComment3).isNull();
     }
 
     private Comment newComment(Long number) {

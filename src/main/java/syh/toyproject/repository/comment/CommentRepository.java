@@ -23,5 +23,6 @@ public interface CommentRepository {
 
     public void deleteComment(Long commentId);
 
+    public void deleteAllCommentByPostId(Long postId);
 
 }

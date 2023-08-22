@@ -22,4 +22,7 @@ public interface CommentMapper {
     void editComment(@Param("commentId") Long commentId, @Param("commentEditDto") Comment commentEditDto);
 
     void deleteComment(Long commentId);
+
+    void deleteAllCommentByPostId(Long postId);
+
 }

@@ -21,23 +21,27 @@
                         th:onclick="|location.href='@{/member/signup}'|" type="button">회원 가입</button>
             </div>
             <div class="col" th:if="${session?.username == null}">
-                <button class="w-30 btn btn-secondary float-start"
+                <button class="w-30 btn btn-secondary float-end"
                         th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
             </div>
-
             <div class="col" th:if="${session?.username != null}">
-                <button class="w-30 btn btn-primary float-start"
+                <button class="w-80 btn btn-primary float-start" th:text="|${session?.username} 님|"
                         th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
-                <p th:text="|${session?.username} 님|"></p>
             </div>
             <div class="col" th:if="${session?.username != null}">
                 <form th:action="@{/logout}" method="post">
-                    <button class="w-70 btn btn-secondary float-start" type="submit">로그아웃</button>
+                    <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>
                 </form>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <button class="w-30 btn btn-primary float-start">회원 검색</button>
             </div>
 
             <div class="col">
-                <button class="w-50 btn btn-secondary float-end"
+                <button class="w-70 btn btn-secondary float-end"
                         th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
             </div>
         </div>

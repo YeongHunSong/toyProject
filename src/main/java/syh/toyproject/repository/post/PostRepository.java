@@ -29,4 +29,6 @@ public interface PostRepository {
     public Long recommendCounting(Long postId);
 
     public boolean recommendDuplicateCheck(Long postId, Long memberId);
+
+
 }
