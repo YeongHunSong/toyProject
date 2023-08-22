@@ -26,6 +26,4 @@ public interface PostMapper {
     void recommendPost(@Param("postId") Long postId, @Param("recommenderId") Long memberId);
 
     int recommendDuplicateCheck(@Param("postId") Long postId, @Param("recommenderId") Long memberId);
-
-    Long recommendCounting(Long postId);
 }

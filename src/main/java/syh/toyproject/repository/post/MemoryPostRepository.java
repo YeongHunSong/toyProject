@@ -2,7 +2,6 @@ package syh.toyproject.repository.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.post.Post;
 
 import java.time.LocalDateTime;
@@ -72,11 +71,6 @@ public class MemoryPostRepository implements PostRepository {
     @Override
     public void recommendPost(Long postId, Long memberId) {
 
-    }
-
-    @Override
-    public Long recommendCounting(Long postId) {
-        return null;
     }
 
     @Override

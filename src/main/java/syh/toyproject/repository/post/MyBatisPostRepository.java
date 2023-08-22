@@ -59,11 +59,6 @@ public class MyBatisPostRepository implements PostRepository {
     }
 
     @Override
-    public Long recommendCounting(Long postId) {
-        return postMapper.recommendCounting(postId);
-    }
-
-    @Override
     public boolean recommendDuplicateCheck(Long postId, Long memberId) {
         return postMapper.recommendDuplicateCheck(postId, memberId) != 0;
     }

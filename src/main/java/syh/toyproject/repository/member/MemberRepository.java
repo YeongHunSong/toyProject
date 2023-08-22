@@ -14,7 +14,7 @@ public interface MemberRepository {
     List<Member> findAll();
 
 
-    default public List<Member> findAll(String userSearchName) {
+    default List<Member> findAll(String userSearchName) {
         return null; // 검색 조건 넣어서 조회하기. 좀 있다가 개발
     }
 

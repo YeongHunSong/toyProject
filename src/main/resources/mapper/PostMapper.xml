@@ -60,12 +60,6 @@
         values (#{postId}, #{recommenderId}, now())
     </insert>
 
-    <select id="recommendCounting" resultType="Long">
-        <!-- 필요없으면 삭제 하기 -->
-        select count(post_id) from POST_RECOMMEND
-        where post_id = #{postId}
-    </select>
-
     <select id="recommendDuplicateCheck" resultType="Int">
         select count(recommender_id)
         from POST_RECOMMEND
