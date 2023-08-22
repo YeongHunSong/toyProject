@@ -6,23 +6,23 @@ import java.util.List;
 
 public interface CommentRepository {
 
-    public Comment addComment(Comment comment);
+    Comment addComment(Comment comment);
 
 
-    public List<Comment> findAll();
+    List<Comment> findAll();
 
-    public List<Comment> findByPostIdAll(Long postId);
+    List<Comment> findByPostIdAll(Long postId);
 
-    public List<Comment> findByMemberIdAll(Long memberId);
+    List<Comment> findByMemberIdAll(Long memberId);
 
-    public Comment findByCommentId(Long commentId);
-
-
-    public void editComment(Long commentId, Comment commentEditDto);
+    Comment findByCommentId(Long commentId);
 
 
-    public void deleteComment(Long commentId);
+    void editComment(Long commentId, Comment commentEditDto);
 
-    public void deleteAllCommentByPostId(Long postId);
+
+    void deleteComment(Long commentId);
+
+    void deleteAllCommentByPostId(Long postId);
 
 }

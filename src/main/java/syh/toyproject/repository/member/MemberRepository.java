@@ -8,21 +8,21 @@ import java.util.Optional;
 
 public interface MemberRepository {
 
-    public Member addMember(Member member);
+    Member addMember(Member member);
 
 
-    public List<Member> findAll();
+    List<Member> findAll();
 
 
     default public List<Member> findAll(String userSearchName) {
-        return null; // 좀있다가 개발
+        return null; // 검색 조건 넣어서 조회하기. 좀 있다가 개발
     }
 
-    public Member findByMemberId(Long memberId);
+    Member findByMemberId(Long memberId);
 
-    public Optional<Member> findByLoginId(String loginId);
+    Optional<Member> findByLoginId(String loginId);
 
 
-    public void editMember(Long memberId, Member memberEditDto);
+    void editMember(Long memberId, Member memberEditDto);
 
 }

@@ -6,29 +6,29 @@ import java.util.List;
 
 public interface PostRepository {
 
-    public Post addPost(Post post);
+    Post addPost(Post post);
 
 
-    public List<Post> findAll();
+    List<Post> findAll();
 
-    public List<Post> findByMemberIdAll(Long memberId);
+    List<Post> findByMemberIdAll(Long memberId);
 
-    public Post findByPostId(Long postId);
-
-
-    public void editPost(Long postId, Post postEditDto);
+    Post findByPostId(Long postId);
 
 
-    public void deletePost(Long postId);
+    void editPost(Long postId, Post postEditDto);
 
 
-    public void  addViewCount(Long postId);
+    void deletePost(Long postId);
 
-    public void recommendPost(Long postId, Long memberId);
 
-    public Long recommendCounting(Long postId);
+    void  addViewCount(Long postId);
 
-    public boolean recommendDuplicateCheck(Long postId, Long memberId);
+    void recommendPost(Long postId, Long memberId);
+
+    Long recommendCounting(Long postId);
+
+    boolean recommendDuplicateCheck(Long postId, Long memberId);
 
 
 }
