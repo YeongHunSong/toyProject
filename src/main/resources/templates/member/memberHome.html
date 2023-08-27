@@ -37,14 +37,20 @@
         <br>
         <div class="row">
             <div class="col">
-                <div th:if="${session?.memberSearchStatus != 'on'}">
+                <div th:if="${statusCode == 'off'}">
                     <form th:action="@{|/member/search|}" method="post">
                         <button class="w-30 btn btn-primary float-start" type="submit">회원 검색</button>
                     </form>
                 </div>
-                <div th:if="${searchStatus.flag == true}">
-                    <button class="w-30 btn btn-primary float-start" type="submit"
-                            th:onclick="|location.href='@{|/member/searchStop|}'|">검색 취소</button>
+                <div th:if="${statusCode == 'on'}">
+                    <form th:action="@{|/member/search|}" method="post">
+                        <button class="w-30 btn btn-primary float-start" type="submit">검색 취소</button>
+                    </form>
+
+
+
+<!--                    <button class="w-30 btn btn-primary float-start" type="submit"-->
+<!--                            th:onclick="|location.href='@{|/member/searchStop|}'|">검색 취소</button>-->
                 </div>
             </div>
 
@@ -53,10 +59,10 @@
                         th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
             </div>
         </div>
-        <br th:if="${searchStatus.flag == true}">
-        <form th:action="@{|/member|}" method="get" th:if="${searchStatus.flag == true}" class="row">
+        <br th:if="${statusCode == 'on'}">
+        <form th:action="@{|/member|}" method="get" th:if="${statusCode == 'on'}" class="row">
             <div class="col-auto">
-                <input type="text" id="username" name="username" class="form-control" placeholder="닉네임을 입력해주세요">
+                <input type="text" id="username" name="username" class="form-control" placeholder="닉네임을 입력해주세요" th:value="${username}">
             </div>
             <div class="col-auto">
                 <button class="btn btn-primary" type="submit">검색</button>

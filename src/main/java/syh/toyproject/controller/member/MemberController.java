@@ -11,7 +11,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import syh.toyproject.Dto.login.LoginStatus;
 import syh.toyproject.Dto.member.MemberEditDto;
 import syh.toyproject.Dto.member.MemberSignupDto;
-import syh.toyproject.Dto.member.SearchStatus;
 import syh.toyproject.argumentResolver.Login;
 import syh.toyproject.domain.member.Member;
 import syh.toyproject.service.comment.CommentService;
@@ -20,7 +19,6 @@ import syh.toyproject.service.member.MemberService;
 import syh.toyproject.service.post.PostService;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
@@ -41,56 +39,30 @@ public class MemberController {
 
     @GetMapping
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
-                             @ModelAttribute SearchStatus status, HttpServletResponse response,
-                             @CookieValue(defaultValue = "off") String lda,
-                             HttpServletRequest request) {
-
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-
-            String name = cookie.getName();
-            String value = cookie.getValue();
-
-            log.info("내가만든 쿠키 이름 = {}", name);
-            log.info("내가만든 쿠키 값 = {}", value);
-        }
-
-        if (status.isFlag()) { // 검색이 들어오면 쿠키 생성
-            Cookie memberSearchTrg = new Cookie("memberSearchStatus", "on");
-            response.addCookie(memberSearchTrg);
-        }
+                             @CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode) {
 
 
+
+        model.addAttribute("statusCode", statusCode);
         model.addAttribute("memberList", memberService.findAll(username));
         return "member/memberHome";
     }
 
     @PostMapping("/search")
-    public String memberSearchModeChange(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("searchStatus", new SearchStatus(true));
+    public String memberSearchModeChange(@CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode,
+                                         HttpServletResponse response, Model model) {
+        if (statusCode.equals("off")) {
+            Cookie memberSearchTrg = new Cookie("memberSearchTrg", "on");
+            response.addCookie(memberSearchTrg);
+        }
+        else if (statusCode.equals("on")) {
+            Cookie memberSearchTrg = new Cookie("memberSearchTrg", null);
+            memberSearchTrg.setMaxAge(0);
+            response.addCookie(memberSearchTrg);
+        }
 
         return "redirect:/member";
     }
-
-    @GetMapping("/searchStop")
-    public String memberSearchStop(RedirectAttributes redirectAttributes, HttpServletResponse response) {
-
-        Cookie memberSearchTrg = new Cookie("memberSearchStatus", null);
-        memberSearchTrg.setMaxAge(0);
-        response.addCookie(memberSearchTrg);
-
-        redirectAttributes.addFlashAttribute("searchStatus", new SearchStatus(false));
-        return "redirect:/member";
-    }
-
-
-//    @GetMapping("/searchMember")
-//    public String searchMember(@ModelAttribute(name = "username") String username, Model model) {
-//
-//
-//        model.addAttribute("memberList", memberService.findAll(username));
-//        return "member/memberHome";
-//    }
 
     @GetMapping("/signup")
     public String addMemberForm(@ModelAttribute MemberSignupDto memberDto) {
