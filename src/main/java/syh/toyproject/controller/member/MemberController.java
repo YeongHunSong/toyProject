@@ -28,8 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 public class MemberController {
 
     /**
-     * @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) == @Login
-     * @SessionAttribute(name = SessionConst.USERNAME, required = false) == @LoginName
+     * // @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) == @Login
+     * // @SessionAttribute(name = SessionConst.USERNAME, required = false) == @LoginName
      */
 
     private final PostService postService;
