@@ -71,7 +71,7 @@ public class LoginController {
         HttpSession session = request.getSession(false); // false 일 경우, 세션이 없을 때는 null 만 반환.
         if (session != null) session.invalidate();
         return "redirect:/member";
-        
-        // requestURI 받아와서 그거 하기
+
+        // FIXME requestURI 받아와서 이전 화면으로 돌리기
     }
 }
