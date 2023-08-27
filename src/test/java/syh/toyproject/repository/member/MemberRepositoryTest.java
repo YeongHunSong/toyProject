@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import syh.toyproject.domain.member.Member;
 import syh.toyproject.Dto.member.MemberEditDto;
+import syh.toyproject.domain.member.Member;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Slf4j
@@ -52,9 +52,23 @@ class MemberRepositoryTest {
         Member findMember1 = memberRepository.findByMemberId(member1.getMemberId());
         Member findMember2 = memberRepository.findByMemberId(member2.getMemberId());
 
-        List<Member> memberList = memberRepository.findAll();
+        List<Member> memberList = memberRepository.findAll(null);
 
         assertThat(memberList).containsExactly(findMember1, findMember2);
+    }
+
+    @Test
+    void searchUsernameTest() {
+        Member member1 = newMember(1L);
+        Member member2 = newMember(2L);
+        Member member3 = newMember(3L);
+        Member member4 = newMember(4L);
+
+        List<Member> findMemberList1 = memberRepository.findAll("스트2");
+        List<Member> findMemberList2 = memberRepository.findAll(null);
+
+        assertThat(findMemberList1).containsExactly(memberRepository.findByMemberId(member2.getMemberId()));
+        assertThat(findMemberList2).containsExactly(member1, member2, member3, member4);
     }
 
     @Test

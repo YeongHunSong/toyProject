@@ -2,7 +2,6 @@ package syh.toyproject.repository.member;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.member.Member;
 
 import java.time.LocalDateTime;
@@ -30,7 +29,7 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
-    public List<Member> findAll() {
+    public List<Member> findAll(String searchUsername) {
         return new ArrayList<>(store.values());
     }
 
@@ -42,7 +41,7 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByLoginId(String loginId) { // Optional 추가
-        return findAll().stream()
+        return findAll(null).stream()
                 .filter(member -> member.getLoginId().equals(loginId))
                 .findFirst();
     }

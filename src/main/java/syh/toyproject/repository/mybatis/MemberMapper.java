@@ -16,9 +16,7 @@ public interface MemberMapper {
 
     void editMember(@Param("memberId") Long memberId, @Param("memberEditDto") Member memberEditDto);
 
-    List<Member> findAll();
-
-//    List<Member> findAll(String userSearchName);
+    List<Member> findAll(String searchUsername);
 
     Member findByMemberId(Long memberId);
 

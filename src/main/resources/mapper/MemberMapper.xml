@@ -18,8 +18,13 @@
     <select id="findAll" resultType="Member">
         select signup_date, username, member_id, login_id, password
         from member
+        <where>
+            <if test="searchUsername != null and searchUsername != ''">
+                and username like concat('%', #{searchUsername}, '%')
+            </if>
+        </where>
     </select>
-    
+
     <select id="findByMemberId" resultType="Member">
         select signup_date, username, member_id, login_id, password
         from member

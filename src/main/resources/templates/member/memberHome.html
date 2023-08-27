@@ -37,7 +37,15 @@
         <br>
         <div class="row">
             <div class="col">
-                <button class="w-30 btn btn-primary float-start">회원 검색</button>
+                <div th:if="${session?.memberSearchStatus != 'on'}">
+                    <form th:action="@{|/member/search|}" method="post">
+                        <button class="w-30 btn btn-primary float-start" type="submit">회원 검색</button>
+                    </form>
+                </div>
+                <div th:if="${searchStatus.flag == true}">
+                    <button class="w-30 btn btn-primary float-start" type="submit"
+                            th:onclick="|location.href='@{|/member/searchStop|}'|">검색 취소</button>
+                </div>
             </div>
 
             <div class="col">
@@ -45,6 +53,17 @@
                         th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
             </div>
         </div>
+        <br th:if="${searchStatus.flag == true}">
+        <form th:action="@{|/member|}" method="get" th:if="${searchStatus.flag == true}" class="row">
+            <div class="col-auto">
+                <input type="text" id="username" name="username" class="form-control" placeholder="닉네임을 입력해주세요">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit">검색</button>
+            </div>
+        </form>
+
+
         <hr class="my-4">
         <div>
             <table class="table">

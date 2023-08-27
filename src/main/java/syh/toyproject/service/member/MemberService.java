@@ -20,8 +20,8 @@ public class MemberService {
     }
 
 
-    public List<Member> findAll() {
-        return memberRepository.findAll();
+    public List<Member> findAll(String searchUsername) {
+        return memberRepository.findAll(searchUsername);
     }
 
     public Member findByMemberId(Long memberId) {
@@ -33,12 +33,12 @@ public class MemberService {
     }
 
     public boolean loginIdDuplicateCheck(String dupCheckId) {
-       return memberRepository.findAll().stream()
+       return memberRepository.findAll(null).stream()
                 .anyMatch(member -> member.getLoginId().equals(dupCheckId));
     }
 
     public boolean usernameDuplicateCheck(String username) {
-        return memberRepository.findAll().stream()
+        return memberRepository.findAll(null).stream()
                 .anyMatch(member -> member.getUsername().equals(username));
     }
 

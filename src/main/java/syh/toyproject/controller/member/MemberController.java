@@ -8,21 +8,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import syh.toyproject.Dto.member.MemberSignupDto;
 import syh.toyproject.Dto.login.LoginStatus;
+import syh.toyproject.Dto.member.MemberEditDto;
+import syh.toyproject.Dto.member.MemberSignupDto;
+import syh.toyproject.Dto.member.SearchStatus;
 import syh.toyproject.argumentResolver.Login;
-import syh.toyproject.argumentResolver.LoginName;
-import syh.toyproject.domain.post.Post;
+import syh.toyproject.domain.member.Member;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
-import syh.toyproject.service.post.PostService;
-import syh.toyproject.domain.member.Member;
-import syh.toyproject.Dto.member.MemberEditDto;
 import syh.toyproject.service.member.MemberService;
-import syh.toyproject.session.SessionConst;
+import syh.toyproject.service.post.PostService;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Controller
@@ -41,10 +40,57 @@ public class MemberController {
     private final CommentService commentService;
 
     @GetMapping
-    public String memberHome(Model model) {
-        model.addAttribute("memberList", memberService.findAll());
+    public String memberHome(@ModelAttribute(name = "username") String username, Model model,
+                             @ModelAttribute SearchStatus status, HttpServletResponse response,
+                             @CookieValue(defaultValue = "off") String lda,
+                             HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+
+            String name = cookie.getName();
+            String value = cookie.getValue();
+
+            log.info("내가만든 쿠키 이름 = {}", name);
+            log.info("내가만든 쿠키 값 = {}", value);
+        }
+
+        if (status.isFlag()) { // 검색이 들어오면 쿠키 생성
+            Cookie memberSearchTrg = new Cookie("memberSearchStatus", "on");
+            response.addCookie(memberSearchTrg);
+        }
+
+
+        model.addAttribute("memberList", memberService.findAll(username));
         return "member/memberHome";
     }
+
+    @PostMapping("/search")
+    public String memberSearchModeChange(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("searchStatus", new SearchStatus(true));
+
+        return "redirect:/member";
+    }
+
+    @GetMapping("/searchStop")
+    public String memberSearchStop(RedirectAttributes redirectAttributes, HttpServletResponse response) {
+
+        Cookie memberSearchTrg = new Cookie("memberSearchStatus", null);
+        memberSearchTrg.setMaxAge(0);
+        response.addCookie(memberSearchTrg);
+
+        redirectAttributes.addFlashAttribute("searchStatus", new SearchStatus(false));
+        return "redirect:/member";
+    }
+
+
+//    @GetMapping("/searchMember")
+//    public String searchMember(@ModelAttribute(name = "username") String username, Model model) {
+//
+//
+//        model.addAttribute("memberList", memberService.findAll(username));
+//        return "member/memberHome";
+//    }
 
     @GetMapping("/signup")
     public String addMemberForm(@ModelAttribute MemberSignupDto memberDto) {
