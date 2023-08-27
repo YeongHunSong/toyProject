@@ -50,7 +50,7 @@ public class MemberController {
 
     @PostMapping("/search")
     public String memberSearchModeChange(@CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode,
-                                         HttpServletResponse response, Model model) {
+                                         HttpServletResponse response) {
         if (statusCode.equals("off")) {
             Cookie memberSearchTrg = new Cookie("memberSearchTrg", "on");
             response.addCookie(memberSearchTrg);
