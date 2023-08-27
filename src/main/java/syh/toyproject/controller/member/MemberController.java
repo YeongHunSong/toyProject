@@ -41,8 +41,6 @@ public class MemberController {
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode) {
 
-
-
         model.addAttribute("statusCode", statusCode);
         model.addAttribute("memberList", memberService.findAll(username));
         return "member/memberHome";
