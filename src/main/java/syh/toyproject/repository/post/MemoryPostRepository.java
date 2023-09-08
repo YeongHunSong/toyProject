@@ -2,6 +2,7 @@ package syh.toyproject.repository.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 
 import java.time.LocalDateTime;
@@ -35,13 +36,13 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
+    public List<Post> findAll(PostSearchCond cond) {
         return new ArrayList<>(store.values());
     }
 
     @Override
     public List<Post> findByMemberIdAll(Long memberId) {
-        return findAll().stream()
+        return findAll(null).stream()
                 .filter(post -> post.getMemberId().equals(memberId))
                 .collect(Collectors.toList());
 //                .orElseThrow(() -> new RuntimeException("해당 회원의 작성글이 존재하지 않습니다"));

@@ -23,6 +23,19 @@
         from POST
         left join POST_RECOMMEND as RECOMMEND
         on POST.post_id = RECOMMEND.post_id
+        left join MEMBER
+        on POST.member_id = MEMBER.member_id
+        <where>
+            <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
+                POST.post_title like concat('%', #{cond.searchKeyword}, '%')
+            </if>
+            <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
+                POST.post_content like concat('%', #{cond.searchKeyword}, '%')
+            </if>
+            <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
+                MEMBER.username like concat('%', #{cond.searchKeyword}, '%')
+            </if>
+        </where>
         group by POST.post_id
         order by POST.post_id
     </select>

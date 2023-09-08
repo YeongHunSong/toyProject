@@ -114,7 +114,7 @@
     <div class="row">
         <div class="col">
             <button class="w-30 btn btn-secondary float-start" onclick="location.href='postHome.html'"
-                    th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
+                    th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
         </div>
         <div class="col">
             <form th:action="@{|/post/${postId}/recommend|}" method="post">

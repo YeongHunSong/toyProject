@@ -3,6 +3,7 @@ package syh.toyproject.repository.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.repository.mybatis.PostMapper;
 
@@ -24,8 +25,8 @@ public class MyBatisPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return postMapper.findAll();
+    public List<Post> findAll(PostSearchCond cond) {
+        return postMapper.findAll(cond);
     }
 
     @Override

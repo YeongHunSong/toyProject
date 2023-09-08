@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col" th:if="${session?.username == null}">
                 <button class="w-30 btn btn-primary float-start"
-                        th:onclick="|location.href='@{/member/signup}'|" type="button">회원 가입</button>
+                        th:onclick="|location.href='@{/signup}'|" type="button">회원 가입</button>
             </div>
             <div class="col" th:if="${session?.username == null}">
                 <button class="w-30 btn btn-secondary float-end"
@@ -29,38 +29,35 @@
                         th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
             </div>
             <div class="col" th:if="${session?.username != null}">
-                <form th:action="@{/logout}" method="post">
-                    <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>
-                </form>
+                <button class="w-30 btn btn-secondary float-end"
+                        th:onclick="|location.href='@{/logout}'|" type="button">로그아웃</button>
+<!--                <form th:action="@{/logout}" method="post">-->
+<!--                    <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>-->
+<!--                </form>-->
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col">
-                <div th:if="${statusCode == 'off'}">
-                    <form th:action="@{|/member/search|}" method="post">
+                <div th:if="${searchTrg == 'off'}">
+                    <form th:action="@{|/memberHome/search|}" method="post">
                         <button class="w-30 btn btn-primary float-start" type="submit">회원 검색</button>
                     </form>
                 </div>
-                <div th:if="${statusCode == 'on'}">
-                    <form th:action="@{|/member/search|}" method="post">
+                <div th:if="${searchTrg == 'on'}">
+                    <form th:action="@{|/memberHome/search|}" method="post">
                         <button class="w-30 btn btn-primary float-start" type="submit">검색 취소</button>
                     </form>
-
-
-
-<!--                    <button class="w-30 btn btn-primary float-start" type="submit"-->
-<!--                            th:onclick="|location.href='@{|/member/searchStop|}'|">검색 취소</button>-->
                 </div>
             </div>
 
             <div class="col">
                 <button class="w-70 btn btn-secondary float-end"
-                        th:onclick="|location.href='@{/post}'|" type="button">게시판</button>
+                        th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
             </div>
         </div>
-        <br th:if="${statusCode == 'on'}">
-        <form th:action="@{|/member|}" method="get" th:if="${statusCode == 'on'}" class="row">
+        <br th:if="${searchTrg == 'on'}">
+        <form th:action="@{|/memberHome|}" method="get" th:if="${searchTrg == 'on'}" class="row">
             <div class="col-auto">
                 <input type="text" id="username" name="username" class="form-control" placeholder="닉네임을 입력해주세요" th:value="${username}">
             </div>
