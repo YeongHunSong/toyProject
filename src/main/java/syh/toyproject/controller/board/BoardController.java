@@ -10,19 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import syh.toyproject.Dto.comment.CommentAddDto;
 import syh.toyproject.Dto.comment.CommentEditDto;
-import syh.toyproject.Dto.comment.EditCommentMode;
 import syh.toyproject.Dto.comment.CommentEditStatus;
+import syh.toyproject.Dto.comment.EditCommentMode;
 import syh.toyproject.Dto.post.PostAddDto;
+import syh.toyproject.Dto.post.PostEditDto;
 import syh.toyproject.Dto.post.PostEditStatus;
+import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.argumentResolver.Login;
 import syh.toyproject.argumentResolver.LoginName;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.domain.member.AuthMember;
 import syh.toyproject.domain.post.Post;
-import syh.toyproject.Dto.post.PostEditDto;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
 import syh.toyproject.service.post.PostService;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Controller
@@ -33,17 +37,41 @@ public class BoardController {
     private final LoginService loginService;
     private final CommentService commentService;
 
-    @GetMapping("/post")
-    public String postHome(Model model) {
-        model.addAttribute("postList", postService.postListToPostDto(postService.findAll()));
+    @GetMapping("/postHome")
+    public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
+                           @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg) {
+
+
+
+        model.addAttribute("searchTrg", searchTrg);
+        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond)));
         return "board/postHome";
     }
+
+    @PostMapping("/postHome/search")
+    public String memberSearchModeChange(@CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
+                                         HttpServletResponse response) {
+        if (searchTrg.equals("off")) {
+            Cookie postSearchTrg = new Cookie("postSearchTrg", "on");
+            postSearchTrg.setPath("/");
+            response.addCookie(postSearchTrg);
+        }
+        else if (searchTrg.equals("on")) {
+            Cookie postSearchTrg = new Cookie("postSearchTrg", null);
+            postSearchTrg.setMaxAge(0);
+            postSearchTrg.setPath("/");
+            response.addCookie(postSearchTrg);
+        }
+
+        return "redirect:/postHome";
+    }
+
 
     @GetMapping("/post/add")
     public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
         if (loginMemberName == null) {
             // redirectAttribute 추가
-            return "redirect:/post";
+            return "redirect:/postHome";
             // 비로그인 상태에서 글 작성 하기
 //            return "board/postWriteForm";
         }
@@ -65,7 +93,7 @@ public class BoardController {
             postService.addPost(new Post(postAddDto.getCategory(), postAddDto.getPostTitle(), postAddDto.getPostContent(), loginMemberId));
         }
 
-        return "redirect:/post";
+        return "redirect:/postHome";
     }
 
     @GetMapping("/post/{postId}/edit") // ##### 수정
@@ -123,7 +151,7 @@ public class BoardController {
         }
 
         postService.deletePost(postId);
-        return "redirect:/post";
+        return "redirect:/postHome";
     }
 
     @GetMapping("/post/{postId}")

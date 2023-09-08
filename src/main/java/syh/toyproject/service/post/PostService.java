@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import syh.toyproject.Dto.post.PostBoardDto;
+import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
@@ -26,8 +27,8 @@ public class PostService {
     }
 
 
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public List<Post> findAll(PostSearchCond cond) {
+        return postRepository.findAll(cond);
     }
 
     public List<Post> findByMemberIdAll(Long memberId) {

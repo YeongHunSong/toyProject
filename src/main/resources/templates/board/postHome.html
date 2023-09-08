@@ -22,19 +22,27 @@
         </div>
         <div class="col" th:if="${session?.username == null}">
             <button class="w-30 btn btn-secondary float-end"
-                    th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
+                    th:onclick="|location.href='@{/login?redirectURI=/postHome}'|" type="button">로그인</button>
         </div>
         <div class="col" th:if="${session?.username != null}">
-            <form th:action="@{/logout}" method="post">
-                <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>
-            </form>
+            <button class="w-30 btn btn-secondary float-end"
+                    th:onclick="|location.href='@{/logout?redirectURI=/postHome}'|" type="button">로그아웃</button>
+<!--            <form th:action="@{/logout?redirect=postHome}" method="post">-->
+<!--                <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>-->
+<!--            </form>-->
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="col">
-            <button class="w-70 btn btn-primary float-start"
-                    th:onclick="|location.href='@{/post/add}'|" type="button">게시글 검색</button>
+        <div class="col" th:if="${searchTrg == 'off'}">
+            <form th:action="@{|/postHome/search|}" method="post">
+                <button class="w-30 btn btn-primary float-start" type="submit">게시글 검색</button>
+            </form>
+        </div>
+        <div class="col" th:if="${searchTrg == 'on'}">
+            <form th:action="@{|/postHome/search|}" method="post">
+                <button class="w-30 btn btn-primary float-start" type="submit">검색 취소</button>
+            </form>
         </div>
         <div class="col" th:if="${session?.username != null}">
             <button class="w-60 btn btn-primary float-start"
@@ -42,15 +50,33 @@
         </div>
         <div class="col">
             <button class="w-70 btn btn-secondary float-end"
-                    th:onclick="|location.href='@{/member}'|" type="button">회원 목록</button>
+                    th:onclick="|location.href='@{/memberHome}'|" type="button">회원 목록</button>
         </div>
     </div>
+
+    <br th:if="${searchTrg == 'on'}">
+    <form th:action="@{|/postHome|}" method="get" th:if="${searchTrg == 'on'}" class="row">
+        <div class="col-auto">
+            <select class="form-select" th:field="${cond.searchType}">
+                <option selected th:value="title">제목</option>
+                <option  th:value="content">내용</option>
+                <option th:value="username">작성자</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="text" th:field="${cond.searchKeyword}" class="form-control" placeholder="검색어를 입력해주세요" th:value="${cond.searchKeyword}">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">검색</button>
+        </div>
+    </form>
+
     <hr class="my-4">
     <div>
         <table class="table" th:if="${#lists.size(postList) == 0}">
             <tbody>
             <br><br>
-            <p>작성된 게시글이 없습니다.</p>
+            <p>게시글이 없습니다.</p>
             </tbody>
         </table>
 

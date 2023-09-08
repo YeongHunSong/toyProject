@@ -2,6 +2,7 @@ package syh.toyproject.repository.mybatis;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface PostMapper {
 
     void editPost(@Param("postId") Long postId, @Param("postEditDto") Post postEditDto);
 
-    List<Post> findAll();
+    List<Post> findAll(@Param("cond") PostSearchCond cond);
 
     List<Post> findByMemberIdAll(Long memberId);
 

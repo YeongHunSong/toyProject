@@ -7,7 +7,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import syh.toyproject.argumentResolver.LoginMemberArgumentResolver;
 import syh.toyproject.argumentResolver.LoginNameArgumentResolver;
-import syh.toyproject.interceptor.LogInterceptor;
+import syh.toyproject.interceptor.MemberSearchCookieInterceptor;
+import syh.toyproject.interceptor.PostSearchCookieInterceptor;
 import syh.toyproject.interceptor.SessionMemberCheckInterceptor;
 
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final SessionMemberCheckInterceptor sessionMemberCheckInterceptor;
+    private final MemberSearchCookieInterceptor memberSearchCookieInterceptor;
+    private final PostSearchCookieInterceptor postSearchCookieInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -32,6 +35,19 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/css/**", "/*.ico", "/error",
                         "/member/*/edit", "/post/*/edit", "/post/*/*/edit");
+
+        registry.addInterceptor(memberSearchCookieInterceptor)
+                .order(2)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/css/**", "/*.ico", "/error",
+                        "/memberHome/**");
+
+        registry.addInterceptor(postSearchCookieInterceptor)
+                .order(3)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/css/**", "/*.ico", "/error",
+                        "/postHome/**");
     }
 
     /**

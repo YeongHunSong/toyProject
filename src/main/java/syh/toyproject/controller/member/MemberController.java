@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/member")
 public class MemberController {
 
     /**
@@ -37,29 +36,31 @@ public class MemberController {
     private final MemberService memberService;
     private final CommentService commentService;
 
-    @GetMapping
+    @GetMapping("/memberHome")
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
-                             @CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode) {
+                             @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg) {
 
-        model.addAttribute("statusCode", statusCode);
+        model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("memberList", memberService.findAll(username));
         return "member/memberHome";
     }
 
-    @PostMapping("/search")
-    public String memberSearchModeChange(@CookieValue(name = "memberSearchTrg", defaultValue = "off") String statusCode,
+    @PostMapping("/memberHome/search")
+    public String memberSearchModeChange(@CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
                                          HttpServletResponse response) {
-        if (statusCode.equals("off")) {
+        if (searchTrg.equals("off")) {
             Cookie memberSearchTrg = new Cookie("memberSearchTrg", "on");
+            memberSearchTrg.setPath("/");
             response.addCookie(memberSearchTrg);
         }
-        else if (statusCode.equals("on")) {
+        else if (searchTrg.equals("on")) {
             Cookie memberSearchTrg = new Cookie("memberSearchTrg", null);
             memberSearchTrg.setMaxAge(0);
+            memberSearchTrg.setPath("/");
             response.addCookie(memberSearchTrg);
         }
 
-        return "redirect:/member";
+        return "redirect:/memberHome";
     }
 
     @GetMapping("/signup")
@@ -76,10 +77,10 @@ public class MemberController {
         // 따로 아이디 중복 확인 기능 넣기, 비밀번호 날아가는 것 어떻게 개선해보기
 
         memberService.addMember(new Member(memberDto.getLoginId(), memberDto.getPassword(), memberDto.getUsername()));
-        return "redirect:/member"; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
+        return "redirect:/memberHome"; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/member/{memberId}")
     public String memberDetail(@PathVariable Long memberId, Model model, @Login Long loginMemberId,
                                @ModelAttribute(name = "status") LoginStatus status, BindingResult bindingResult) {
         // 이부분은 에러페이지로 전송하는 걸로 변경하는 것이 더 괜찮을 수도.
@@ -97,7 +98,7 @@ public class MemberController {
         return "member/memberDetail";
     }
 
-    @GetMapping("/{memberId}/edit")
+    @GetMapping("/member/{memberId}/edit")
     public String editMemberForm(@PathVariable Long memberId, Model model, RedirectAttributes redirectAttributes,
                                  @Login Long loginMemberId) {
         // 그냥 단순히 접근할 권한이 없습니다 페이지만 띄워도 괜찮을듯
@@ -111,7 +112,7 @@ public class MemberController {
         return "member/editMemberForm";
     }
 
-    @PostMapping("/{memberId}/edit")
+    @PostMapping("/member/{memberId}/edit")
     public String editMember(@PathVariable Long memberId, @Login Long loginMemberId, RedirectAttributes redirectAttributes,
                              @Validated @ModelAttribute MemberEditDto memberDto, BindingResult bindingResult, Model model) {
         if (!(editMemberAuthConfirm(memberId, loginMemberId, redirectAttributes))) {

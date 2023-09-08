@@ -7,14 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import syh.toyproject.domain.post.Post;
 import syh.toyproject.Dto.post.PostEditDto;
+import syh.toyproject.Dto.post.PostSearchCond;
+import syh.toyproject.domain.member.Member;
+import syh.toyproject.domain.post.Post;
+import syh.toyproject.repository.member.MemberRepository;
 import syh.toyproject.repository.member.MemoryMemberRepository;
 
 import java.util.List;
 
 import static java.lang.Thread.sleep;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @Transactional
@@ -23,6 +26,9 @@ class PostRepositoryTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @BeforeEach @AfterEach
     void beforeAndAfterEach() {
@@ -52,9 +58,34 @@ class PostRepositoryTest {
         Post findPost1 = postRepository.findByPostId(post1.getPostId());
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
 
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAll(null);
 
         assertThat(postList).containsExactly(findPost1, findPost2);
+    }
+
+    @Test
+    void postSearchCondTest() {
+        Member member = memberRepository.addMember(new Member("loginId", "pw", "검색조건테스트"));
+        Post post1 = newPost(member.getMemberId());
+        Post post2 = newPost(2L);
+
+        PostSearchCond cond1 = new PostSearchCond("title", "트제목1");
+        PostSearchCond cond2 = new PostSearchCond("content", "트내용2");
+        PostSearchCond cond3 = new PostSearchCond("username", "검색조건");
+        PostSearchCond cond4 = new PostSearchCond();
+
+        Post findPost1 = postRepository.findByPostId(post1.getPostId());
+        Post findPost2 = postRepository.findByPostId(post2.getPostId());
+
+        List<Post> findPostTitle1 = postRepository.findAll(cond1);
+        List<Post> findPostTitle2 = postRepository.findAll(cond2);
+        List<Post> findPostTitle3 = postRepository.findAll(cond3);
+        List<Post> findPostTitle4 = postRepository.findAll(cond4);
+
+        assertThat(findPostTitle1).containsExactly(findPost1);
+        assertThat(findPostTitle2).containsExactly(findPost2);
+        assertThat(findPostTitle3).containsExactly(findPost1);
+        assertThat(findPostTitle4).containsExactly(findPost1, findPost2);
     }
 
     @Test
@@ -141,10 +172,3 @@ class PostRepositoryTest {
         return postRepository.addPost(new Post(number, "생성테스트제목" + number, "생성테스트내용" + number));
     }
 }
-
-
-/*
-select post.post_id post_id, post.post_title title, count(recom.recommender_id) recom_count
-from post as post left join POST_RECOMMEND_COUNT as recom
-on post.post_id = recom.post_id
- */
