@@ -21,7 +21,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     private final LoginService loginService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String requestURI = request.getRequestURI();
         HttpSession session = request.getSession(false);
 

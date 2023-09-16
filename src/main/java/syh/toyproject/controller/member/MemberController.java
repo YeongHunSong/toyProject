@@ -64,20 +64,21 @@ public class MemberController {
     }
 
     @GetMapping("/signup")
-    public String addMemberForm(@ModelAttribute MemberSignupDto memberDto) {
+    public String addMemberForm(@ModelAttribute MemberSignupDto memberDto, @ModelAttribute(name = "redirectURL") String redirectURL) {
         // 로그인 체크 후, 로그인이 되어 있지 않는 경우에만 가능하도록 추가 // 다른 웹페이지의 경우에는 그냥 안 막아놓는 것 같기도?
         return "member/addMemberForm";
     }
 
     @PostMapping("/signup")
-    public String addMember(@Validated @ModelAttribute MemberSignupDto memberDto, BindingResult bindingResult) {
+    public String addMember(@Validated @ModelAttribute MemberSignupDto memberDto, BindingResult bindingResult,
+                            @RequestParam(defaultValue = "/memberHome") String redirectURL) {
         if (!(signupValidation(memberDto, bindingResult))) { // 회원가입 실패
             return "member/addMemberForm";
         }
         // 따로 아이디 중복 확인 기능 넣기, 비밀번호 날아가는 것 어떻게 개선해보기
 
         memberService.addMember(new Member(memberDto.getLoginId(), memberDto.getPassword(), memberDto.getUsername()));
-        return "redirect:/memberHome"; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
+        return "redirect:" + redirectURL; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
     }
 
     @GetMapping("/member/{memberId}")

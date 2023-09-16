@@ -48,7 +48,8 @@
                 <button class="w-100 btn btn-lg btn-primary" type="submit">회원 등록</button>
             </div>
             <div class="col">
-                <button class="w-100 btn btn-lg btn-secondary" th:onclick="|location.href='@{/memberHome}'|" type="button">등록 취소</button>
+                <button class="w-100 btn btn-lg btn-secondary"
+                        th:onclick="|location.href='@{|/cancel?redirectURL=${redirectURL}|}'|" type="button">등록 취소</button>
             </div>
         </div>
     </form>
