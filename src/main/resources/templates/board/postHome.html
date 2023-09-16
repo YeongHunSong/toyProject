@@ -22,11 +22,11 @@
         </div>
         <div class="col" th:if="${session?.username == null}">
             <button class="w-30 btn btn-secondary float-end"
-                    th:onclick="|location.href='@{/login?redirectURI=/postHome}'|" type="button">로그인</button>
+                    th:onclick="|location.href='@{/login?redirectURL=/postHome}'|" type="button">로그인</button>
         </div>
         <div class="col" th:if="${session?.username != null}">
             <button class="w-30 btn btn-secondary float-end"
-                    th:onclick="|location.href='@{/logout?redirectURI=/postHome}'|" type="button">로그아웃</button>
+                    th:onclick="|location.href='@{/logout?redirectURL=/postHome}'|" type="button">로그아웃</button>
 <!--            <form th:action="@{/logout?redirect=postHome}" method="post">-->
 <!--                <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>-->
 <!--            </form>-->

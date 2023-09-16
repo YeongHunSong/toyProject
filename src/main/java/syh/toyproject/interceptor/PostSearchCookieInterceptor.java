@@ -17,12 +17,14 @@ public class PostSearchCookieInterceptor implements HandlerInterceptor {
      * 검색 기능에 사용된 쿠키를 다른 페이지로 이동 시 제거하기 위함.
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Cookie[] cookies = request.getCookies();
-        Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("postSearchTrg"))
-                .findFirst().ifPresent(cookie ->
-                        expireCookie(response, "postSearchTrg"));
+        if (cookies != null) {
+            Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("postSearchTrg"))
+                    .findFirst().ifPresent(cookie ->
+                            expireCookie(response, "postSearchTrg"));
+        }
         return true;
     }
 

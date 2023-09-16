@@ -42,13 +42,13 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute LoginDto loginDto) {
+    public String loginForm(@ModelAttribute LoginDto loginDto, @ModelAttribute(name = "redirectURL") String redirectURL) {
         return "login/loginForm";
     }
 
     @PostMapping("/login")
     public String login(@Validated @ModelAttribute LoginDto loginDto, BindingResult bindingResult,
-                        @RequestParam(defaultValue = "/memberHome") String redirectURI, HttpServletRequest request) {
+                        @RequestParam(defaultValue = "/memberHome") String redirectURL, HttpServletRequest request) {
         if (bindingResult.hasErrors()) { // 로그인 입력 확인
             return "login/loginForm";
         }
@@ -63,19 +63,19 @@ public class LoginController {
         // 세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember.getMemberId());
-        return "redirect:" + redirectURI;
+        return "redirect:" + redirectURL;
+    }
+
+    @GetMapping("/cancel")
+    public String cancel(@RequestParam(defaultValue = "/memberHome") String redirectURL) {
+        return "redirect:" + redirectURL;
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, @RequestParam(defaultValue = "/memberHome") String redirectURI) {
+    public String logout(HttpServletRequest request, @RequestParam(defaultValue = "/memberHome") String redirectURL) {
         HttpSession session = request.getSession(false); // false 일 경우, 세션이 없을 때는 null 만 반환.
         if (session != null) session.invalidate();
+        return "redirect:" + redirectURL;
 
-        log.info("redirectURI = {}", redirectURI);
-        log.info("requestURI = {}", request.getRequestURI());
-
-        return "redirect:" + redirectURI;
-
-        // FIXME requestURI 받아와서 이전 화면으로 돌리기
     }
 }
