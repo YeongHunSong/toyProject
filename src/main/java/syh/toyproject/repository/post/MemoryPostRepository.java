@@ -2,6 +2,7 @@ package syh.toyproject.repository.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import syh.toyproject.Dto.paging.PageDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 
@@ -29,13 +30,23 @@ public class MemoryPostRepository implements PostRepository {
         return post;
     }
 
+    @Override
+    public int totalCount(PostSearchCond cond) {
+        return 0;
+    }
+
+    @Override
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
+        return null;
+    }
+
 
     @Override
     public Post findByPostId(Long postId) {
         return store.get(postId);
     }
 
-    @Override
+//    @Override
     public List<Post> findAll(PostSearchCond cond) {
         return new ArrayList<>(store.values());
     }

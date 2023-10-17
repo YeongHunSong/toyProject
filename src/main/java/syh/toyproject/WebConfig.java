@@ -9,7 +9,6 @@ import syh.toyproject.argumentResolver.LoginMemberArgumentResolver;
 import syh.toyproject.argumentResolver.LoginNameArgumentResolver;
 import syh.toyproject.interceptor.MemberSearchCookieInterceptor;
 import syh.toyproject.interceptor.PostSearchCookieInterceptor;
-import syh.toyproject.interceptor.RefererInterceptor;
 import syh.toyproject.interceptor.SessionMemberCheckInterceptor;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final SessionMemberCheckInterceptor sessionMemberCheckInterceptor;
     private final MemberSearchCookieInterceptor memberSearchCookieInterceptor;
     private final PostSearchCookieInterceptor postSearchCookieInterceptor;
-    private final RefererInterceptor refererInterceptor;
+//    private final RefererInterceptor refererInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

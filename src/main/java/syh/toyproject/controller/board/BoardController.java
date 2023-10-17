@@ -12,6 +12,8 @@ import syh.toyproject.Dto.comment.CommentAddDto;
 import syh.toyproject.Dto.comment.CommentEditDto;
 import syh.toyproject.Dto.comment.CommentEditStatus;
 import syh.toyproject.Dto.comment.EditCommentMode;
+import syh.toyproject.Dto.paging.PageControl;
+import syh.toyproject.Dto.paging.PageDto;
 import syh.toyproject.Dto.post.PostAddDto;
 import syh.toyproject.Dto.post.PostEditDto;
 import syh.toyproject.Dto.post.PostEditStatus;
@@ -39,12 +41,14 @@ public class BoardController {
 
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
-                           @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg) {
-
-
+                           @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
+                           @RequestParam(defaultValue = "1", name = "page") int pageNum) {
+        PageDto pageDto = new PageDto(pageNum);
+        PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond)));
+        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto)));
         return "board/postHome";
     }
 

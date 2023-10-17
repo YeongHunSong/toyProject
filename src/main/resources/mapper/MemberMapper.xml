@@ -4,37 +4,37 @@
 <mapper namespace="syh.toyproject.repository.mybatis.MemberMapper">
 
     <insert id="addMember" useGeneratedKeys="true" keyProperty="memberId">
-        insert into member (signup_date, login_id, password, username)
-        values (now(), #{loginId}, #{password}, #{username})
+        INSERT INTO member (signup_date, login_id, password, username)
+        VALUES (now(), #{loginId}, #{password}, #{username})
     </insert>
 
     <update id="editMember">
-        update member
-        set username = #{memberEditDto.username},
+        UPDATE member
+        SET username = #{memberEditDto.username},
             password = #{memberEditDto.password}
-        where member_id = #{memberId}
+        WHERE member_id = #{memberId}
     </update>
 
     <select id="findAll" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
         <where>
             <if test="searchUsername != null and !searchUsername.equals('')">
-                and username like concat('%', #{searchUsername}, '%')
+                AND username LIKE CONCAT('%', #{searchUsername}, '%')
             </if>
         </where>
     </select>
 
     <select id="findByMemberId" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
-        where member_id = #{memberId}
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
+        WHERE member_id = #{memberId}
     </select>
 
     <select id="findByLoginId" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
-        where login_id = #{loginId}
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
+        WHERE login_id = #{loginId}
     </select>
 
 </mapper>

@@ -3,81 +3,97 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="syh.toyproject.repository.mybatis.PostMapper">
 
+    <sql id="searchCond">
+        <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
+            post.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+        </if>
+        <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
+            post.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+        </if>
+        <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
+            member.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+        </if>
+    </sql>
+
+
     <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
-        insert into POST (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
-        values (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0, 0)
+        INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
+        VALUES (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0, 0)
     </insert>
 
     <update id="editPost">
-        update POST
-        set post_title = #{postEditDto.postTitle},
+        UPDATE post
+        SET post_title = #{postEditDto.postTitle},
             post_content = #{postEditDto.postContent},
             last_edit_date = now() + 0.00001
 
-        where post_id = #{postId}
+        WHERE post_id = #{postId}
     </update>
 
-    <select id="findAll" resultType="Post">
-        select POST.member_id, POST.post_id, POST.post_title, POST.post_content, POST.view_count,
-        count(RECOMMEND.post_id) recommend_count, POST.writing_date, POST.last_edit_date
-        from POST
-        left join POST_RECOMMEND as RECOMMEND
-        on POST.post_id = RECOMMEND.post_id
-        left join MEMBER
-        on POST.member_id = MEMBER.member_id
+    <select id="totalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM post
+        LEFT JOIN member
+        ON post.member_id = member.member_id
         <where>
-            <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
-                POST.post_title like concat('%', #{cond.searchKeyword}, '%')
-            </if>
-            <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
-                POST.post_content like concat('%', #{cond.searchKeyword}, '%')
-            </if>
-            <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
-                MEMBER.username like concat('%', #{cond.searchKeyword}, '%')
-            </if>
+            <include refid="searchCond"/>
         </where>
-        group by POST.post_id
-        order by POST.post_id
+    </select>
+
+    <select id="findAll" resultType="Post">
+        SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
+        COUNT(recommend.post_id) recommend_count, post.writing_date, post.last_edit_date
+        FROM post
+        LEFT JOIN post_recommend AS recommend
+        ON post.post_id = recommend.post_id
+        LEFT JOIN member
+        ON post.member_id = member.member_id
+        <where>
+            <include refid="searchCond"/>
+        </where>
+        GROUP BY post.post_id
+        ORDER BY post.post_id DESC
+        LIMIT #{pageDto.pageCount}, #{pageDto.pageSize}
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
-        select writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
-        from POST
-        where member_id = #{memberId}
+        SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
+        FROM post
+        WHERE member_id = #{memberId}
     </select>
 
     <select id="findByPostId" resultType="Post">
-        select POST.member_id, POST.post_id, POST.post_title, POST.post_content, POST.view_count,
-        count(RECOMMEND.post_id) recommend_count, POST.writing_date, POST.last_edit_date
-        from POST
-        left join POST_RECOMMEND as RECOMMEND
-        on POST.post_id = RECOMMEND.post_id
-        where POST.post_id = #{postId}
-        group by POST.post_id
-        order by POST.post_id
+        SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
+        COUNT(recommend.post_id) recommend_count, post.writing_date, post.last_edit_date
+        FROM post
+        LEFT JOIN post_recommend AS recommend
+        ON post.post_id = recommend.post_id
+        WHERE post.post_id = #{postId}
+        GROUP BY post.post_id
+        ORDER BY post.post_id
     </select>
 
     <delete id="deletePost">
-        delete from POST
-        where post_id = #{postId}
+        DELETE FROM post
+        WHERE post_id = #{postId}
     </delete>
 
     <update id="addViewCount">
-        update POST
-        set view_count = view_count + 1
-        where post_id = #{postId}
+        UPDATE post
+        SET view_count = view_count + 1
+        WHERE post_id = #{postId}
     </update>
 
     <insert id="recommendPost">
-        insert into POST_RECOMMEND (post_id, recommender_id, recommend_date)
-        values (#{postId}, #{recommenderId}, now())
+        INSERT INTO post_recommend (post_id, recommender_id, recommend_date)
+        VALUES (#{postId}, #{recommenderId}, now())
     </insert>
 
     <select id="recommendDuplicateCheck" resultType="Int">
-        select count(recommender_id)
-        from POST_RECOMMEND
-        where post_id = #{postId}
-        and recommender_id = #{recommenderId}
+        SELECT COUNT(recommender_id)
+        FROM post_recommend
+        WHERE post_id = #{postId}
+        AND recommender_id = #{recommenderId}
     </select>
 
 </mapper>

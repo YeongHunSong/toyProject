@@ -3,6 +3,7 @@ package syh.toyproject.service.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import syh.toyproject.Dto.paging.PageDto;
 import syh.toyproject.Dto.post.PostBoardDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
@@ -26,9 +27,12 @@ public class PostService {
         return postRepository.addPost(post);
     }
 
+    public int totalCount(PostSearchCond cond) {
+        return postRepository.totalCount(cond);
+    }
 
-    public List<Post> findAll(PostSearchCond cond) {
-        return postRepository.findAll(cond);
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
+        return postRepository.findAll(cond, pageDto);
     }
 
     public List<Post> findByMemberIdAll(Long memberId) {

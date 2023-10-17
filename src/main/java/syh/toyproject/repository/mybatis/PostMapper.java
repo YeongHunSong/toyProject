@@ -2,6 +2,7 @@ package syh.toyproject.repository.mybatis;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import syh.toyproject.Dto.paging.PageDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 
@@ -14,8 +15,9 @@ public interface PostMapper {
 
     void editPost(@Param("postId") Long postId, @Param("postEditDto") Post postEditDto);
 
-    List<Post> findAll(@Param("cond") PostSearchCond cond);
+    List<Post> findAll(@Param("cond") PostSearchCond cond, @Param("pageDto") PageDto pageDto);
 
+    int totalCount(@Param("cond") PostSearchCond cond);
     List<Post> findByMemberIdAll(Long memberId);
 
     Post findByPostId(Long postId);
