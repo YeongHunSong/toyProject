@@ -7,8 +7,8 @@ public class PageControl {
     private PageDto pageDto;
 
     private int postTotalCount;
-    private int endPage;
-    private int startPage;
+    private int dpStartPage;
+    private int dpEndPage;
 
     private boolean prev;
     private boolean next;
@@ -16,15 +16,14 @@ public class PageControl {
     private final int buttonNum = 5;
 
     private void calcPage() {
-        endPage = (int) (Math.ceil(pageDto.getPageNum() / (double) buttonNum) * buttonNum);
+        dpEndPage = (int) (Math.ceil(pageDto.getPageNum() / (double) buttonNum) * buttonNum);
+        dpStartPage = (dpEndPage - buttonNum) + 1;
 
-        startPage = (endPage - buttonNum) + 1;
-
-        prev = startPage != 1;
-        next = postTotalCount > (endPage * pageDto.getPageSize());
+        prev = dpStartPage != 1;
+        next = postTotalCount > (dpEndPage * pageDto.getPageSize());
 
         if (!next) {
-            endPage = (int) Math.ceil(postTotalCount / (double) pageDto.getPageSize());
+            dpEndPage = (int) Math.ceil(postTotalCount / (double) pageDto.getPageSize());
         }
     }
 

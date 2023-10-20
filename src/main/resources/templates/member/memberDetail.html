@@ -89,15 +89,15 @@
     <hr class="my-4">
     <div class="row">
         <div class="col">
-            <button class="w-70 btn btn-primary float-start"
+            <button class="w-70 btn btn-warning float-start"
                     th:onclick="|location.href='@{/memberHome}'|" type="button">회원 목록</button>
         </div>
         <div class="col" th:if="${status?.authority == true}">
-            <button class="w-70 btn btn-secondary" onclick="location.href='editForm.html'"
+            <button class="w-70 btn btn-success" onclick="location.href='editForm.html'"
                     th:onclick="|location.href='@{|/member/${memberDetail.memberId}/edit|}'|" type="button">회원 수정</button>
         </div>
         <div class="col">
-            <button class="w-70 btn btn-primary float-end" onclick="location.href='postHome.html'"
+            <button class="w-70 btn btn-warning float-end" onclick="location.href='postHome.html'"
                     th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
         </div>
     </div>

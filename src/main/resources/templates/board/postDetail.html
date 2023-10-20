@@ -113,7 +113,7 @@
 
     <div class="row">
         <div class="col">
-            <button class="w-30 btn btn-secondary float-start" onclick="location.href='postHome.html'"
+            <button class="w-30 btn btn-warning float-start" onclick="location.href='postHome.html'"
                     th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
         </div>
         <div class="col">
@@ -122,12 +122,12 @@
             </form>
         </div>
         <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
-            <button class="w-30 btn btn-primary float-end"
+            <button class="w-30 btn btn-success float-end"
                     th:onclick="|location.href='@{|/post/${postId}/edit|}'|" type="button">수정</button>
         </div>
         <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
             <form th:action="@{|/post/${postId}/delete|}" method="post">
-                <button class="w-30 btn btn-primary float-end" type="submit">삭제</button>
+                <button class="w-30 btn btn-danger float-end" type="submit">삭제</button>
             </form>
         </div>
 
@@ -171,11 +171,11 @@
                     </form>
                     <form th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
                           th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                        <button class="w-10 btn btn-primary float-start" type="submit">수정</button>
+                        <button class="w-10 btn btn-success float-start" type="submit">수정</button>
                     </form>
                     <form th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
                           th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                        <button class="w-10 btn btn-secondary float-end" type="submit">삭제</button>
+                        <button class="w-10 btn btn-danger float-end" type="submit">삭제</button>
                     </form>
                     <div th:object="${commentEditDto}">
                         <div th:if="${#fields.hasGlobalErrors() and commentEditStatus?.commentId == comment.commentId}">
