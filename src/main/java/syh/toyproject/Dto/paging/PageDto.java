@@ -8,7 +8,7 @@ public class PageDto {
     private int pageNum;
     
     // 추후 페이지 사이즈 변경할 기능을 넣을 때 사용
-    private int pageSize = 5;
+    private int pageSize = 7;
     private int pageCount;
     
     // 추후 PostSearchCond 랑 통합해서 사용할 예정
@@ -22,7 +22,11 @@ public class PageDto {
     }
 
     public PageDto(int pageNum) {
-        this.pageNum = pageNum;
+        if (0 < pageNum) {
+            this.pageNum = pageNum;
+        } else {
+            this.pageNum = 1;
+        }
 //        this.pageSize = pageSize;
         this.pageCount = (pageNum - 1) * pageSize;
 //        this.searchType = searchType;

@@ -39,7 +39,7 @@
             <include refid="searchCond"/>
         </where>
     </select>
-
+    <!-- ORDER BY post.post_id DESC -->
     <select id="findAll" resultType="Post">
         SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
         COUNT(recommend.post_id) recommend_count, post.writing_date, post.last_edit_date
@@ -52,7 +52,6 @@
             <include refid="searchCond"/>
         </where>
         GROUP BY post.post_id
-        ORDER BY post.post_id DESC
         LIMIT #{pageDto.pageCount}, #{pageDto.pageSize}
     </select>
 

@@ -45,8 +45,6 @@ public class BoardController {
                            @RequestParam(defaultValue = "1", name = "page") int pageNum) {
         PageDto pageDto = new PageDto(pageNum);
         PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
-        
-        // 페이징 CSS 를 제작해야 합니다 부트스트랩 페이징
 
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
