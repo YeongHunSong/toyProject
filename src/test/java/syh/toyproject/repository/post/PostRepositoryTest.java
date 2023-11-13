@@ -58,7 +58,7 @@ class PostRepositoryTest {
         Post findPost1 = postRepository.findByPostId(post1.getPostId());
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
 
-        List<Post> postList = postRepository.findAll(null);
+        List<Post> postList = postRepository.findAll(null, null);
 
         assertThat(postList).containsExactly(findPost1, findPost2);
     }
@@ -77,10 +77,10 @@ class PostRepositoryTest {
         Post findPost1 = postRepository.findByPostId(post1.getPostId());
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
 
-        List<Post> findPostTitle1 = postRepository.findAll(cond1);
-        List<Post> findPostTitle2 = postRepository.findAll(cond2);
-        List<Post> findPostTitle3 = postRepository.findAll(cond3);
-        List<Post> findPostTitle4 = postRepository.findAll(cond4);
+        List<Post> findPostTitle1 = postRepository.findAll(cond1, null);
+        List<Post> findPostTitle2 = postRepository.findAll(cond2, null);
+        List<Post> findPostTitle3 = postRepository.findAll(cond3, null);
+        List<Post> findPostTitle4 = postRepository.findAll(cond4, null);
 
         assertThat(findPostTitle1).containsExactly(findPost1);
         assertThat(findPostTitle2).containsExactly(findPost2);
@@ -98,8 +98,8 @@ class PostRepositoryTest {
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
         Post findPost3 = postRepository.findByPostId(post3.getPostId());
 
-        List<Post> postList1 = postRepository.findByMemberIdAll(3L);
-        List<Post> postList2 = postRepository.findByMemberIdAll(1000L); // 없는 값
+        List<Post> postList1 = postRepository.findByMemberIdAll(3L, null);
+        List<Post> postList2 = postRepository.findByMemberIdAll(1000L, null); // 없는 값
 
         assertThat(postList1).containsExactly(findPost1, findPost2, findPost3);
         assertThat(postList2).isEmpty();

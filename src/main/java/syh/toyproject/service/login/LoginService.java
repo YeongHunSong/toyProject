@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import syh.toyproject.Dto.login.LoginToMainDto;
 import syh.toyproject.domain.member.AuthMember;
 import syh.toyproject.domain.member.Member;
-import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
 
 @Service
@@ -14,7 +13,6 @@ public class LoginService {
 
 
     private final MemberRepository memberRepository;
-    private final CommentRepository commentRepository;
 
     public Member login(String loginId, String password) {
         // 아이디 비밀번호 통합
@@ -29,7 +27,7 @@ public class LoginService {
     }
 
     public boolean memberCheck(Long loginMemberId) { // 세션의 memberId 가 회원 목록에 있는지 확인
-        return memberRepository.findAll(null).stream()
+        return memberRepository.findAll(null, null).stream()
                 .anyMatch(member -> member.getMemberId().equals(loginMemberId));
     }
 

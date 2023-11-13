@@ -3,6 +3,7 @@ package syh.toyproject.repository.member;
 
 import lombok.extern.slf4j.Slf4j;
 import syh.toyproject.domain.member.Member;
+import syh.toyproject.paging.PageDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -29,8 +30,13 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
-    public List<Member> findAll(String searchUsername) {
+    public List<Member> findAll(String searchUsername, PageDto pageDto) {
         return new ArrayList<>(store.values());
+    }
+
+    @Override
+    public int totalCount(String searchUsername) {
+        return 0;
     }
 
 //    @Override
@@ -41,7 +47,7 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByLoginId(String loginId) { // Optional 추가
-        return findAll(null).stream()
+        return findAll(null, null).stream()
                 .filter(member -> member.getLoginId().equals(loginId))
                 .findFirst();
     }

@@ -3,6 +3,7 @@ package syh.toyproject.repository.comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import syh.toyproject.domain.comment.Comment;
+import syh.toyproject.paging.PageDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +28,16 @@ public class MemoryCommentRepository implements CommentRepository {
         return comment;
     }
 
+    @Override
+    public int totalCount(Long postId) {
+        return 0;
+    }
+
+    @Override
+    public int totalCountByMemberid(Long memberId) {
+        return 0;
+    }
+
 
     @Override
     public Comment findByCommentId(Long commentId) {
@@ -39,14 +50,14 @@ public class MemoryCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findByMemberIdAll(Long memberId) {
+    public List<Comment> findByMemberIdAll(Long memberId, PageDto pageDto) {
         return findAll().stream()
                 .filter(comment -> comment.getMemberId().equals(memberId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Comment> findByPostIdAll(Long postId) {
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
         return findAll().stream()
                 .filter(comment -> comment.getPostId().equals(postId))
                 .collect(Collectors.toList());

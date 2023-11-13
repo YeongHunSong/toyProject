@@ -3,6 +3,13 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="syh.toyproject.repository.mybatis.MemberMapper">
 
+    <sql id="searchCond">
+        <if test="searchUsername != null and !searchUsername.equals('')">
+            AND username LIKE CONCAT('%', #{searchUsername}, '%')
+        </if>
+    </sql>
+
+
     <insert id="addMember" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO member (signup_date, login_id, password, username)
         VALUES (now(), #{loginId}, #{password}, #{username})
@@ -15,14 +22,23 @@
         WHERE member_id = #{memberId}
     </update>
 
+    <select id="totalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM member
+        <where>
+            <include refid="searchCond"/>
+        </where>
+    </select>
+
     <select id="findAll" resultType="Member">
         SELECT signup_date, username, member_id, login_id, password
         FROM member
         <where>
-            <if test="searchUsername != null and !searchUsername.equals('')">
-                AND username LIKE CONCAT('%', #{searchUsername}, '%')
-            </if>
+            <include refid="searchCond"/>
         </where>
+        <if test="pageDto != null">
+            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        </if>
     </select>
 
     <select id="findByMemberId" resultType="Member">

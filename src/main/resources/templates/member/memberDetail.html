@@ -89,15 +89,15 @@
     <hr class="my-4">
     <div class="row">
         <div class="col">
-            <button class="w-70 btn btn-warning float-start"
+            <button class="w-auto btn btn-warning float-start"
                     th:onclick="|location.href='@{/memberHome}'|" type="button">회원 목록</button>
         </div>
         <div class="col" th:if="${status?.authority == true}">
-            <button class="w-70 btn btn-success" onclick="location.href='editForm.html'"
+            <button class="w-auto btn btn-success" onclick="location.href='editForm.html'"
                     th:onclick="|location.href='@{|/member/${memberDetail.memberId}/edit|}'|" type="button">회원 수정</button>
         </div>
         <div class="col">
-            <button class="w-70 btn btn-warning float-end" onclick="location.href='postHome.html'"
+            <button class="w-auto btn btn-warning float-end" onclick="location.href='postHome.html'"
                     th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
         </div>
     </div>
@@ -111,52 +111,136 @@
     <div class="py-5 text-center">
         <!-- th:if 사용해서 게시글 목록 또는 댓글 목록 표시할 수 있도록 설정하기 -->
         <hr class="my-4">
-        <p th:text="|작성 게시글 목록 (${#lists.size(postList)} 개)|">작성 게시글 목록</p>
-        <table class="table" th:if="${#lists.size(postList) == 0}">
-            <tbody>
-            <br>
-            <p>작성한 게시글이 없습니다.</p>
-            </tbody>
-        </table>
-        <table class="table" th:if="${#lists.size(postList) != 0}">
+        <p th:text="|작성 게시글 목록 (${postPageControl.totalCount} 개)|">작성 게시글 목록</p>
+        <table class="table table-hover text-center" style="table-layout: fixed">
             <thead>
             <tr>
-                <td>제목</td>
-                <td>내용</td>
-                <td>작성일</td>
+                <th class="col-3">제목</th>
+                <th class="col-3">내용</th>
+                <th class="col-3">작성일</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="post : ${postList}">
-                <td><a href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a></td>
-                <td><p th:text="${post.postContent}">내용</p></td>
-                <td><p th:text="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
+                <td class="p-1">
+                    <a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a>
+                </td>
+                <td class="p-1">
+                    <p class="d-inline-block text-truncate text-nowrap w-100" th:text="${post.postContent}">내용</p>
+                </td>
+                <td class="p-1">
+                    <p class="d-inline-block text-truncate text-nowrap w-100" th:text="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm')}">작성일</p>
+                </td>
             </tr>
             </tbody>
         </table>
+        <p class="text-center" th:if="${#lists.size(postList) == 0}">작성한 글이 없습니다.</p>
+        <div> <!-- 검색용 페이징 -->
+            <div th:if="${postPageControl?.totalCount != 0}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:if="${postPageControl.prev}">
+                            <form th:action method="get">
+                                <input type="hidden" name="pPage" value="1">
+                                <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                                <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
+                            </form>
+                        </li>
+                        <li class="page-item" th:if="${postPageControl.prev}">
+                            <form th:action method="get">
+                                <input type="hidden" name="pPage" th:value="${postPageControl.dpStartPage-1}">
+                                <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                                <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
+                            </form>
+                        </li>
+                        <li th:each="page : ${#numbers.sequence({postPageControl.dpStartPage}, {postPageControl.dpEndPage})}" class="page-item"
+                            th:class="${postPageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                            <form th:action method="get">
+                                <input type="hidden" name="pPage" th:value="${page}">
+                                <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                                <input type="submit" class="page-link" th:value="${page}" aria-label="page"
+                                       th:class="${postPageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                            </form>
+                        </li>
+                        <li class="page-item" th:if="${postPageControl.next}">
+                            <form th:action method="get">
+                                <input type="hidden" name="pPage" th:value="${postPageControl.dpEndPage+1}">
+                                <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                                <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
+                            </form>
+                        </li>
+                        <li class="page-item" th:if="${postPageControl.next}">
+                            <form th:action method="get">
+                                <input type="hidden" name="pPage" th:value="${postPageControl.lastPage}">
+                                <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                                <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
 
         <hr class="my-4">
-        <p th:text="|작성 댓글 목록 (${#lists.size(commentList)} 개)|">작성 댓글 목록</p>
-        <table class="table" th:if="${#lists.size(commentList) == 0}">
-            <tbody>
-            <br>
-            <p>작성한 댓글이 없습니다.</p>
-            </tbody>
-        </table>
-        <table class="table" th:if="${#lists.size(commentList) != 0}">
+        <p th:text="|작성 댓글 목록 (${commentPageControl.totalCount } 개)|">작성 댓글 목록</p>
+        <table class="table table-hover text-center" style="table-layout: fixed">
             <thead>
             <tr>
-                <td>내용</td>
-                <td>작성일</td>
+                <th class="col-6">내용</th>
+                <th class="col-3">작성일</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="comment : ${commentList}">
-                <td><a href="" th:href="@{|/post/${comment.postId}|}" th:text="${comment.commentContent}">내용</a></td>
-                <td><p th:text="${#temporals.format(comment.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
+                <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/post/${comment.postId}|}" th:text="${comment.commentContent}">내용</a></td>
+                <td class="p-1"><p class="d-inline-block text-truncate text-nowrap w-100" th:text="${#temporals.format(comment.writingDate, 'yy-MM-dd HH:mm')}">작성일</p></td>
             </tr>
             </tbody>
         </table>
+            <p class="text-center" th:if="${#lists.size(commentList) == 0}">작성한 댓글이 없습니다.</p>
+            <div> <!-- 검색용 페이징 -->
+                <div th:if="${commentPageControl?.totalCount != 0}">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:if="${commentPageControl.prev}">
+                                <form th:action method="get">
+                                    <input type="hidden" name="cPage" value="1">
+                                    <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                                    <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
+                                </form>
+                            </li>
+                            <li class="page-item" th:if="${commentPageControl.prev}">
+                                <form th:action method="get">
+                                    <input type="hidden" name="cPage" th:value="${commentPageControl.dpStartPage-1}">
+                                    <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                                    <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
+                                </form>
+                            </li>
+                            <li th:each="page : ${#numbers.sequence({commentPageControl.dpStartPage}, {commentPageControl.dpEndPage})}" class="page-item"
+                                th:class="${commentPageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                                <form th:action method="get">
+                                    <input type="hidden" name="cPage" th:value="${page}">
+                                    <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                                    <input type="submit" class="page-link" th:value="${page}" aria-label="page"
+                                           th:class="${commentPageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                                </form>
+                            </li>
+                            <li class="page-item" th:if="${commentPageControl.next}">
+                                <form th:action method="get">
+                                    <input type="hidden" name="cPage" th:value="${commentPageControl.dpEndPage+1}">
+                                    <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                                    <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
+                                </form>
+                            </li>
+                            <li class="page-item" th:if="${commentPageControl.next}">
+                                <form th:action method="get">
+                                    <input type="hidden" name="cPage" th:value="${commentPageControl.lastPage}">
+                                    <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                                    <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
+                                </form>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
     </div>
 
 </div> <!-- /container -->

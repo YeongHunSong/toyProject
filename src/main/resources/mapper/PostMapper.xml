@@ -39,6 +39,13 @@
             <include refid="searchCond"/>
         </where>
     </select>
+    
+    <select id="totalCountByMemberId" resultType="int">
+        SELECT COUNT(*)
+        FROM post
+        WHERE member_id = #{memberId}
+    </select>
+    
     <!-- ORDER BY post.post_id DESC -->
     <select id="findAll" resultType="Post">
         SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
@@ -52,13 +59,14 @@
             <include refid="searchCond"/>
         </where>
         GROUP BY post.post_id
-        LIMIT #{pageDto.pageCount}, #{pageDto.pageSize}
+        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
         SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
         FROM post
         WHERE member_id = #{memberId}
+        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
     </select>
 
     <select id="findByPostId" resultType="Post">

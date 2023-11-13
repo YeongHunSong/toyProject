@@ -16,19 +16,23 @@
         <h2>게시판 목록</h2>
     </div>
     <div class="row">
-        <div class="col" th:if="${session?.username != null}">
-            <button class="w-80 btn btn-info float-start" th:text="|${session?.username} 님|"
-                    th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
+        <div class="col" th:if="${session?.username == null}">
+            <button class="w-auto btn btn-primary float-start"
+                    th:onclick="|location.href='@{/signup?redirectURL=/postHome}'|" type="button">회원 가입</button>
         </div>
         <div class="col" th:if="${session?.username == null}">
-            <button class="w-30 btn btn-secondary float-end"
+            <button class="w-auto btn btn-secondary float-end"
                     th:onclick="|location.href='@{/login?redirectURL=/postHome}'|" type="button">로그인</button>
         </div>
         <div class="col" th:if="${session?.username != null}">
-            <button class="w-30 btn btn-secondary float-end"
+            <button class="w-auto btn btn-info float-start" th:text="|${session?.username} 님|"
+                    th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
+        </div>
+        <div class="col" th:if="${session?.username != null}">
+            <button class="w-auto btn btn-secondary float-end"
                     th:onclick="|location.href='@{/logout?redirectURL=/postHome}'|" type="button">로그아웃</button>
 <!--            <form th:action="@{/logout?redirect=postHome}" method="post">-->
-<!--                <button class="w-60 btn btn-secondary float-end" type="submit">로그아웃</button>-->
+<!--                <button class="w-auto btn btn-secondary float-end" type="submit">로그아웃</button>-->
 <!--            </form>-->
         </div>
     </div>
@@ -36,20 +40,20 @@
     <div class="row">
         <div class="col" th:if="${searchTrg == 'off'}">
             <form th:action="@{|/postHome/search|}" method="post">
-                <button class="w-30 btn btn-primary float-start" type="submit">게시글 검색</button>
+                <button class="w-auto btn btn-primary float-start" type="submit">게시글 검색</button>
             </form>
         </div>
         <div class="col" th:if="${searchTrg == 'on'}">
             <form th:action="@{|/postHome/search|}" method="post">
-                <button class="w-30 btn btn-danger float-start" type="submit">검색 취소</button>
+                <button class="w-auto btn btn-danger float-start" type="submit">검색 취소</button>
             </form>
         </div>
         <div class="col" th:if="${session?.username != null}">
-            <button class="w-60 btn btn-primary float-start"
+            <button class="w-auto btn btn-primary float-start"
                     th:onclick="|location.href='@{/post/add}'|" type="button">글쓰기</button>
         </div>
         <div class="col">
-            <button class="w-70 btn btn-warning float-end"
+            <button class="w-auto btn btn-warning float-end"
                     th:onclick="|location.href='@{/memberHome}'|" type="button">회원 목록</button>
         </div>
     </div>
@@ -73,117 +77,115 @@
 
     <hr class="my-4">
     <div>
-        <table class="table" th:if="${#lists.size(postList) == 0}">
-            <tbody>
-            <br><br>
-            <p>게시글이 없습니다.</p>
-            </tbody>
-        </table>
-
-        <table class="table" th:if="${#lists.size(postList) != 0}">
+        <table class="table table-hover text-center" style="table-layout: fixed">
             <thead>
             <tr>
-                <td>번호</td>
-                <td>제목</td>
-                <td>작성자</td>
-                <td>작성일</td>
-                <td>조회</td>
-                <td>추천</td>
+                <th class="col-1">번호</th>
+                <th class="col-3">제목</th>
+                <th class="col-2">작성자</th>
+                <th class="col-2">작성일</th>
+<!--                <th class="col-2">조회/추천</th>-->
+                <th class="col-1">조회</th>
+                <th class="col-1">추천</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="post : ${postList}"> <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
-                <td><p th:text="${postStat.count}">글 번호</p></td>
+                <td class="p-1"><p th:text="|${postStat.count + (pageControl.pageDto.pageNum - 1) * 10}|">글 번호</p></td>
 <!--                <td><p th:text="${post.category}">카테고리</p></td>-->
-                <td><a href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a></td>
-                <td><a href="" th:href="@{|/member/${post.memberId}|}" th:text="${post.username}">작성자 이름</a></td>
-<!--                <td><p th:text="${post.nickname}">회원 별칭값</p></td>-->
+                <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a></td>
+                <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/member/${post.memberId}|}" th:text="${post.username}">작성자</a></td>
                 <!-- 작성글 목록 볼 수 있는 팝업창이 나오도록 하기 -->
-                <td><p th:text="${#temporals.format(post.writingDate, 'MM-dd HH:mm')}">작성일</p></td> <!-- 날짜 포맷 수정 -->
-                <td><p th:text="|${post.viewCount}|">조회수</p></td>
-                <td><p th:text="|${post.recommendCount}|"></p></td>
+                <td class="p-1"><p class="text-nowrap w-100" th:text="${#temporals.format(post.writingDate, 'MM-dd HH:mm')}">작성일</p></td> <!-- 날짜 포맷 수정 -->
+                <td class="p-1"><p th:text="|${post.viewCount}|">조회수</p></td>
+<!--                <td class="p-1"><p th:text="|${post.viewCount}/${post.recommendCount}|">조회수/추천수</p></td>-->
+                <td class="p-1"><p th:text="|${post.recommendCount}|">추천수</p></td>
             </tr>
             </tbody>
         </table>
-    </div>
-    <div th:if="${searchTrg == 'on' and pageControl?.postTotalCount != 0}"> <!-- 검색이 켜진 상태에서는 검색용 페이징을 표시하도록 조건문 설정 -? 가능한가 -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:if="${pageControl.prev}">
-                    <form th:action="@{|/postHome|}" method="get">
-                        <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
-                        <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
-                        <input type="hidden" name="page" value="1">
-                        <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
-                    </form>
-                </li>
-                <li class="page-item" th:if="${pageControl.prev}">
-                    <form th:action="@{|/postHome|}" method="get">
-                        <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
-                        <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
-                        <input type="hidden" name="page" th:value="${pageControl.dpStartPage-1}">
-                        <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
-                    </form>
-                </li>
-                <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
-                    th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
-                    <form th:action="@{|/postHome|}" method="get">
-                        <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
-                        <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
-                        <input type="hidden" name="page" th:value="${page}">
-                        <input type="submit" class="page-link" th:value="${page}" aria-label="page"
-                               th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
-                    </form>
-                </li>
-                <li class="page-item" th:if="${pageControl.next}">
-                    <form th:action="@{|/postHome|}" method="get">
-                        <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
-                        <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
-                        <input type="hidden" name="page" th:value="${pageControl.dpEndPage+1}">
-                        <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
-                    </form>
-                </li>
-                <li class="page-item" th:if="${pageControl.next}">
-                    <form th:action="@{|/postHome|}" method="get">
-                        <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
-                        <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
-                        <input type="hidden" name="page" th:value="${pageControl.lastPage}">
-                        <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
-                    </form>
-                </li>
-            </ul>
-        </nav>
+            <p class="text-center" th:if="${#lists.size(postList) == 0}">게시글이 없습니다.</p>
     </div>
 
-    <div th:if="${searchTrg == 'off' and pageControl.postTotalCount != 0}">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:if="${pageControl.prev}">
-                    <a class="page-link" th:href="@{|/postHome/?page=1|}" aria-label="first">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:if="${pageControl.prev}">
-                    <a class="page-link" th:href="@{|/postHome/?page=${pageControl.dpStartPage-1}|}" aria-label="Previous">
-                        <span aria-hidden="true">&lt;</span>
-                    </a>
-                </li>
-                <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
-                    th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
-                    <a class="page-link" th:href="@{|/postHome/?page=${page}|}" th:text="${page}"></a>
-                </li>
-                <li class="page-item" th:if="${pageControl.next}">
-                    <a class="page-link" th:href="@{|/postHome/?page=${pageControl.dpEndPage+1}|}" aria-label="Next">
-                        <span aria-hidden="true">&gt;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:if="${pageControl.next}">
-                    <a class="page-link" th:href="@{|/postHome/?page=${pageControl.lastPage}|}" aria-label="last">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div> <!-- 검색용 페이징 -->
+        <div th:if="${searchTrg == 'on' and pageControl?.totalCount != 0}">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:if="${pageControl.prev}">
+                        <form th:action method="get">
+                            <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
+                            <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
+                            <input type="hidden" name="page" value="1">
+                            <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
+                        </form>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.prev}">
+                        <form th:action method="get">
+                            <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
+                            <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
+                            <input type="hidden" name="page" th:value="${pageControl.dpStartPage-1}">
+                            <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
+                        </form>
+                    </li>
+                    <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
+                        th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        <form th:action method="get">
+                            <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
+                            <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
+                            <input type="hidden" name="page" th:value="${page}">
+                            <input type="submit" class="page-link" th:value="${page}" aria-label="page"
+                                   th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                        </form>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.next}">
+                        <form th:action method="get">
+                            <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
+                            <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
+                            <input type="hidden" name="page" th:value="${pageControl.dpEndPage+1}">
+                            <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
+                        </form>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.next}">
+                        <form th:action method="get">
+                            <input type="hidden" th:field="${cond.searchType}" th:value="${cond.searchType}">
+                            <input type="hidden" th:field="${cond.searchKeyword}" th:value="${cond.searchKeyword}">
+                            <input type="hidden" name="page" th:value="${pageControl.lastPage}">
+                            <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div th:if="${searchTrg == 'off' and pageControl.totalCount != 0}"> <!-- 일반 페이징 -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:if="${pageControl.prev}">
+                        <a class="page-link" th:href="@{|/postHome/?page=1|}" aria-label="first">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.prev}">
+                        <a class="page-link" th:href="@{|/postHome/?page=${pageControl.dpStartPage-1}|}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
+                        th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        <a class="page-link" th:href="@{|/postHome/?page=${page}|}" th:text="${page}"></a>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.next}">
+                        <a class="page-link" th:href="@{|/postHome/?page=${pageControl.dpEndPage+1}|}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:if="${pageControl.next}">
+                        <a class="page-link" th:href="@{|/postHome/?page=${pageControl.lastPage}|}" aria-label="last">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div> <!-- /container -->
 </body>

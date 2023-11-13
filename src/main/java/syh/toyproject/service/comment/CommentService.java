@@ -3,8 +3,9 @@ package syh.toyproject.service.comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.Dto.comment.CommentBoardDto;
+import syh.toyproject.domain.comment.Comment;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
 
@@ -23,17 +24,24 @@ public class CommentService {
         return commentRepository.addComment(comment);
     }
 
+    public int totalCount(Long postId) {
+        return commentRepository.totalCount(postId);
+    }
+
+    public int totalCountByMemberId(Long memberId) {
+        return commentRepository.totalCountByMemberid(memberId);
+    }
 
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }
 
-    public List<Comment> findByMemberIdAll(Long memberId) {
-        return commentRepository.findByMemberIdAll(memberId);
+    public List<Comment> findByMemberIdAll(Long memberId, PageDto pageDto) {
+        return commentRepository.findByMemberIdAll(memberId, pageDto);
     }
 
-    public List<Comment> findByPostIdAll(Long postId) {
-        return commentRepository.findByPostIdAll(postId);
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
+        return commentRepository.findByPostIdAll(postId, pageDto);
     }
 
     public Comment findByCommentId(Long commentId) {
