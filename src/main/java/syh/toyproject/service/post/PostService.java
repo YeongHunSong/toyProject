@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import syh.toyproject.Dto.post.PostBoardDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
 import syh.toyproject.repository.post.PostRepository;
@@ -26,13 +27,20 @@ public class PostService {
         return postRepository.addPost(post);
     }
 
-
-    public List<Post> findAll(PostSearchCond cond) {
-        return postRepository.findAll(cond);
+    public int totalCount(PostSearchCond cond) {
+        return postRepository.totalCount(cond);
     }
 
-    public List<Post> findByMemberIdAll(Long memberId) {
-        return postRepository.findByMemberIdAll(memberId);
+    public int totalCountByMemberId(Long memberId) {
+        return postRepository.totalCountByMemberId(memberId);
+    }
+
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
+        return postRepository.findAll(cond, pageDto);
+    }
+
+    public List<Post> findByMemberIdAll(Long memberId, PageDto pageDto) {
+        return postRepository.findByMemberIdAll(memberId, pageDto);
     }
 
     public Post findByPostId(Long postId) {

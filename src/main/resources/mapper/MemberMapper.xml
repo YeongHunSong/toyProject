@@ -3,38 +3,54 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="syh.toyproject.repository.mybatis.MemberMapper">
 
+    <sql id="searchCond">
+        <if test="searchUsername != null and !searchUsername.equals('')">
+            AND username LIKE CONCAT('%', #{searchUsername}, '%')
+        </if>
+    </sql>
+
+
     <insert id="addMember" useGeneratedKeys="true" keyProperty="memberId">
-        insert into member (signup_date, login_id, password, username)
-        values (now(), #{loginId}, #{password}, #{username})
+        INSERT INTO member (signup_date, login_id, password, username)
+        VALUES (now(), #{loginId}, #{password}, #{username})
     </insert>
 
     <update id="editMember">
-        update member
-        set username = #{memberEditDto.username},
+        UPDATE member
+        SET username = #{memberEditDto.username},
             password = #{memberEditDto.password}
-        where member_id = #{memberId}
+        WHERE member_id = #{memberId}
     </update>
 
-    <select id="findAll" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
+    <select id="totalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM member
         <where>
-            <if test="searchUsername != null and !searchUsername.equals('')">
-                and username like concat('%', #{searchUsername}, '%')
-            </if>
+            <include refid="searchCond"/>
         </where>
     </select>
 
+    <select id="findAll" resultType="Member">
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
+        <where>
+            <include refid="searchCond"/>
+        </where>
+        <if test="pageDto != null">
+            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        </if>
+    </select>
+
     <select id="findByMemberId" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
-        where member_id = #{memberId}
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
+        WHERE member_id = #{memberId}
     </select>
 
     <select id="findByLoginId" resultType="Member">
-        select signup_date, username, member_id, login_id, password
-        from member
-        where login_id = #{loginId}
+        SELECT signup_date, username, member_id, login_id, password
+        FROM member
+        WHERE login_id = #{loginId}
     </select>
 
 </mapper>

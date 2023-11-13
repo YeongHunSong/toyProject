@@ -13,6 +13,8 @@ import syh.toyproject.Dto.member.MemberEditDto;
 import syh.toyproject.Dto.member.MemberSignupDto;
 import syh.toyproject.argumentResolver.Login;
 import syh.toyproject.domain.member.Member;
+import syh.toyproject.paging.PageControl;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
 import syh.toyproject.service.member.MemberService;
@@ -38,10 +40,15 @@ public class MemberController {
 
     @GetMapping("/memberHome")
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
-                             @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg) {
+                             @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
+                             @RequestParam(defaultValue = "1", name = "page") int pageNum,
+                             @RequestParam(defaultValue = "7", name = "view") int pageView) {
+        PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
+        PageControl pageControl = new PageControl(pageDto, memberService.totalCount(username));
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("memberList", memberService.findAll(username));
+        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("memberList", memberService.findAll(username, pageDto));
         return "member/memberHome";
     }
 
@@ -83,17 +90,29 @@ public class MemberController {
 
     @GetMapping("/member/{memberId}")
     public String memberDetail(@PathVariable Long memberId, Model model, @Login Long loginMemberId,
-                               @ModelAttribute(name = "status") LoginStatus status, BindingResult bindingResult) {
-        // 이부분은 에러페이지로 전송하는 걸로 변경하는 것이 더 괜찮을 수도.
-        if (status.isAccessDenied()) {
+                               @ModelAttribute(name = "status") LoginStatus status, BindingResult bindingResult,
+                               @RequestParam(defaultValue = "1", name = "pPage") int postPageNum,
+                               @RequestParam(defaultValue = "1", name = "cPage") int commentPageNum) {
+        if (status.isAccessDenied()) { // 이부분은 에러페이지로 전송하는 걸로 변경하는 것이 더 괜찮을 수도.
             globalErrorReject(bindingResult, "accessDenied.editMember", "회원수정");
         }
+
+        PageDto postPageDto = new PageDto(postPageNum, 7);
+        PageDto commentPageDto = new PageDto(commentPageNum, 7);
+        PageControl postPageControl = new PageControl(postPageDto, postService.totalCountByMemberId(memberId));
+        PageControl commentPageControl = new PageControl(commentPageDto, commentService.totalCountByMemberId(memberId));
+
+
+        log.info("postPageControl = {}", postPageControl);
+
 
         status.setAuthority(loginService.authAndAdminCheck(loginMemberId, memberId)); // 권한이 있는 회원만 회원수정 버튼이 표시되도록
 
         model.addAttribute("memberDetail", memberService.findByMemberId(memberId)); // 나중에 넣을 객체 DTO 로 수정 필요
-        model.addAttribute("postList", postService.findByMemberIdAll(memberId)); // 나중에 넣을 객체 DTO 로 수정 필요
-        model.addAttribute("commentList", commentService.findByMemberIdAll(memberId)); // 나중에 넣을 객체 DTO 로 수정 필요
+        model.addAttribute("postPageControl", postPageControl);
+        model.addAttribute("commentPageControl", commentPageControl);
+        model.addAttribute("postList", postService.findByMemberIdAll(memberId, postPageDto)); // 나중에 넣을 객체 DTO 로 수정 필요
+        model.addAttribute("commentList", commentService.findByMemberIdAll(memberId, commentPageDto)); // 나중에 넣을 객체 DTO 로 수정 필요
 //        List<PostBoardDto> postDtoList = postService.postListToPostDto(postService.findByMemberIdAll(memberId));
 //        List<CommentBoardDto> commentDtoList = commentService.commentListToCommentDto(commentService.findByMemberIdAll(memberId));
         return "member/memberDetail";

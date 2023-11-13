@@ -3,6 +3,7 @@ package syh.toyproject.repository.mybatis;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import syh.toyproject.domain.comment.Comment;
+import syh.toyproject.paging.PageDto;
 
 import java.util.List;
 
@@ -11,11 +12,15 @@ public interface CommentMapper {
 
     void addComment(Comment comment);
 
+    int totalCount(Long postId);
+
+    int totalCountByMemberId(Long memberId);
+
     List<Comment> findAll();
 
-    List<Comment> findByPostIdAll(Long postId);
+    List<Comment> findByPostIdAll(@Param("postId") Long postId, @Param("pageDto") PageDto pageDto);
 
-    List<Comment> findByMemberIdAll(Long memberId);
+    List<Comment> findByMemberIdAll(@Param("memberId") Long memberId, @Param("pageDto") PageDto pageDto);
 
     Comment findByCommentId(Long commentId);
 

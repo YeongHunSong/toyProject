@@ -63,7 +63,7 @@ class CommentRepositoryTest {
         Comment comment3 = newComment(1L);
         Comment comment4 = newComment(1L);
 
-        List<Comment> commentList = commentRepository.findByMemberIdAll(comment1.getMemberId());
+        List<Comment> commentList = commentRepository.findByMemberIdAll(comment1.getMemberId(), null);
 
         assertThat(commentList).containsExactly(comment1, comment2, comment3, comment4);
     }
@@ -75,7 +75,7 @@ class CommentRepositoryTest {
         Comment comment3 = newComment(1L);
         Comment comment4 = newComment(1L);
 
-        List<Comment> commentList = commentRepository.findByPostIdAll(comment1.getPostId());
+        List<Comment> commentList = commentRepository.findByPostIdAll(comment1.getPostId(), null);
 
         assertThat(commentList).containsExactly(comment1, comment2, comment3, comment4);
     }

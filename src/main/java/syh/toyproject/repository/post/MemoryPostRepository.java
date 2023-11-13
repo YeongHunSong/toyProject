@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
+import syh.toyproject.paging.PageDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,19 +30,34 @@ public class MemoryPostRepository implements PostRepository {
         return post;
     }
 
+    @Override
+    public int totalCount(PostSearchCond cond) {
+        return 0;
+    }
+
+    @Override
+    public int totalCountByMemberId(Long memberId) {
+        return 0;
+    }
+
+    @Override
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
+        return null;
+    }
+
 
     @Override
     public Post findByPostId(Long postId) {
         return store.get(postId);
     }
 
-    @Override
+//    @Override
     public List<Post> findAll(PostSearchCond cond) {
         return new ArrayList<>(store.values());
     }
 
     @Override
-    public List<Post> findByMemberIdAll(Long memberId) {
+    public List<Post> findByMemberIdAll(Long memberId, PageDto pageDto) {
         return findAll(null).stream()
                 .filter(post -> post.getMemberId().equals(memberId))
                 .collect(Collectors.toList());

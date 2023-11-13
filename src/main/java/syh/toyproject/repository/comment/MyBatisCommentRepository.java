@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.comment.Comment;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.repository.mybatis.CommentMapper;
 
 import java.util.List;
@@ -23,18 +24,28 @@ public class MyBatisCommentRepository implements CommentRepository {
     }
 
     @Override
+    public int totalCount(Long postId) {
+        return commentMapper.totalCount(postId);
+    }
+
+    @Override
+    public int totalCountByMemberid(Long memberId) {
+        return commentMapper.totalCountByMemberId(memberId);
+    }
+
+    @Override
     public List<Comment> findAll() {
         return commentMapper.findAll();
     }
 
     @Override
-    public List<Comment> findByPostIdAll(Long postId) {
-        return commentMapper.findByPostIdAll(postId);
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
+        return commentMapper.findByPostIdAll(postId, pageDto);
     }
 
     @Override
-    public List<Comment> findByMemberIdAll(Long memberId) {
-        return commentMapper.findByMemberIdAll(memberId);
+    public List<Comment> findByMemberIdAll(Long memberId, PageDto pageDto) {
+        return commentMapper.findByMemberIdAll(memberId, pageDto);
     }
 
     @Override

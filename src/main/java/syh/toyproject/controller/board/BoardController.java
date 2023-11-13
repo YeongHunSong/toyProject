@@ -21,6 +21,8 @@ import syh.toyproject.argumentResolver.LoginName;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.domain.member.AuthMember;
 import syh.toyproject.domain.post.Post;
+import syh.toyproject.paging.PageControl;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
 import syh.toyproject.service.post.PostService;
@@ -39,12 +41,15 @@ public class BoardController {
 
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
-                           @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg) {
-
-
+                           @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
+                           @RequestParam(defaultValue = "1", name = "page") int pageNum,
+                           @RequestParam(defaultValue = "10", name = "view") int pageView) {
+        PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
+        PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond)));
+        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto)));
         return "board/postHome";
     }
 
@@ -160,7 +165,9 @@ public class BoardController {
                              @ModelAttribute CommentEditDto commentEditDto, BindingResult commentEditBindingResult, @ModelAttribute CommentEditStatus commentEditStatus,
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
-                             @Login Long loginMemberId, @LoginName String loginMemberName) {
+                             @Login Long loginMemberId, @LoginName String loginMemberName,
+                             @RequestParam(defaultValue = "1", name = "page") int pageNum
+                             ) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
             BindingResult addDtoError = (BindingResult) model.getAttribute("addCommentError");
@@ -190,7 +197,13 @@ public class BoardController {
         editCommentModeCheck(model, commentEditDto, commentEditBindingResult, commentEditStatus);
 
         postService.addViewCount(postId);
-        commonPostAndCommentListModel(postId, model);
+
+        PageDto pageDto = new PageDto(pageNum, 10);
+        PageControl pageControl = new PageControl(pageDto, commentService.totalCount(postId));
+
+        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
+        model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto)));
         return "board/postDetail";
     }
 
@@ -242,12 +255,6 @@ public class BoardController {
         return "redirect:/post/{postId}";
     }
 
-
-
-    private void commonPostAndCommentListModel(Long postId, Model model) {
-        model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
-        model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId)));
-    }
 
     private void globalErrorReject(BindingResult bindingResult, String errorCode, Object... errorArgs) {
         bindingResult.reject(errorCode, errorArgs, null);

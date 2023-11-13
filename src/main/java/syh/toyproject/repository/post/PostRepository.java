@@ -2,6 +2,7 @@ package syh.toyproject.repository.post;
 
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
+import syh.toyproject.paging.PageDto;
 
 import java.util.List;
 
@@ -9,10 +10,13 @@ public interface PostRepository {
 
     Post addPost(Post post);
 
+    int totalCount(PostSearchCond cond);
 
-    List<Post> findAll(PostSearchCond cond);
+    int totalCountByMemberId(Long memberId);
 
-    List<Post> findByMemberIdAll(Long memberId);
+    List<Post> findAll(PostSearchCond cond, PageDto pageDto);
+
+    List<Post> findByMemberIdAll(Long memberId, PageDto pageDto);
 
     Post findByPostId(Long postId);
 
