@@ -23,6 +23,7 @@ import syh.toyproject.domain.member.AuthMember;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageControl;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
 import syh.toyproject.service.post.PostService;
@@ -43,13 +44,14 @@ public class BoardController {
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
                            @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
                            @RequestParam(defaultValue = "1", name = "page") int pageNum,
-                           @RequestParam(defaultValue = "10", name = "view") int pageView) {
+                           @RequestParam(defaultValue = "10", name = "view") int pageView,
+                           @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
         PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
         PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
 
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
-        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto)));
+        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto, sortingDto)));
         return "board/postHome";
     }
 
@@ -166,8 +168,8 @@ public class BoardController {
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
                              @Login Long loginMemberId, @LoginName String loginMemberName,
-                             @RequestParam(defaultValue = "1", name = "page") int pageNum
-                             ) {
+                             @RequestParam(defaultValue = "1", name = "page") int pageNum,
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
             BindingResult addDtoError = (BindingResult) model.getAttribute("addCommentError");
@@ -198,12 +200,14 @@ public class BoardController {
 
         postService.addViewCount(postId);
 
-        PageDto pageDto = new PageDto(pageNum, 10);
+        log.info("sorting = {}", sortingDto);
+
+        PageDto pageDto = new PageDto(pageNum, 5);
         PageControl pageControl = new PageControl(pageDto, commentService.totalCount(postId));
 
         model.addAttribute("pageControl", pageControl);
         model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
-        model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto)));
+        model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
         return "board/postDetail";
     }
 

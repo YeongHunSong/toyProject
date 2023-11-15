@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ public interface CommentMapper {
 
     List<Comment> findAll();
 
-    List<Comment> findByPostIdAll(@Param("postId") Long postId, @Param("pageDto") PageDto pageDto);
+    List<Comment> findByPostIdAll(@Param("postId") Long postId, @Param("pageDto") PageDto pageDto,
+                                  @Param("sortingDto") SortingDto sortingDto);
 
     List<Comment> findByMemberIdAll(@Param("memberId") Long memberId, @Param("pageDto") PageDto pageDto);
 

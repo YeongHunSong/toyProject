@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class MemoryCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto, SortingDto sortingDto) {
         return findAll().stream()
                 .filter(comment -> comment.getPostId().equals(postId))
                 .collect(Collectors.toList());

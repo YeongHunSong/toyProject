@@ -3,6 +3,7 @@ package syh.toyproject.repository.post;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface PostRepository {
 
     int totalCountByMemberId(Long memberId);
 
-    List<Post> findAll(PostSearchCond cond, PageDto pageDto);
+    List<Post> findAll(PostSearchCond cond, PageDto pageDto, SortingDto sortingDto);
 
     List<Post> findByMemberIdAll(Long memberId, PageDto pageDto);
 

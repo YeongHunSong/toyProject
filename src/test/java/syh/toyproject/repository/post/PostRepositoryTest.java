@@ -11,6 +11,7 @@ import syh.toyproject.Dto.post.PostEditDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.member.Member;
 import syh.toyproject.domain.post.Post;
+import syh.toyproject.paging.PageDto;
 import syh.toyproject.repository.member.MemberRepository;
 import syh.toyproject.repository.member.MemoryMemberRepository;
 
@@ -58,7 +59,7 @@ class PostRepositoryTest {
         Post findPost1 = postRepository.findByPostId(post1.getPostId());
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
 
-        List<Post> postList = postRepository.findAll(null, null);
+        List<Post> postList = postRepository.findAll(null, new PageDto(), null);
 
         assertThat(postList).containsExactly(findPost1, findPost2);
     }
@@ -77,10 +78,10 @@ class PostRepositoryTest {
         Post findPost1 = postRepository.findByPostId(post1.getPostId());
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
 
-        List<Post> findPostTitle1 = postRepository.findAll(cond1, null);
-        List<Post> findPostTitle2 = postRepository.findAll(cond2, null);
-        List<Post> findPostTitle3 = postRepository.findAll(cond3, null);
-        List<Post> findPostTitle4 = postRepository.findAll(cond4, null);
+        List<Post> findPostTitle1 = postRepository.findAll(cond1, new PageDto(), null);
+        List<Post> findPostTitle2 = postRepository.findAll(cond2, new PageDto(), null);
+        List<Post> findPostTitle3 = postRepository.findAll(cond3, new PageDto(), null);
+        List<Post> findPostTitle4 = postRepository.findAll(cond4, new PageDto(), null);
 
         assertThat(findPostTitle1).containsExactly(findPost1);
         assertThat(findPostTitle2).containsExactly(findPost2);
@@ -98,8 +99,8 @@ class PostRepositoryTest {
         Post findPost2 = postRepository.findByPostId(post2.getPostId());
         Post findPost3 = postRepository.findByPostId(post3.getPostId());
 
-        List<Post> postList1 = postRepository.findByMemberIdAll(3L, null);
-        List<Post> postList2 = postRepository.findByMemberIdAll(1000L, null); // 없는 값
+        List<Post> postList1 = postRepository.findByMemberIdAll(3L, new PageDto());
+        List<Post> postList2 = postRepository.findByMemberIdAll(1000L, new PageDto()); // 없는 값
 
         assertThat(postList1).containsExactly(findPost1, findPost2, findPost3);
         assertThat(postList2).isEmpty();

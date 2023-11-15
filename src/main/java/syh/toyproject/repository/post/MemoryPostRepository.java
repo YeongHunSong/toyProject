@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto, SortingDto sortingDto) {
         return null;
     }
 
