@@ -7,6 +7,7 @@ import syh.toyproject.Dto.post.PostBoardDto;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
 import syh.toyproject.repository.post.PostRepository;
@@ -35,8 +36,8 @@ public class PostService {
         return postRepository.totalCountByMemberId(memberId);
     }
 
-    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
-        return postRepository.findAll(cond, pageDto);
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto, SortingDto sortingDto) {
+        return postRepository.findAll(cond, pageDto, sortingDto);
     }
 
     public List<Post> findByMemberIdAll(Long memberId, PageDto pageDto) {

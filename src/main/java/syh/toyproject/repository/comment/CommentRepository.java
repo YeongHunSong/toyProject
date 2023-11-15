@@ -2,6 +2,7 @@ package syh.toyproject.repository.comment;
 
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface CommentRepository {
 
     List<Comment> findAll();
 
-    List<Comment> findByPostIdAll(Long postId, PageDto pageDto);
+    List<Comment> findByPostIdAll(Long postId, PageDto pageDto, SortingDto sortingDto);
 
     List<Comment> findByMemberIdAll(Long memberId, PageDto pageDto);
 

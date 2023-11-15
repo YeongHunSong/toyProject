@@ -15,6 +15,17 @@
         </if>
     </sql>
 
+    <sql id="sorting">
+        <choose>
+            <when test="sortingDto.sorting.equals('DESC')">
+                ORDER BY post.writing_date DESC
+            </when>
+            <otherwise>
+                ORDER BY post.writing_date ASC
+            </otherwise>
+        </choose>
+    </sql>
+
 
     <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
@@ -59,6 +70,7 @@
             <include refid="searchCond"/>
         </where>
         GROUP BY post.post_id
+        <include refid="sorting"/>
         LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
     </select>
 

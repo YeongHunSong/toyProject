@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.util.List;
 
@@ -15,7 +16,8 @@ public interface PostMapper {
 
     void editPost(@Param("postId") Long postId, @Param("postEditDto") Post postEditDto);
 
-    List<Post> findAll(@Param("cond") PostSearchCond cond, @Param("pageDto") PageDto pageDto);
+    List<Post> findAll(@Param("cond") PostSearchCond cond, @Param("pageDto") PageDto pageDto,
+                       @Param("sortingDto") SortingDto sortingDto);
 
     int totalCount(@Param("cond") PostSearchCond cond);
 

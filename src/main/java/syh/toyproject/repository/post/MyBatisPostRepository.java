@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import syh.toyproject.Dto.post.PostSearchCond;
 import syh.toyproject.domain.post.Post;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.repository.mybatis.PostMapper;
 
 import java.util.List;
@@ -37,8 +38,8 @@ public class MyBatisPostRepository implements PostRepository {
 
 
     @Override
-    public List<Post> findAll(PostSearchCond cond, PageDto pageDto) {
-        return postMapper.findAll(cond, pageDto);
+    public List<Post> findAll(PostSearchCond cond, PageDto pageDto, SortingDto sortingDto) {
+        return postMapper.findAll(cond, pageDto, sortingDto);
     }
 
     @Override

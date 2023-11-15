@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.repository.mybatis.CommentMapper;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public class MyBatisCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
-        return commentMapper.findByPostIdAll(postId, pageDto);
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto, SortingDto sortingDto) {
+        return commentMapper.findByPostIdAll(postId, pageDto, sortingDto);
     }
 
     @Override

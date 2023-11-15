@@ -82,7 +82,7 @@ public class MemberController {
         if (!(signupValidation(memberDto, bindingResult))) { // 회원가입 실패
             return "member/addMemberForm";
         }
-        // 따로 아이디 중복 확인 기능 넣기, 비밀번호 날아가는 것 어떻게 개선해보기
+        // 따로 아이디 중복 확인 기능 넣기
 
         memberService.addMember(new Member(memberDto.getLoginId(), memberDto.getPassword(), memberDto.getUsername()));
         return "redirect:" + redirectURL; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
@@ -101,10 +101,6 @@ public class MemberController {
         PageDto commentPageDto = new PageDto(commentPageNum, 7);
         PageControl postPageControl = new PageControl(postPageDto, postService.totalCountByMemberId(memberId));
         PageControl commentPageControl = new PageControl(commentPageDto, commentService.totalCountByMemberId(memberId));
-
-
-        log.info("postPageControl = {}", postPageControl);
-
 
         status.setAuthority(loginService.authAndAdminCheck(loginMemberId, memberId)); // 권한이 있는 회원만 회원수정 버튼이 표시되도록
 

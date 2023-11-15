@@ -18,6 +18,7 @@ public class PageDto {
     public PageDto() {
         this.pageNum = 1;
         this.pageCount = 0;
+        this.pageView = 10;
     }
 
     public PageDto(int pageNum, int pageView) {

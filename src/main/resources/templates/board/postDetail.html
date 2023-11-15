@@ -120,7 +120,7 @@
             </form>
         </div>
         <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
-            <button class="w-auto btn btn-success float-end"
+            <button class="w-auto btn btn-success float-end "
                     th:onclick="|location.href='@{|/post/${postId}/edit|}'|" type="button">수정</button>
         </div>
         <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
@@ -135,52 +135,77 @@
                 <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">게시글 수정 오류 메시지</p>
             </div>
         </div>
-<!--        <div class="col">-->
-<!--            <button class="w-auto btn btn-secondary float-end" onclick="location.href='member/members.html'"-->
-<!--                    th:onclick="|location.href='@{/member}'|" type="button">회원 목록</button>-->
-<!--        </div>-->
     </div>
-    <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
+
+    <!--    <div>-->
+    <!--        <div>배송 방식</div>-->
+    <!--        <select th:field="${item.deliveryCode}" class="form-select" disabled>-->
+    <!--            <option value="">==배송 방식 선택==</option>-->
+    <!--            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"-->
+    <!--                    th:text="${deliveryCode.displayName}">FAST</option>-->
+    <!--        </select>-->
+    <!--    </div>-->
+
+
+
     <div class="py-2 text-center">
-        <table class="table table-hover caption-top text-center" style="table-layout: fixed">
-            <caption th:text="|댓글 ${#lists.size(commentList)} 개|">댓글</caption>
+        <div class="row align-items-center">
+            <p class="text-start col col-12 col-sm" th:text="|댓글 ${pageControl.totalCount} 개|"></p>
+            <div class="col col-auto">
+                <form th:action method="get" class="row">
+                    <div class="col-auto">
+                        <label>
+                            <select name="sorting" class="form-select form-select-sm" th:field="${sortingDto.sorting}">
+                                <option th:value="DESC">최신순</option> <!-- 현재 선택되어 있는 걸 받아오는 걸로 -->
+                                <option th:value="ASC">과거순</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="hidden"> <!-- 댓글 페이징 값 전송하기 -->
+                        <button type="submit" class="btn-primary btn btn-sm">변경</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table class="table table-hover text-center" style="table-layout: fixed">
             <thead>
                 <tr>
-                    <th class="col-2">작성자</th>
-                    <th class="col-4">댓글</th>
-                    <th class="col-2">작성일</th>
+                    <th class="col-3">작성자</th>
+                    <th class="col-3">작성일</th>
+                    <th class="col-5">댓글</th>
                     <th class="col-3"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="comment : ${commentList}" >
                     <td class="p-1">
-                        <a href="" th:href="@{|/member/${comment.memberId}|}" th:text="${comment.username}">작성자</a>
+                        <a href="" class="d-inline-block text-truncate text-nowrap w-100" th:href="@{|/member/${comment.memberId}|}" th:text="${comment.username}">작성자</a>
+                    </td>
+                    <td class="p-1">
+                        <p th:text="${#temporals.format(comment.writingDate, 'MM-dd HH:mm')}">작성일</p> <!-- 'yy-MM-dd HH:mm' -->
                     </td>
                     <td class="p-1" th:if="${commentEditStatus?.flag == false or commentEditStatus?.commentId != comment.commentId}">
                         <p th:text="${comment.commentContent}">댓글 내용</p>
                     </td>
                     <td class="p-1">
-                        <p th:text="${#temporals.format(comment.writingDate, 'MM-dd HH:mm')}">작성일</p> <!-- 'yy-MM-dd HH:mm' -->
-                    </td>
-                    <td class="p-1">
                         <form th:action="@{|/post/${postId}/${comment.commentId}/edit|}" method="post" th:object="${commentEditDto}"
                               th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
-                            <input type="text" class="form-control" th:field="*{commentContent}">
+                            <input type="text" class="form-control col-auto w-auto" th:field="*{commentContent}">
                             <div class="field-error" th:errors="*{commentContent}">댓글 수정 오류</div>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button class="w-auto btn btn-primary" type="submit">저장</button>
-                                <button class="w-auto btn btn-secondary" th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
+                                <button class="w-auto col-auto btn btn-primary" type="submit">저장</button>
+                                <button class="w-auto col-auto btn btn-secondary" th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
                             </div>
                         </form>
                         <div class="btn-group" role="group">
                             <form th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
                                   th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                                <button class="w-auto btn btn-success float-start btn-sm" type="submit">수정</button>
+                                <button class="w-auto col-auto btn btn-success float-start btn-sm" type="submit">수정</button>
                             </form>
                             <form th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
                                   th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                                <button class="w-auto btn btn-danger float-end btn-sm" type="submit">삭제</button>
+                                <button class="w-auto col-auto btn btn-danger float-end btn-sm" type="submit">삭제</button>
                             </form>
                         </div>
                         <div th:object="${commentEditDto}">
@@ -188,7 +213,7 @@
                                 <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
                             </div>
                         </div>
-                    </td> <!-- 수정 옆에는 삭제 넣기 -->
+                    </td>
                 </tr>
             </tbody>
         </table>

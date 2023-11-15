@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import syh.toyproject.Dto.comment.CommentBoardDto;
 import syh.toyproject.domain.comment.Comment;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.repository.comment.CommentRepository;
 import syh.toyproject.repository.member.MemberRepository;
 
@@ -40,8 +41,8 @@ public class CommentService {
         return commentRepository.findByMemberIdAll(memberId, pageDto);
     }
 
-    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto) {
-        return commentRepository.findByPostIdAll(postId, pageDto);
+    public List<Comment> findByPostIdAll(Long postId, PageDto pageDto, SortingDto sortingDto) {
+        return commentRepository.findByPostIdAll(postId, pageDto, sortingDto);
     }
 
     public Comment findByCommentId(Long commentId) {

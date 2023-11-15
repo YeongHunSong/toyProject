@@ -48,6 +48,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@Validated @ModelAttribute LoginDto loginDto, BindingResult bindingResult,
+                        @ModelAttribute(name = "redirectURL") String error, // 로그인 실패 후 return 시 null 값으로 인한 에러 방지용
                         @RequestParam(defaultValue = "/memberHome") String redirectURL, HttpServletRequest request) {
         if (bindingResult.hasErrors()) { // 로그인 입력 확인
             return "login/loginForm";
