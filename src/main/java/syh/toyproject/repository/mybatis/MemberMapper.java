@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import syh.toyproject.domain.member.Member;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,8 @@ public interface MemberMapper {
 
     void editMember(@Param("memberId") Long memberId, @Param("memberEditDto") Member memberEditDto);
 
-    List<Member> findAll(@Param("searchUsername") String searchUsername, @Param("pageDto")PageDto pageDto);
+    List<Member> findAll(@Param("searchUsername") String searchUsername, @Param("pageDto")PageDto pageDto,
+                         @Param("sortingDto") SortingDto sortingDto);
 
     int totalCount(String searchUsername);
 

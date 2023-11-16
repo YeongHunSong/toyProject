@@ -9,6 +9,23 @@
         </if>
     </sql>
 
+    <sql id="sorting">
+        <choose>
+            <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
+                ORDER BY signup_date DESC
+            </when>
+            <otherwise>
+                ORDER BY signup_date ASC
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="paging">
+        <if test="pageDto != null">
+            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        </if>
+    </sql>
+
 
     <insert id="addMember" useGeneratedKeys="true" keyProperty="memberId">
         INSERT INTO member (signup_date, login_id, password, username)
@@ -36,9 +53,8 @@
         <where>
             <include refid="searchCond"/>
         </where>
-        <if test="pageDto != null">
-            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
-        </if>
+        <include refid="sorting"/>
+        <include refid="paging"/>
     </select>
 
     <select id="findByMemberId" resultType="Member">

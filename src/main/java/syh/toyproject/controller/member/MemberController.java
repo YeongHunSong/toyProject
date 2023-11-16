@@ -15,6 +15,7 @@ import syh.toyproject.argumentResolver.Login;
 import syh.toyproject.domain.member.Member;
 import syh.toyproject.paging.PageControl;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.service.comment.CommentService;
 import syh.toyproject.service.login.LoginService;
 import syh.toyproject.service.member.MemberService;
@@ -42,13 +43,16 @@ public class MemberController {
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
                              @RequestParam(defaultValue = "1", name = "page") int pageNum,
-                             @RequestParam(defaultValue = "7", name = "view") int pageView) {
+                             @RequestParam(defaultValue = "7", name = "view") int pageView,
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
         PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
         PageControl pageControl = new PageControl(pageDto, memberService.totalCount(username));
 
+        log.info("username = {}", username);
+
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
-        model.addAttribute("memberList", memberService.findAll(username, pageDto));
+        model.addAttribute("memberList", memberService.findAll(username, pageDto, sortingDto));
         return "member/memberHome";
     }
 

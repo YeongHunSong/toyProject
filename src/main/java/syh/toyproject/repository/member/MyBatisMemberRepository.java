@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import syh.toyproject.domain.member.Member;
 import syh.toyproject.paging.PageDto;
+import syh.toyproject.paging.SortingDto;
 import syh.toyproject.repository.mybatis.MemberMapper;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class MyBatisMemberRepository implements MemberRepository {
     }
 
     @Override
-    public List<Member> findAll(String searchUsername, PageDto pageDto) {
-        return memberMapper.findAll(searchUsername, pageDto);
+    public List<Member> findAll(String searchUsername, PageDto pageDto, SortingDto sortingDto) {
+        return memberMapper.findAll(searchUsername, pageDto, sortingDto);
     }
 
 

@@ -17,7 +17,7 @@
 
     <sql id="sorting">
         <choose>
-            <when test="sortingDto.sorting.equals('DESC')">
+            <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
                 ORDER BY post.writing_date DESC
             </when>
             <otherwise>
@@ -26,6 +26,11 @@
         </choose>
     </sql>
 
+    <sql id="paging">
+        <if test="pageDto != null">
+            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        </if>
+    </sql>
 
     <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
@@ -71,14 +76,14 @@
         </where>
         GROUP BY post.post_id
         <include refid="sorting"/>
-        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        <include refid="paging"/>
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
         SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
         FROM post
         WHERE member_id = #{memberId}
-        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        <include refid="paging"/>
     </select>
 
     <select id="findByPostId" resultType="Post">

@@ -52,7 +52,7 @@ class MemberRepositoryTest {
         Member findMember1 = memberRepository.findByMemberId(member1.getMemberId());
         Member findMember2 = memberRepository.findByMemberId(member2.getMemberId());
 
-        List<Member> memberList = memberRepository.findAll(null, null);
+        List<Member> memberList = memberRepository.findAll(null, null, null);
 
         assertThat(memberList).containsExactly(findMember1, findMember2);
     }
@@ -64,8 +64,8 @@ class MemberRepositoryTest {
         Member member3 = newMember(3L);
         Member member4 = newMember(4L);
 
-        List<Member> findMemberList1 = memberRepository.findAll("스트2", null);
-        List<Member> findMemberList2 = memberRepository.findAll(null, null);
+        List<Member> findMemberList1 = memberRepository.findAll("스트2", null, null);
+        List<Member> findMemberList2 = memberRepository.findAll(null, null, null);
 
         assertThat(findMemberList1).containsExactly(memberRepository.findByMemberId(member2.getMemberId()));
         assertThat(findMemberList2).containsExactly(member1, member2, member3, member4);

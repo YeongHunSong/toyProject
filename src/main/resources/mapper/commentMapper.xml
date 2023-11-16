@@ -5,13 +5,19 @@
 
     <sql id="sorting">
         <choose>
-            <when test="sortingDto.sorting.equals('DESC')">
+            <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
                 ORDER BY writing_date DESC
             </when>
             <otherwise>
                 ORDER BY writing_date ASC
             </otherwise>
         </choose>
+    </sql>
+
+    <sql id="paging">
+        <if test="pageDto != null">
+            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        </if>
     </sql>
 
 
@@ -49,14 +55,14 @@
         FROM comment
         WHERE post_id = #{postId}
         <include refid="sorting"/>
-        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        <include refid="paging"/>
     </select>
 
     <select id="findByMemberIdAll" resultType="Comment">
         SELECT comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
         FROM comment
         WHERE member_id = #{memberId}
-        LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+        <include refid="paging"/>
     </select>
 
     <select id="findByCommentId" resultType="Comment">

@@ -27,7 +27,7 @@ public class LoginService {
     }
 
     public boolean memberCheck(Long loginMemberId) { // 세션의 memberId 가 회원 목록에 있는지 확인
-        return memberRepository.findAll(null, null).stream()
+        return memberRepository.findAll(null, null, null).stream()
                 .anyMatch(member -> member.getMemberId().equals(loginMemberId));
     }
 
