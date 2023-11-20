@@ -22,7 +22,7 @@
 <!--        <h2 th:text="${postEditDto.postTitle}">게시글 상세</h2>-->
     </div>
 
-    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2>
+    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2> <!-- ##############삭제############### -->
 
     <div>
         <label for="postTitle">제목</label>
@@ -149,7 +149,7 @@
 
 
     <div class="py-2 text-center">
-        <div class="row align-items-center">
+        <div class="row">
             <p class="text-start col col-12 col-sm" th:text="|댓글 ${pageControl.totalCount} 개|"></p>
             <div class="col col-auto">
                 <form th:action method="get" class="row">
@@ -217,6 +217,7 @@
                 </tr>
             </tbody>
         </table>
+        <p class="text-center" th:if="${#lists.size(commentList) == 0}">작성된 댓글이 없습니다.</p>
 
         <div th:if="${pageControl.totalCount == 0}">
 
@@ -226,7 +227,7 @@
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:if="${pageControl.prev}">
                         <form th:action method="get">
-                            <input type="hidden" name="page" value="1">
+                            <input type="hidden" name="page" th:value="${pageControl.firstPage}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
                     </li>
@@ -237,11 +238,11 @@
                         </form>
                     </li>
                     <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
-                        th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        th:class="${pageControl.pageDto.page} == ${page} ? 'page-item active' : 'page-item'">
                         <form th:action method="get">
                             <input type="hidden" name="page" th:value="${page}">
                             <input type="submit" class="page-link" th:value="${page}" aria-label="page"
-                                   th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                                   th:class="${pageControl.pageDto.page} == ${page} ? 'page-link active' : 'page-link'">
                         </form>
                     </li>
                     <li class="page-item" th:if="${pageControl.next}">

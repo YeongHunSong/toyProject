@@ -43,11 +43,15 @@ public class BoardController {
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
                            @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
-                           @RequestParam(defaultValue = "1", name = "page") int pageNum,
-                           @RequestParam(defaultValue = "10", name = "view") int pageView,
+                           @ModelAttribute(name = "pageDto") PageDto pageDto,
                            @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
-        PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
+
+        log.info("pageDto = {}", pageDto);
+
+        pageDto.pageProcess();
+//        PageDto pageDto = new PageDto(page, pageView); // 페이지 사이즈를 변경할 수 있도록
         PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
+        log.info("pageControl = {}", pageControl);
 
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
@@ -168,7 +172,7 @@ public class BoardController {
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
                              @Login Long loginMemberId, @LoginName String loginMemberName,
-                             @RequestParam(defaultValue = "1", name = "page") int pageNum,
+                             @RequestParam(defaultValue = "1", name = "page") int page,
                              @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
@@ -200,9 +204,7 @@ public class BoardController {
 
         postService.addViewCount(postId);
 
-        log.info("sorting = {}", sortingDto);
-
-        PageDto pageDto = new PageDto(pageNum, 5);
+        PageDto pageDto = new PageDto(page, 5);
         PageControl pageControl = new PageControl(pageDto, commentService.totalCount(postId));
 
         model.addAttribute("pageControl", pageControl);

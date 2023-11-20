@@ -42,13 +42,11 @@ public class MemberController {
     @GetMapping("/memberHome")
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
-                             @RequestParam(defaultValue = "1", name = "page") int pageNum,
+                             @RequestParam(defaultValue = "1", name = "page") int page,
                              @RequestParam(defaultValue = "7", name = "view") int pageView,
                              @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
-        PageDto pageDto = new PageDto(pageNum, pageView); // 페이지 사이즈를 변경할 수 있도록
+        PageDto pageDto = new PageDto(page, pageView); // 페이지 사이즈를 변경할 수 있도록
         PageControl pageControl = new PageControl(pageDto, memberService.totalCount(username));
-
-        log.info("username = {}", username);
 
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
@@ -82,6 +80,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public String addMember(@Validated @ModelAttribute MemberSignupDto memberDto, BindingResult bindingResult,
+                            @ModelAttribute(name = "redirectURL") String error, // 회원가입 실패 후 return 시 null 값으로 인한 에러 방지용
                             @RequestParam(defaultValue = "/memberHome") String redirectURL) {
         if (!(signupValidation(memberDto, bindingResult))) { // 회원가입 실패
             return "member/addMemberForm";

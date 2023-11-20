@@ -4,15 +4,17 @@
 <mapper namespace="syh.toyproject.repository.mybatis.PostMapper">
 
     <sql id="searchCond">
-        <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
-            post.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
-        </if>
-        <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
-            post.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
-        </if>
-        <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
-            member.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
-        </if>
+        <where>
+            <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
+                post.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+            </if>
+            <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
+                post.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+            </if>
+            <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
+                member.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+            </if>
+        </where>
     </sql>
 
     <sql id="sorting">
@@ -51,9 +53,7 @@
         FROM post
         LEFT JOIN member
         ON post.member_id = member.member_id
-        <where>
-            <include refid="searchCond"/>
-        </where>
+        <include refid="searchCond"/>
     </select>
     
     <select id="totalCountByMemberId" resultType="int">
@@ -71,9 +71,7 @@
         ON post.post_id = recommend.post_id
         LEFT JOIN member
         ON post.member_id = member.member_id
-        <where>
-            <include refid="searchCond"/>
-        </where>
+        <include refid="searchCond"/>
         GROUP BY post.post_id
         <include refid="sorting"/>
         <include refid="paging"/>

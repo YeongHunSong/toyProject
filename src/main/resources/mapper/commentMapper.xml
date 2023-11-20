@@ -28,8 +28,7 @@
 
     <update id="editComment">
         UPDATE comment
-        SET comment_content = #{commentEditDto.commentContent},
-            last_edit_date = now() + 0.00001
+        SET comment_content = #{commentEditDto.commentContent}, last_edit_date = now() + 0.00001
         WHERE comment_id = #{commentId}
     </update>
 

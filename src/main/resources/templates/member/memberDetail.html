@@ -141,37 +141,37 @@
                     <li class="page-item" th:if="${postPageControl.prev}">
                         <form th:action method="get">
                             <input type="hidden" name="pPage" value="1">
-                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
                     </li>
                     <li class="page-item" th:if="${postPageControl.prev}">
                         <form th:action method="get">
                             <input type="hidden" name="pPage" th:value="${postPageControl.dpStartPage-1}">
-                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
                         </form>
                     </li>
                     <li th:each="page : ${#numbers.sequence({postPageControl.dpStartPage}, {postPageControl.dpEndPage})}" class="page-item"
-                        th:class="${postPageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        th:class="${postPageControl.pageDto.page} == ${page} ? 'page-item active' : 'page-item'">
                         <form th:action method="get">
                             <input type="hidden" name="pPage" th:value="${page}">
-                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" th:value="${page}" aria-label="page"
-                                   th:class="${postPageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                                   th:class="${postPageControl.pageDto.page} == ${page} ? 'page-link active' : 'page-link'">
                         </form>
                     </li>
                     <li class="page-item" th:if="${postPageControl.next}">
                         <form th:action method="get">
                             <input type="hidden" name="pPage" th:value="${postPageControl.dpEndPage+1}">
-                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
                         </form>
                     </li>
                     <li class="page-item" th:if="${postPageControl.next}">
                         <form th:action method="get">
                             <input type="hidden" name="pPage" th:value="${postPageControl.lastPage}">
-                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
                         </form>
                     </li>
@@ -202,37 +202,37 @@
                     <li class="page-item" th:if="${commentPageControl.prev}">
                         <form th:action method="get">
                             <input type="hidden" name="cPage" value="1">
-                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
                     </li>
                     <li class="page-item" th:if="${commentPageControl.prev}">
                         <form th:action method="get">
                             <input type="hidden" name="cPage" th:value="${commentPageControl.dpStartPage-1}">
-                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
                         </form>
                     </li>
                     <li th:each="page : ${#numbers.sequence({commentPageControl.dpStartPage}, {commentPageControl.dpEndPage})}" class="page-item"
-                        th:class="${commentPageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        th:class="${commentPageControl.pageDto.page} == ${page} ? 'page-item active' : 'page-item'">
                         <form th:action method="get">
                             <input type="hidden" name="cPage" th:value="${page}">
-                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" th:value="${page}" aria-label="page"
-                                   th:class="${commentPageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                                   th:class="${commentPageControl.pageDto.page} == ${page} ? 'page-link active' : 'page-link'">
                         </form>
                     </li>
                     <li class="page-item" th:if="${commentPageControl.next}">
                         <form th:action method="get">
                             <input type="hidden" name="cPage" th:value="${commentPageControl.dpEndPage+1}">
-                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
                         </form>
                     </li>
                     <li class="page-item" th:if="${commentPageControl.next}">
                         <form th:action method="get">
                             <input type="hidden" name="cPage" th:value="${commentPageControl.lastPage}">
-                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.pageNum}">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
                         </form>
                     </li>

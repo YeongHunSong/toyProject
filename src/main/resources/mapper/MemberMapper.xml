@@ -4,9 +4,11 @@
 <mapper namespace="syh.toyproject.repository.mybatis.MemberMapper">
 
     <sql id="searchCond">
-        <if test="searchUsername != null and !searchUsername.equals('')">
-            AND username LIKE CONCAT('%', #{searchUsername}, '%')
-        </if>
+        <where>
+            <if test="searchUsername != null and !searchUsername.equals('')">
+                AND username LIKE CONCAT('%', #{searchUsername}, '%')
+            </if>
+        </where>
     </sql>
 
     <sql id="sorting">
@@ -42,17 +44,13 @@
     <select id="totalCount" resultType="int">
         SELECT COUNT(*)
         FROM member
-        <where>
-            <include refid="searchCond"/>
-        </where>
+        <include refid="searchCond"/>
     </select>
 
     <select id="findAll" resultType="Member">
         SELECT signup_date, username, member_id, login_id, password
         FROM member
-        <where>
-            <include refid="searchCond"/>
-        </where>
+        <include refid="searchCond"/>
         <include refid="sorting"/>
         <include refid="paging"/>
     </select>

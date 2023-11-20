@@ -71,7 +71,7 @@
 
         <hr class="my-4">
         <div>
-            <div class="row align-items-center">
+            <div class="row">
                 <p class="text-start col col-12 col-sm" th:text="|가입 회원수 ${pageControl.totalCount} 명|"></p>
                 <div class="col col-auto">
                     <form th:action method="get" class="row">
@@ -84,7 +84,7 @@
                             </label>
                         </div>
                         <div class="col-auto">
-                            <input type="hidden" name="username" th:value="${username}">
+                            <input type="hidden" th:field="${username}">
                             <button type="submit" class="btn-primary btn btn-sm">변경</button>
                         </div>
                     </form>
@@ -101,9 +101,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="member : ${memberList}"> <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
-                    <td class="p-1"><p th:text="|${memberStat.count + (pageControl.pageDto.pageNum - 1) * 10}|">회원 번호</p></td>
+                    <td class="p-1"><p th:text="|${memberStat.count + (pageControl.pageDto.page - 1) * 10}|">회원 번호</p></td>
                     <td class="p-1"><p class="d-inline-block text-truncate text-nowrap w-100" th:text="${member.loginId}">회원 로그인 ID값</p></td>
-                    <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/member/${member.memberId}|}" th:text="${member.username}">닉네임</a></td>
+                    <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" th:href="@{|/member/${member.memberId}|}" th:text="${member.username}">닉네임</a></td>
                     <td class="p-1"><p th:text="${#temporals.format(member.signupDate, 'yy-MM-dd HH:mm')}">가입일</p></td>
                 </tr>
                 </tbody>
@@ -116,42 +116,42 @@
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:if="${pageControl.prev}">
                         <form th:action method="get">
-                            <input type="hidden" th:field="${username}" th:value="${username}">
-                            <input type="hidden" th:field="${sortingDto.sorting}" th:value="${sortingDto.sorting}">
-                            <input type="hidden" name="page" value="1">
+                            <input type="hidden" th:field="${username}">
+                            <input type="hidden" th:field="${sortingDto.sorting}">
+                            <input type="hidden" name="page" th:value="${pageControl.firstPage}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
                     </li>
                     <li class="page-item" th:if="${pageControl.prev}">
                         <form th:action method="get">
-                            <input type="hidden" th:field="${username}" th:value="${username}">
-                            <input type="hidden" th:field="${sortingDto.sorting}" th:value="${sortingDto.sorting}">
+                            <input type="hidden" th:field="${username}">
+                            <input type="hidden" th:field="${sortingDto.sorting}">
                             <input type="hidden" name="page" th:value="${pageControl.dpStartPage-1}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&lt;" aria-label="prev">
                         </form>
                     </li>
                     <li th:each="page : ${#numbers.sequence({pageControl.dpStartPage}, {pageControl.dpEndPage})}" class="page-item"
-                        th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-item active' : 'page-item'">
+                        th:class="${pageControl.pageDto.page} == ${page} ? 'page-item active' : 'page-item'">
                         <form th:action method="get">
-                            <input type="hidden" th:field="${username}" th:value="${username}">
-                            <input type="hidden" th:field="${sortingDto.sorting}" th:value="${sortingDto.sorting}">
+                            <input type="hidden" th:field="${username}">
+                            <input type="hidden" th:field="${sortingDto.sorting}">
                             <input type="hidden" name="page" th:value="${page}">
                             <input type="submit" class="page-link" th:value="${page}" aria-label="page"
-                                   th:class="${pageControl.pageDto.pageNum} == ${page} ? 'page-link active' : 'page-link'">
+                                   th:class="${pageControl.pageDto.page} == ${page} ? 'page-link active' : 'page-link'">
                         </form>
                     </li>
                     <li class="page-item" th:if="${pageControl.next}">
                         <form th:action method="get">
-                            <input type="hidden" th:field="${username}" th:value="${username}">
-                            <input type="hidden" th:field="${sortingDto.sorting}" th:value="${sortingDto.sorting}">
+                            <input type="hidden" th:field="${username}">
+                            <input type="hidden" th:field="${sortingDto.sorting}">
                             <input type="hidden" name="page" th:value="${pageControl.dpEndPage+1}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&gt;" aria-label="next">
                         </form>
                     </li>
                     <li class="page-item" th:if="${pageControl.next}">
                         <form th:action method="get">
-                            <input type="hidden" th:field="${username}" th:value="${username}">
-                            <input type="hidden" th:field="${sortingDto.sorting}" th:value="${sortingDto.sorting}">
+                            <input type="hidden" th:field="${username}">
+                            <input type="hidden" th:field="${sortingDto.sorting}">
                             <input type="hidden" name="page" th:value="${pageControl.lastPage}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&raquo;" aria-label="last">
                         </form>
