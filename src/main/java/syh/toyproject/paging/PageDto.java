@@ -11,12 +11,10 @@ public class PageDto {
     private int pageView;
     private int pageCount;
     
-
-    public void pageProcess() {
+    public void pageValidation() { // pageView 변경 기능을 위한 modelAttribute 용
         this.page = page <= 0 ? 1 : page;
         this.pageCount = (page - 1) * pageView;
     }
-
 
     public PageDto() {
         this.page = 1;
@@ -24,9 +22,8 @@ public class PageDto {
         this.pageView = 10;
     }
 
-    public PageDto(int page, int pageView) {
-        this.page = page <= 0 ? 1 : page;
-        this.pageCount = (page - 1) * pageView;
+    public PageDto(int page, int pageView) { // 기존 로직용
+        this.page = page;
         this.pageView = pageView;
     }
 }

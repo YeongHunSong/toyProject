@@ -101,7 +101,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="member : ${memberList}"> <!-- th:href="@{/member/{memberId}(memberId=${member.id})}" -->
-                    <td class="p-1"><p th:text="|${memberStat.count + (pageControl.pageDto.page - 1) * 10}|">회원 번호</p></td>
+                    <td class="p-1"><p th:text="|${memberStat.count + (pageControl.pageDto.page - 1) * pageControl.pageDto.pageView}|">회원 번호</p></td>
                     <td class="p-1"><p class="d-inline-block text-truncate text-nowrap w-100" th:text="${member.loginId}">회원 로그인 ID값</p></td>
                     <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" th:href="@{|/member/${member.memberId}|}" th:text="${member.username}">닉네임</a></td>
                     <td class="p-1"><p th:text="${#temporals.format(member.signupDate, 'yy-MM-dd HH:mm')}">가입일</p></td>

@@ -112,18 +112,18 @@
                 <th class="col-2">작성자</th>
                 <th class="col-2">작성일</th>
                 <th class="col-1">조회</th>
-                <th class="col-1">추천</th>
+                <th class="col-1">댓/추</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="post : ${postList}">
-                <td class="p-1"><p th:text="|${postStat.count + (pageControl.pageDto.page - 1) * 10}|">글 번호</p></td>
+                <td class="p-1"><p th:text="|${postStat.count + (pageControl.pageDto.page - 1) * pageControl.pageDto.pageView}|">글 번호</p></td>
 <!--                <td><p th:text="${post.category}">카테고리</p></td>-->
                 <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/post/${post.postId}|}" th:text="${post.postTitle}">제목</a></td>
                 <td class="p-1"><a class="d-inline-block text-truncate text-nowrap w-100" href="" th:href="@{|/member/${post.memberId}|}" th:text="${post.username}">작성자</a></td>
                 <td class="p-1"><p class="text-nowrap w-100" th:text="${#temporals.format(post.writingDate, 'MM-dd HH:mm')}">작성일</p></td> <!-- 날짜 포맷 수정 -->
                 <td class="p-1"><p th:text="|${post.viewCount}|">조회수</p></td>
-                <td class="p-1"><p th:text="|${post.recommendCount}|">추천수</p></td>
+                <td class="p-1"><p th:text="|${post.commentCount}/${post.recommendCount}|">댓글/추천</p></td>
             </tr>
             </tbody>
         </table>

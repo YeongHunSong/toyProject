@@ -6,13 +6,13 @@
     <sql id="searchCond">
         <where>
             <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
-                post.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                p.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
             <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
-                post.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                p.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
             <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
-                member.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                m.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
         </where>
     </sql>
@@ -20,10 +20,10 @@
     <sql id="sorting">
         <choose>
             <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
-                ORDER BY post.writing_date DESC
+                ORDER BY p.writing_date DESC
             </when>
             <otherwise>
-                ORDER BY post.writing_date ASC
+                ORDER BY p.writing_date ASC
             </otherwise>
         </choose>
     </sql>
@@ -50,9 +50,9 @@
 
     <select id="totalCount" resultType="int">
         SELECT COUNT(*)
-        FROM post
-        LEFT JOIN member
-        ON post.member_id = member.member_id
+        FROM post p
+        LEFT JOIN member m
+        ON p.member_id = m.member_id
         <include refid="searchCond"/>
     </select>
     
@@ -64,17 +64,42 @@
     
     <!-- ORDER BY post.post_id DESC -->
     <select id="findAll" resultType="Post">
-        SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
-        COUNT(recommend.post_id) recommend_count, post.writing_date, post.last_edit_date
-        FROM post
-        LEFT JOIN post_recommend AS recommend
-        ON post.post_id = recommend.post_id
-        LEFT JOIN member
-        ON post.member_id = member.member_id
+        SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
+        r.recommend_count, c.comment_count, p.writing_date, p.last_edit_date
+        FROM post AS p
+        INNER JOIN member m ON p.member_id = m.member_id
+        LEFT JOIN
+        (
+        SELECT comment.post_id, COUNT(*) comment_count
+        FROM comment
+        GROUP BY comment.post_id
+        ) AS c
+        ON p.post_id = c.post_id
+        LEFT JOIN
+        (
+        SELECT recommend.post_id, COUNT(*) recommend_count
+        FROM post_recommend as recommend
+        GROUP BY recommend.post_id
+        ) AS r
+        ON p.post_id = r.post_id
         <include refid="searchCond"/>
-        GROUP BY post.post_id
         <include refid="sorting"/>
         <include refid="paging"/>
+
+<!--        SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,-->
+<!--        COUNT(recommend.post_id) recommend_count, COUNT(comment.post_id) comment_count,-->
+<!--        post.writing_date, post.last_edit_date-->
+<!--        FROM post-->
+<!--        LEFT JOIN post_recommend recommend-->
+<!--        ON post.post_id = recommend.post_id-->
+<!--        LEFT JOIN member-->
+<!--        ON post.member_id = member.member_id-->
+<!--        LEFT JOIN comment-->
+<!--        ON post.post_id = comment.post_id-->
+<!--        <include refid="searchCond"/>-->
+<!--        GROUP BY post.post_id-->
+<!--        <include refid="sorting"/>-->
+<!--        <include refid="paging"/>-->
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
@@ -85,14 +110,14 @@
     </select>
 
     <select id="findByPostId" resultType="Post">
-        SELECT post.member_id, post.post_id, post.post_title, post.post_content, post.view_count,
-        COUNT(recommend.post_id) recommend_count, post.writing_date, post.last_edit_date
-        FROM post
-        LEFT JOIN post_recommend AS recommend
-        ON post.post_id = recommend.post_id
-        WHERE post.post_id = #{postId}
-        GROUP BY post.post_id
-        ORDER BY post.post_id
+        SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
+        COUNT(r.*) recommend_count, p.writing_date, p.last_edit_date
+        FROM post p
+        LEFT JOIN post_recommend AS r
+        ON p.post_id = r.post_id
+        WHERE p.post_id = #{postId}
+        GROUP BY p.post_id
+        ORDER BY p.post_id
     </select>
 
     <delete id="deletePost">
@@ -112,7 +137,7 @@
     </insert>
 
     <select id="recommendDuplicateCheck" resultType="Int">
-        SELECT COUNT(recommender_id)
+        SELECT COUNT(*)
         FROM post_recommend
         WHERE post_id = #{postId}
         AND recommender_id = #{recommenderId}

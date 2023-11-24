@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Post {
     private Long postId;
 
-    private Long memberId; // memberId 연동
+    private Long memberId;
 
     private PostCategory category;
     private Long viewCount;
@@ -19,12 +19,8 @@ public class Post {
     private String postTitle;
     private String postContent; // 이부분은 나중에 타입 변경이 필요할 경우 변경하는 걸로...
 
-    // 댓글 관련
-    private Long replyCount; // 댓글 + 댓글에 달린 답글 등 모두 카운트
-
-    // 추가 기능
-    private Long recommendCount;
-    private Long dislikeCount;
+    private Long commentCount = 0L;
+    private Long recommendCount = 0L;
 
     public Post() {
     }

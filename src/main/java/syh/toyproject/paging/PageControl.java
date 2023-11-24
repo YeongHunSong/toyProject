@@ -18,7 +18,8 @@ public class PageControl {
 
     private final int dpButtonNum = 10;
 
-    private void pageProcess() { // 30
+    private void pageProcess() {
+        pageDto.pageValidation();
         dpEndPage = (int) (Math.ceil(pageDto.getPage() / (double) dpButtonNum) * dpButtonNum);
         dpStartPage = (dpEndPage - dpButtonNum) + 1;
         lastPage = (int) (Math.ceil(totalCount / (double) pageDto.getPageView()));

@@ -16,8 +16,7 @@ create table post
    last_edit_date datetime,
    view_count bigint,
    post_title varchar(50),
-   post_content varchar(100),
-   recommend_count bigint,
+   post_content varchar(100)
    primary key (post_id)
 );
 

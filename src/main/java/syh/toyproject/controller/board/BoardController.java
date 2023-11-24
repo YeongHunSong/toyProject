@@ -43,15 +43,9 @@ public class BoardController {
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
                            @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
-                           @ModelAttribute(name = "pageDto") PageDto pageDto,
-                           @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
-
-        log.info("pageDto = {}", pageDto);
-
-        pageDto.pageProcess();
-//        PageDto pageDto = new PageDto(page, pageView); // 페이지 사이즈를 변경할 수 있도록
+                           @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
+                           @ModelAttribute(name = "pageDto") PageDto pageDto) {
         PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
-        log.info("pageControl = {}", pageControl);
 
         model.addAttribute("searchTrg", searchTrg);
         model.addAttribute("pageControl", pageControl);
@@ -172,8 +166,9 @@ public class BoardController {
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
                              @Login Long loginMemberId, @LoginName String loginMemberName,
-                             @RequestParam(defaultValue = "1", name = "page") int page,
-                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
+                             @ModelAttribute(name = "pageDto") PageDto pageDto,
+                             @RequestParam(name = "pageView", defaultValue = "5") int pageView) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
             BindingResult addDtoError = (BindingResult) model.getAttribute("addCommentError");
@@ -203,8 +198,7 @@ public class BoardController {
         editCommentModeCheck(model, commentEditDto, commentEditBindingResult, commentEditStatus);
 
         postService.addViewCount(postId);
-
-        PageDto pageDto = new PageDto(page, 5);
+        pageDto.setPageView(pageView);
         PageControl pageControl = new PageControl(pageDto, commentService.totalCount(postId));
 
         model.addAttribute("pageControl", pageControl);

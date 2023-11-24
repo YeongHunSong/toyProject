@@ -23,11 +23,8 @@ public class PostBoardDto {
     private String postContent;
 
     // 댓글 관련
-    private Long replyCount;
-
-    // 추가 기능
+    private Long commentCount;
     private Long recommendCount;
-    private Long dislikeCount;
 
     public PostBoardDto(Post post, String username) {
         this.postId = post.getPostId();
@@ -38,9 +35,8 @@ public class PostBoardDto {
         this.lastEditDate = post.getLastEditDate();
         this.postTitle = post.getPostTitle();
         this.postContent = post.getPostContent();
-        this.replyCount = post.getReplyCount();
         this.recommendCount = post.getRecommendCount();
-        this.dislikeCount = post.getDislikeCount();
+        this.commentCount = post.getCommentCount();
 
         this.username = username;
     }

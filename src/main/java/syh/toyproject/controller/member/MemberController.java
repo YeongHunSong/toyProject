@@ -42,10 +42,8 @@ public class MemberController {
     @GetMapping("/memberHome")
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
-                             @RequestParam(defaultValue = "1", name = "page") int page,
-                             @RequestParam(defaultValue = "7", name = "view") int pageView,
-                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto) {
-        PageDto pageDto = new PageDto(page, pageView); // 페이지 사이즈를 변경할 수 있도록
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
+                             @ModelAttribute(name = "pageDto") PageDto pageDto) {
         PageControl pageControl = new PageControl(pageDto, memberService.totalCount(username));
 
         model.addAttribute("searchTrg", searchTrg);

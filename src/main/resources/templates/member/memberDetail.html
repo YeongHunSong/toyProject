@@ -140,7 +140,7 @@
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:if="${postPageControl.prev}">
                         <form th:action method="get">
-                            <input type="hidden" name="pPage" value="1">
+                            <input type="hidden" name="pPage" th:value="${postPageControl.firstPage}">
                             <input type="hidden" name="cPage" th:value="${commentPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
@@ -201,7 +201,7 @@
                 <ul class="pagination justify-content-center">
                     <li class="page-item" th:if="${commentPageControl.prev}">
                         <form th:action method="get">
-                            <input type="hidden" name="cPage" value="1">
+                            <input type="hidden" name="cPage" th:value="${commentPageControl.firstPage}">
                             <input type="hidden" name="pPage" th:value="${postPageControl.pageDto.page}">
                             <input type="submit" class="page-link" aria-hidden="true" value="&laquo;" aria-label="first">
                         </form>
