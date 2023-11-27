@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="syh.toyproject.repository.mybatis.PostMapper">
+<mapper namespace="syh.toyProject.repository.mybatis.PostMapper">
 
     <sql id="searchCond">
         <where>
@@ -35,8 +35,8 @@
     </sql>
 
     <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
-        INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count, recommend_count)
-        VALUES (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0, 0)
+        INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count)
+        VALUES (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0)
     </insert>
 
     <update id="editPost">
@@ -51,8 +51,7 @@
     <select id="totalCount" resultType="int">
         SELECT COUNT(*)
         FROM post p
-        LEFT JOIN member m
-        ON p.member_id = m.member_id
+        LEFT JOIN member m ON p.member_id = m.member_id
         <include refid="searchCond"/>
     </select>
     
@@ -65,22 +64,22 @@
     <!-- ORDER BY post.post_id DESC -->
     <select id="findAll" resultType="Post">
         SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
-        r.recommend_count, c.comment_count, p.writing_date, p.last_edit_date
+               r.recommend_count, c.comment_count, p.writing_date, p.last_edit_date
         FROM post AS p
         INNER JOIN member m ON p.member_id = m.member_id
         LEFT JOIN
-        (
-        SELECT comment.post_id, COUNT(*) comment_count
-        FROM comment
-        GROUP BY comment.post_id
-        ) AS c
+            (
+                SELECT comment.post_id, COUNT(*) comment_count
+                FROM comment
+                GROUP BY comment.post_id
+            ) AS c
         ON p.post_id = c.post_id
         LEFT JOIN
-        (
-        SELECT recommend.post_id, COUNT(*) recommend_count
-        FROM post_recommend as recommend
-        GROUP BY recommend.post_id
-        ) AS r
+            (
+                SELECT recommend.post_id, COUNT(*) recommend_count
+                FROM post_recommend as recommend
+                GROUP BY recommend.post_id
+            ) AS r
         ON p.post_id = r.post_id
         <include refid="searchCond"/>
         <include refid="sorting"/>
@@ -103,7 +102,7 @@
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
-        SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count, recommend_count
+        SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count
         FROM post
         WHERE member_id = #{memberId}
         <include refid="paging"/>
@@ -113,8 +112,7 @@
         SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
         COUNT(r.*) recommend_count, p.writing_date, p.last_edit_date
         FROM post p
-        LEFT JOIN post_recommend AS r
-        ON p.post_id = r.post_id
+        LEFT JOIN post_recommend AS r ON p.post_id = r.post_id
         WHERE p.post_id = #{postId}
         GROUP BY p.post_id
         ORDER BY p.post_id

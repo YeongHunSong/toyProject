@@ -1,64 +1,29 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-    <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
-    <title th:text="${post.postTitle}">게시글 제목</title>
-<!--    <title th:text="${postEditDto.postTitle}">게시글 제목</title>-->
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout (title = ${post.postTitle})}">
 <body>
-<div class="container">
+<div class="container" layout:fragment="content">
     <div class="py-5 text-center">
-        <h2 th:text="${post.postTitle}">게시글 상세</h2>
-<!--        <h2 th:text="${postEditDto.postTitle}">게시글 상세</h2>-->
+        <h2 th:text="${post.postTitle}">게시글 제목</h2>
     </div>
 
-    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2> <!-- ##############삭제############### -->
+    <h2 th:if="${param.status}" th:text="'저장 완료'"></h2> <!-- TODO ##############삭제############### -->
 
     <div>
-        <label for="postTitle">제목</label>
-        <input type="text" id="postTitle" class="form-control" value="제목" th:field="${post.postTitle}" disabled>
-<!--        <input type="text" id="postTitle" class="form-control" value="제목" th:field="${postEditDto.postTitle}" disabled>-->
+        <p class="form-control" th:text="${post.postContent}">
     </div>
-    <div>
-        <label for="postContent">내용</label>
-        <input type="text" id="postContent" class="form-control" value="내용" th:field="${post.postContent}" disabled>
-<!--        <input type="text" id="postContent" class="form-control" value="내용" th:field="${postEditDto.postContent}" disabled>-->
-    </div>
-    <div>
-        <label for="writingDate">작성일</label>
-        <input type="text" id="writingDate" name="writingDate" class="form-control" value="23-06-04 15:06:33" th:value="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm:ss')}" disabled>
-<!--        <input type="text" id="writingDate" name="writingDate" class="form-control" value="23-06-04 15:06:33" th:value="${#temporals.format(postEditDto.writingDate, 'yy-MM-dd HH:mm:ss')}" disabled>-->
-    </div>
-    <div>
-        <label for="username">작성자</label>
-        <input type="text" id="username" class="form-control" th:field="${post.username}" disabled>
-<!--        <input type="text" id="username" class="form-control" th:field="${postEditDto.username}" disabled>-->
-    </div>
-
-
-    <div>
-        <br>
-        <div class="float-start">
-            <p th:text="|조회수 : ${post.viewCount}|">조회수</p>
+    <br>
+        <div class="row">
+            <a class="col col-auto fw-bolder" th:text="|${post.username}| " th:href="@{|/member/${post.memberId}|}"></a>
+            <p class="col col-auto" th:text="${#temporals.format(post.writingDate, 'yy-MM-dd HH:mm:ss')} ">
+            <p class="col col-auto ms-auto" th:text="|조회수 : ${post.viewCount} |">조회수</p>
+            <p class="col col-auto" th:text="|추천수 : ${post.recommendCount} |">추천수</p>
         </div>
-        <div class="float-end">
-            <p th:text="|추천수 : ${post.recommendCount}|">추천수</p>
-        </div>
-        <br>
-    </div>
-    <hr class="my-4">
+    <br>
 
 
+<!-- TODO 삭제 -->
 <!--    <div>-->
 <!--        <label for="username">회원 이름</label>-->
 <!--        <input type="text" id="username" class="form-control" value="홍길동" th:field="${member.username}" readonly>-->
@@ -136,8 +101,8 @@
             </div>
         </div>
     </div>
-    <br>
 
+    <hr class="my-4">
     <div class="py-2 text-center">
         <div class="row">
             <p class="text-start col col-12 col-sm" th:text="|댓글 ${pageControl.totalCount} 개|"></p>

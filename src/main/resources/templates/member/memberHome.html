@@ -1,21 +1,11 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-    <meta charset="utf-8">
-    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-    </style>
-    <title>회원 목록</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutHome (title = '회원 목록')}">
 <body>
-    <div class="container" style="max-width: 600px">
-        <div class="py-5 text-center">
-            <h2>회원 목록</h2>
-        </div>
-        <div class="row"> <!-- 모듈화 필요 -->
+    <div class="container" layout:fragment="content" style="max-width: 600px">
+    <br>
+        <div class="row">
             <div class="col" th:if="${session?.username == null}">
                 <button class="w-auto btn btn-primary float-start"
                         th:onclick="|location.href='@{/signup?redirectURL=/memberHome}'|" type="button">회원 가입</button>
@@ -36,6 +26,7 @@
 <!--                </form>-->
             </div>
         </div>
+
         <br>
         <div class="row">
             <div class="col">
@@ -68,6 +59,9 @@
             </div>
         </form>
 
+        <div class="py-5 text-center">
+            <h2>회원 목록</h2> <!-- TODO 수정 -->
+        </div>
 
         <hr class="my-4">
         <div>

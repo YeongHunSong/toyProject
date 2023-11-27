@@ -1,5 +1,6 @@
 #ErrorMessage 연결
 spring:
+  #message 설정
   messages:
     basename: errors
 
@@ -8,7 +9,7 @@ spring:
     livereload:
       enabled: true
 
-#H2 DB 설정
+  #H2 DB 설정
     profiles: H2
   datasource:
     url: jdbc:h2:tcp://localhost/~/test

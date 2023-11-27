@@ -1,17 +1,9 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-    <meta charset="utf-8">
-    <link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-    </style>
-    <title>로그인 이후 메인</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout (title = '임시 페이지')}">
 <body>
-<div class="container" style="max-width: 600px">
+<div class="container" style="max-width: 600px" layout:fragment="content">
     <div class="py-5 text-center">
         <h2>로그인 이후 메인</h2>
     </div>

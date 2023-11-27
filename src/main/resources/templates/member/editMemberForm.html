@@ -1,25 +1,13 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-    <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
-    <title>회원 수정</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout (title = '회원 정보 수정')}">
 
-<div class="container">
+<body>
+<div class="container" layout:fragment="content">
 
     <div class="py-5 text-center">
-        <h2>회원 수정</h2>
+        <h2>회원 정보 수정</h2>
     </div>
 
     <div th:object="${memberNonEditData}">
@@ -42,7 +30,7 @@
     </div>
     <br>
 
-    <form action="/member/edit" th:action th:object="${memberEditDto}" method="post">
+    <form th:action th:object="${memberEditDto}" method="post">
         <div>
             <label for="password">비밀번호</label>
             <input type="text" id="password" class="form-control" th:field="*{password}" th:errorclass="field-error">
