@@ -5,8 +5,7 @@
 <head th:replace="fragments/head :: head (${title})"></head>
 
 <body>
-
-    <nav th:replace="fragments/nav :: nav"></nav>
+    <nav th:replace="~{fragments/nav :: navBar}"></nav>
 
     <div layout:fragment="content"></div>
 

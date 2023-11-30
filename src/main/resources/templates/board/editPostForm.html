@@ -3,14 +3,13 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout (title = |${postEditDto.postTitle} 수정 페이지|)}">
 <body>
-
 <div class="container" layout:fragment="content">
 
-    <div class="py-5 text-center">
-        <h2 th:text="">게시글 수정</h2>
+    <div class="py-3 text-center">
+        <h2>게시글 수정</h2>
     </div>
 
-    <form action="/post/editPost" th:action th:object="${postEditDto}" method="post">
+    <form th:action th:object="${postEditDto}" method="post">
         <div>
             <label for="postTitle">제목</label>
             <input type="text" id="postTitle" class="form-control" placeholder="제목을 입력해주세요" th:field="*{postTitle}">
@@ -23,7 +22,7 @@
             <div class="field-error" th:errors="*{postContent}">내용 수정 오류</div>
         </div>
 
-        <hr class="my-4">
+        <hr class="my-3">
 
         <div class="row">
             <div class="col">
@@ -34,7 +33,6 @@
                         th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
             </div>
         </div>
-
     </form>
 
 </div> <!-- /container -->

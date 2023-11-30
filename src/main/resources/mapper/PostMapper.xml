@@ -73,14 +73,14 @@
                 FROM comment
                 GROUP BY comment.post_id
             ) AS c
-        ON p.post_id = c.post_id
+            ON p.post_id = c.post_id
         LEFT JOIN
             (
                 SELECT recommend.post_id, COUNT(*) recommend_count
                 FROM post_recommend as recommend
                 GROUP BY recommend.post_id
             ) AS r
-        ON p.post_id = r.post_id
+            ON p.post_id = r.post_id
         <include refid="searchCond"/>
         <include refid="sorting"/>
         <include refid="paging"/>
@@ -110,13 +110,13 @@
 
     <select id="findByPostId" resultType="Post">
         SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
-        COUNT(r.*) recommend_count, p.writing_date, p.last_edit_date
+        COUNT(r.post_id) recommend_count, p.writing_date, p.last_edit_date
         FROM post p
         LEFT JOIN post_recommend AS r ON p.post_id = r.post_id
         WHERE p.post_id = #{postId}
         GROUP BY p.post_id
         ORDER BY p.post_id
-    </select>
+    </select> <!--COUNT 부분을 COUNT(*) 로 할 경우 null 도 카운팅에 들어가 값의 오류 발생. -->
 
     <delete id="deletePost">
         DELETE FROM post

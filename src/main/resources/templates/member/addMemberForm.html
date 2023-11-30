@@ -2,47 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout (title = '회원가입')}">
-
 <body>
-<div class="container" layout:fragment="content">
-    <div class="py-5 text-center">
-        <h2>회원 가입</h2>
-    </div>
+    <div class="container" layout:fragment="content">
 
-    <form action="/signup" th:action th:object="${memberSignupDto}" method="post">
-        <div> <!-- errors + ? 문법으로 null 방지. null 이 들어오더라도  NullPointerException 발생하는 대신 null 을 반환함. SpringEL 문법 -->
-            <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" class="form-control" placeholder="ID를 입력해주세요" th:field="*{loginId}" th:errorclass="field-error">
-            <div class="field-error" th:errors="*{loginId}">로그인 ID 오류</div>
+        <div class="py-3 text-center">
+            <h2>회원 가입</h2>
         </div>
-        <br>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" class="form-control" placeholder="비밀번호를 입력해주세요" th:field="*{password}" th:errorclass="field-error">
-            <div class="field-error" th:errors="*{password}">비밀번호 오류</div>
-        </div>
-        <br>
-        <div>
-            <label for="username">닉네임</label>
-            <input type="text" id="username" class="form-control" placeholder="사용할 닉네임을 입력해주세요" th:field="*{username}" th:errorclass="field-error">
-            <div class="field-error" th:errors="*{username}">닉네임 오류</div>
-        </div>
-        <br>
-        <div th:if="${#fields.hasGlobalErrors()}"> <!-- 글로벌 오류 노출 -->
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-lg btn-primary" type="submit">회원 등록</button>
-            </div>
-            <div class="col">
-                <button class="w-100 btn btn-lg btn-secondary"
-                        th:onclick="|location.href='@{|/cancel?redirectURL=${redirectURL}|}'|" type="button">등록 취소</button>
-            </div>
-        </div>
-    </form>
 
-</div> <!-- /container -->
+        <form th:action th:object="${memberSignupDto}" method="post">
+            <div> <!-- errors + ? 문법으로 null 방지. null 이 들어오더라도  NullPointerException 발생하는 대신 null 을 반환함. SpringEL 문법 -->
+                <label for="loginId">로그인 ID</label>
+                <input type="text" id="loginId" class="form-control" placeholder="ID를 입력해주세요" th:field="*{loginId}" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{loginId}">로그인 ID 오류</div>
+            </div>
+            <br>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" class="form-control" placeholder="비밀번호를 입력해주세요" th:field="*{password}" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{password}">비밀번호 오류</div>
+            </div>
+            <br>
+            <div>
+                <label for="username">닉네임</label>
+                <input type="text" id="username" class="form-control" placeholder="사용할 닉네임을 입력해주세요" th:field="*{username}" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{username}">닉네임 오류</div>
+            </div>
+            <br>
+            <div th:if="${#fields.hasGlobalErrors()}"> <!-- 글로벌 오류 노출 -->
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col">
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">회원 등록</button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-lg btn-secondary"
+                            th:onclick="|location.href='@{|/cancel?redirectURL=${redirectURL}|}'|" type="button">등록 취소</button>
+                </div>
+            </div>
+        </form>
+
+    </div> <!-- /container -->
 </body>
 </html>

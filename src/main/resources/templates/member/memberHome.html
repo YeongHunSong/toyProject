@@ -4,85 +4,60 @@
       layout:decorate="~{layouts/layoutHome (title = '회원 목록')}">
 <body>
     <div class="container" layout:fragment="content" style="max-width: 600px">
-    <br>
-        <div class="row">
-            <div class="col" th:if="${session?.username == null}">
-                <button class="w-auto btn btn-primary float-start"
-                        th:onclick="|location.href='@{/signup?redirectURL=/memberHome}'|" type="button">회원 가입</button>
-            </div>
-            <div class="col" th:if="${session?.username == null}">
-                <button class="w-auto btn btn-secondary float-end"
-                        th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
-            </div>
-            <div class="col" th:if="${session?.username != null}">
-                <button class="w-auto btn btn-info float-start" th:text="|${session?.username} 님|"
-                        th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
-            </div>
-            <div class="col" th:if="${session?.username != null}">
-                <button class="w-auto btn btn-secondary float-end"
-                        th:onclick="|location.href='@{/logout}'|" type="button">로그아웃</button>
-<!--                <form th:action="@{/logout}" method="post">-->
-<!--                    <button class="w-auto btn btn-secondary float-end" type="submit">로그아웃</button>-->
-<!--                </form>-->
-            </div>
-        </div>
 
-        <br>
         <div class="row">
-            <div class="col">
-                <div th:if="${searchTrg == 'off'}">
-                    <form th:action="@{|/memberHome/search|}" method="post">
-                        <button class="w-auto btn btn-primary float-start" type="submit">회원 검색</button>
-                    </form>
-                </div>
-                <div th:if="${searchTrg == 'on'}">
-                    <form th:action="@{|/memberHome/search|}" method="post">
-                        <button class="w-auto btn btn-danger float-start" type="submit">검색 취소</button>
-                    </form>
-                </div>
+            <div class="col" th:if="${searchTrg == 'off'}">
+                <form th:action="@{|/memberHome/search|}" method="post">
+                    <button class="w-auto btn btn-primary float-start" type="submit">회원 검색</button>
+                </form>
             </div>
-
+            <div class="col" th:if="${searchTrg == 'on'}">
+                <form th:action="@{|/memberHome/search|}" method="post">
+                    <button class="w-auto btn btn-danger float-start" type="submit">검색 취소</button>
+                </form>
+            </div>
             <div class="col">
                 <button class="w-auto btn btn-warning float-end"
                         th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
             </div>
         </div>
-        <br th:if="${searchTrg == 'on'}">
-        <form th:action method="get" th:if="${searchTrg == 'on'}" class="row">
-            <div class="col-auto">
-                <label> <!-- String 은 th:field 적용이 안 되는듯 -->
-                    <input type="text" class="form-control" placeholder="닉네임을 입력해주세요" name="username" th:value="${username}">
-                </label>
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary" type="submit">검색</button>
-            </div>
-        </form>
 
-        <div class="py-5 text-center">
-            <h2>회원 목록</h2> <!-- TODO 수정 -->
+        <div th:if="${searchTrg == 'on'}" class="py-3">
+            <form th:action method="get" class="row">
+                <div class="col-auto">
+                    <label> <!-- String 은 th:field 적용이 안 되는듯 -->
+                        <input type="text" class="form-control" placeholder="닉네임을 입력해주세요" name="username" th:value="${username}">
+                    </label>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">검색</button>
+                </div>
+            </form>
         </div>
 
-        <hr class="my-4">
-        <div>
-            <div class="row">
-                <p class="text-start col col-12 col-sm" th:text="|가입 회원수 ${pageControl.totalCount} 명|"></p>
-                <div class="col col-auto">
-                    <form th:action method="get" class="row">
-                        <div class="col-auto">
-                            <label>
-                                <select name="sorting" class="form-select form-select-sm" th:field="${sortingDto.sorting}">
-                                    <option th:value="DESC">최신순</option>
-                                    <option th:value="ASC">과거순</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <input type="hidden" th:field="${username}">
-                            <button type="submit" class="btn-primary btn btn-sm">변경</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="py-3 mt-1 text-center">
+            <h3>회원 목록</h3> <!-- TODO 수정 -->
+        </div>
+
+        <hr class="my-3">
+
+        <div class="row">
+            <p class="text-start col col-12 col-sm" th:text="|가입 회원수 ${pageControl.totalCount} 명|"></p>
+            <div class="col col-auto">
+                <form th:action method="get" class="row">
+                    <div class="col-auto">
+                        <label>
+                            <select name="sorting" class="form-select form-select-sm" th:field="${sortingDto.sorting}">
+                                <option th:value="DESC">최신순</option>
+                                <option th:value="ASC">과거순</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="hidden" th:field="${username}">
+                        <button type="submit" class="btn-primary btn btn-sm">변경</button>
+                    </div>
+                </form>
             </div>
             <table class="table table-hover text-center" style="table-layout: fixed">
                 <thead>
@@ -153,6 +128,7 @@
                 </ul>
             </nav>
         </div>
+
     </div> <!-- /container -->
 </body>
 </html>

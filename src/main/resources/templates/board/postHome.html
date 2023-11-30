@@ -1,32 +1,10 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layoutHome(title = '게시판')}">
+      layout:decorate="~{layouts/layoutHome (title = '게시판')}">
 <body>
     <div class="container" layout:fragment="content" style="max-width: 600px">
-        <br>
-        <div class="row">
-            <div class="col" th:if="${session?.username == null}">
-                <button class="w-auto btn btn-primary float-start"
-                        th:onclick="|location.href='@{/signup?redirectURL=/postHome}'|" type="button">회원 가입</button>
-            </div>
-            <div class="col" th:if="${session?.username == null}">
-                <button class="w-auto btn btn-secondary float-end"
-                        th:onclick="|location.href='@{/login?redirectURL=/postHome}'|" type="button">로그인</button>
-            </div>
-            <div class="col" th:if="${session?.username != null}">
-                <button class="w-auto btn btn-info float-start" th:text="|${session?.username} 님|"
-                        th:onclick="|location.href='@{|/member/${session.loginMember}|}'|" type="button">내 정보</button>
-            </div>
-            <div class="col" th:if="${session?.username != null}">
-                <button class="w-auto btn btn-secondary float-end"
-                        th:onclick="|location.href='@{/logout?redirectURL=/postHome}'|" type="button">로그아웃</button>
-    <!--            <form th:action="@{/logout?redirect=postHome}" method="post">-->
-    <!--                <button class="w-auto btn btn-secondary float-end" type="submit">로그아웃</button>-->
-    <!--            </form>-->
-            </div>
-        </div>
-        <br>
+
         <div class="row">
             <div class="col" th:if="${searchTrg == 'off'}">
                 <form th:action="@{|/postHome/search|}" method="post">
@@ -48,55 +26,55 @@
             </div>
         </div>
 
-        <br th:if="${searchTrg == 'on'}">
-        <form th:action method="get" th:if="${searchTrg == 'on'}" class="row">
-            <div class="col-auto">
-                <label>
-                    <select class="form-select" th:field="${cond.searchType}">
-                        <option selected th:value="title">제목</option>
-                        <option  th:value="content">내용</option>
-                        <option th:value="username">작성자</option>
-                    </select>
-                </label>
-            </div>
-            <div class="col-auto">
-                <input type="text" class="form-control" placeholder="검색어를 입력해주세요" th:field="${cond.searchKeyword}">
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-success" type="submit">검색</button>
-            </div>
-        </form>
-
-        <div class="py-5 text-center">
-            <h2>게시판 목록</h2>
+        <div th:if="${searchTrg == 'on'}" class="py-3">
+            <form th:action method="get" class="row">
+                <div class="col-auto">
+                    <label>
+                        <select class="form-select" th:field="${cond.searchType}">
+                            <option th:value="title" selected>제목</option>
+                            <option th:value="content">내용</option>
+                            <option th:value="username">작성자</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control" placeholder="검색어를 입력해주세요" th:field="${cond.searchKeyword}">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-success" type="submit">검색</button>
+                </div>
+            </form>
         </div>
 
-        <hr class="my-4">
-        <div>
-            <div class="row">
-                <p class="text-start col col-12 col-sm" th:text="|게시글 ${pageControl.totalCount} 개|"></p>
-                <div class="col col-auto">
-                    <form th:action method="get" class="row">
-                        <div class="col-auto">
-                            <label>
-                                <select class="form-select form-select-sm" th:field="${pageDto.pageView}">
-                                    <option th:each="view : ${#numbers.sequence(10, 50, 10)}" th:value="${view}" th:text="|${view}개|"></option>
-                                </select>
-                            </label>
-                            <label>
-                                <select name="sorting" class="form-select form-select-sm" th:field="${sortingDto.sorting}">
-                                    <option th:value="DESC">최신순</option>
-                                    <option th:value="ASC">과거순</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <input type="hidden" th:field="${cond.searchType}">
-                            <input type="hidden" th:field="${cond.searchKeyword}">
-                            <button type="submit" class="btn-primary btn btn-sm">변경</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="py-3 mt-1 text-center">
+            <h3>게시판</h3>
+        </div>
+
+        <hr class="my-3">
+
+        <div class="row">
+            <p class="text-start col col-12 col-sm" th:text="|게시글 ${pageControl.totalCount} 개|"></p>
+            <div class="col col-auto">
+                <form th:action method="get" class="row">
+                    <div class="col-auto">
+                        <label>
+                            <select class="form-select form-select-sm" th:field="${pageDto.pageView}">
+                                <option th:each="view : ${#numbers.sequence(10, 50, 10)}" th:value="${view}" th:text="|${view}개|"></option>
+                            </select>
+                        </label>
+                        <label>
+                            <select name="sorting" class="form-select form-select-sm" th:field="${sortingDto.sorting}">
+                                <option th:value="DESC">최신순</option>
+                                <option th:value="ASC">과거순</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="hidden" th:field="${cond.searchType}">
+                        <input type="hidden" th:field="${cond.searchKeyword}">
+                        <button type="submit" class="btn-primary btn btn-sm">변경</button>
+                    </div>
+                </form>
             </div>
             <table class="table table-hover text-center" style="table-layout: fixed">
                 <thead>
@@ -184,6 +162,7 @@
                 </ul>
             </nav>
         </div>
+
     </div> <!-- /container -->
 </body>
 </html>

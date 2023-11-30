@@ -2,66 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout (title = '회원 정보 수정')}">
-
 <body>
-<div class="container" layout:fragment="content">
+    <div class="container" layout:fragment="content">
 
-    <div class="py-5 text-center">
-        <h2>회원 정보 수정</h2>
-    </div>
-
-    <div th:object="${memberNonEditData}">
-        <div>
-            <label for="memberId">회원 번호</label>
-            <input type="text" id="memberId" class="form-control" th:field="*{memberId}" disabled>
-        </div>
-        <br>
-        <div>
-            <label for="signupDate">가입 일자</label>
-            <!--            <input type="text" id="signupDate" class="form-control" th:field="*{#temporals.format(signupDate, 'yy-MM-dd HH:mm:ss)}" readonly>-->
-            <input type="text" id="signupDate" name="signupDate" class="form-control"
-                   th:value="${#temporals.format(memberNonEditData.signupDate, 'yy-MM-dd HH:mm:ss')}" disabled>
-        </div>
-        <br>
-        <div>
-            <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" class="form-control" th:field="*{loginId}" disabled>
-        </div>
-    </div>
-    <br>
-
-    <form th:action th:object="${memberEditDto}" method="post">
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="text" id="password" class="form-control" th:field="*{password}" th:errorclass="field-error">
-            <div class="field-error" th:errors="*{password}">비밀번호 변경 오류</div>
-        </div>
-        <br>
-        <div>
-            <label for="username">닉네임</label>
-            <input type="text" id="username" class="form-control" th:field="*{username}" th:errorclass="field-error">
-            <div class="field-error" th:errors="*{username}">닉네임 변경 오류</div>
-        </div>
-        <br>
-        <div th:if="${#fields.hasGlobalErrors()}"> <!-- 글로벌 오류 노출 -->
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+        <div class="py-3 text-center">
+            <h2>회원 정보 수정</h2>
         </div>
 
-        <hr class="my-4">
-
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">저장</button>
+        <div th:object="${memberNonEditData}">
+            <div>
+                <label for="memberId">회원 번호</label>
+                <input type="text" id="memberId" class="form-control" th:field="*{memberId}" disabled>
             </div>
-            <div class="col">
-                <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='/member/members.html'"
-                        th:onclick="|location.href='@{|/member/${memberNonEditData.memberId}|}'|" type="button">취소</button>
-<!--                th:onclick="|location.href='@{/member/{memberId}(memberId=${member.memberId})}'|"-->
+            <br>
+            <div>
+                <label for="signupDate">가입 일자</label>
+                <!--            <input type="text" id="signupDate" class="form-control" th:field="*{#temporals.format(signupDate, 'yy-MM-dd HH:mm:ss)}" readonly>-->
+                <input type="text" id="signupDate" name="signupDate" class="form-control"
+                       th:value="${#temporals.format(memberNonEditData.signupDate, 'yy-MM-dd HH:mm:ss')}" disabled>
+            </div>
+            <br>
+            <div>
+                <label for="loginId">로그인 ID</label>
+                <input type="text" id="loginId" class="form-control" th:field="*{loginId}" disabled>
             </div>
         </div>
+        <br>
 
-    </form>
+        <form th:action th:object="${memberEditDto}" method="post">
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="text" id="password" class="form-control" th:field="*{password}" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{password}">비밀번호 변경 오류</div>
+            </div>
+            <br>
+            <div>
+                <label for="username">닉네임</label>
+                <input type="text" id="username" class="form-control" th:field="*{username}" th:errorclass="field-error">
+                <div class="field-error" th:errors="*{username}">닉네임 변경 오류</div>
+            </div>
+            <br>
+            <div th:if="${#fields.hasGlobalErrors()}"> <!-- 글로벌 오류 노출 -->
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+            </div>
 
-</div> <!-- /container -->
+            <hr class="my-3">
+
+            <div class="row">
+                <div class="col">
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">저장</button>
+                </div>
+                <div class="col">
+                    <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='/member/members.html'"
+                            th:onclick="|location.href='@{|/member/${memberNonEditData.memberId}|}'|" type="button">취소</button>
+    <!--                th:onclick="|location.href='@{/member/{memberId}(memberId=${member.memberId})}'|"-->
+                </div>
+            </div>
+        </form>
+
+    </div> <!-- /container -->
 </body>
 </html>
