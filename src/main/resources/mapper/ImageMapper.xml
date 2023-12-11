@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="syh.toyProject.repository.mybatis.ImageMapper">
+
+
+    <insert id="uploadImage" useGeneratedKeys="true" keyProperty="imageId">
+        INSERT INTO image (post_id, origin_name, server_name, file_size, upload_date)
+        VALUES (#{image.postId}, #{image.originName}, #{image.serverName}, #{image.fileSize}, now())
+    </insert>
+
+    <select id="findByPostId" resultType="image">
+        SELECT image_id, post_id, origin_name, server_name, upload_date
+        FROM image
+        WHERE post_id = #{postId}
+    </select>
+
+    <update id="editImage">
+        UPDATE image
+        SET origin_name = #{originName}, server_name = #{serverName}
+        WHERE image_id = #{imageId}
+    </update>
+
+    <delete id="deleteImage">
+        DELETE FROM image
+        WHERE image_id = #{imageId}
+    </delete>
+
+    <delete id="deleteImageAll">
+        DELETE FROM image
+        WHERE post_id = #{postId}
+    </delete>
+
+</mapper>

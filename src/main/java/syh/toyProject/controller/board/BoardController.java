@@ -2,6 +2,7 @@ package syh.toyProject.controller.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import syh.toyProject.Dto.comment.CommentAddDto;
 import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.Dto.comment.CommentEditStatus;
 import syh.toyProject.Dto.comment.EditCommentMode;
+import syh.toyProject.Dto.image.ImageDto;
 import syh.toyProject.Dto.post.PostAddDto;
 import syh.toyProject.Dto.post.PostEditDto;
 import syh.toyProject.Dto.post.PostEditStatus;
@@ -19,26 +21,67 @@ import syh.toyProject.Dto.post.PostSearchCond;
 import syh.toyProject.argumentResolver.Login;
 import syh.toyProject.argumentResolver.LoginName;
 import syh.toyProject.domain.comment.Comment;
+import syh.toyProject.domain.image.Image;
+import syh.toyProject.domain.image.UploadImage;
 import syh.toyProject.domain.member.AuthMember;
 import syh.toyProject.domain.post.Post;
 import syh.toyProject.paging.PageControl;
 import syh.toyProject.paging.PageDto;
 import syh.toyProject.paging.SortingDto;
 import syh.toyProject.service.comment.CommentService;
+import syh.toyProject.service.image.ImageService;
+import syh.toyProject.service.image.ImageStore;
 import syh.toyProject.service.login.LoginService;
 import syh.toyProject.service.post.PostService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final ImageStore imageStore;
     private final PostService postService;
+    private final ImageService imageService;
     private final LoginService loginService;
     private final CommentService commentService;
+
+    @Value("${file.dir}")
+    private String fileDir;
+
+
+    @GetMapping("/imageUpload")
+    public String fileTest(@ModelAttribute ImageDto imageDto) {
+        log.info("fileDir = {}", fileDir);
+
+        return "image/imageForm";
+    }
+
+    @ResponseBody
+    @PostMapping("/imageUpload")
+    public String saveFile(@ModelAttribute ImageDto imageDto) throws IOException {
+        if (imageDto != null) {
+            List<UploadImage> uploadImages = imageStore.storeFiles(imageDto);
+
+            for (UploadImage uploadImage : uploadImages) {
+                imageService.uploadImage(new Image(uploadImage));
+            }
+        }
+
+        return "good";
+//        return "redirect:/imageview/{imageDto.postId}";
+    }
+
+    @GetMapping("/imageview/{postId}")
+    public String imageView(@PathVariable Long postId) {
+
+        return "image/imageView";
+    }
+
 
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
@@ -73,13 +116,15 @@ public class BoardController {
 
 
     @GetMapping("/post/add")
-    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
+    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName,
+                              @ModelAttribute ImageDto imageDto) {
         if (loginMemberName == null) {
             // redirectAttribute 추가
             return "redirect:/postHome";
             // 비로그인 상태에서 글 작성 하기
 //            return "board/postWriteForm";
         }
+
 
         // 비회원 글쓰기를 아예 막는다면 이 코드도 지우고, 그냥 session 에서 이름 가져오는 걸로 변경
         postAddDto.setUsername(loginMemberName);
@@ -88,13 +133,14 @@ public class BoardController {
 
     @PostMapping("/post/add")
     public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
-                          @Login Long loginMemberId, @LoginName String loginMemberName) {
+                          @Login Long loginMemberId, @LoginName String loginMemberName,
+                          @ModelAttribute ImageDto imageDto) throws IOException {
         if (bindingResult.hasErrors()) {
             globalErrorReject(bindingResult, "failed", "게시글 작성");
             return "board/postWriteForm";
         }
 
-        if (loginMemberName != null) { // 비회원 글쓰기는 아직까지는 막는 걸로 ㅇㅇ
+        if (loginMemberName != null) {
             postService.addPost(new Post(postAddDto.getCategory(), postAddDto.getPostTitle(), postAddDto.getPostContent(), loginMemberId));
         }
 
