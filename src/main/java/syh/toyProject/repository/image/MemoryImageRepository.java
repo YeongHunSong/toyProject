@@ -25,8 +25,8 @@ public class MemoryImageRepository implements ImageRepository {
     }
 
     @Override // #TODO 수정 or 삭제
-    public void editImage(Long imageId, Image image) {
-        Image beforeImage = store.get(imageId);
+    public void editImage(Image image) {
+        Image beforeImage = store.get(image.getImageId());
         beforeImage.setOriginName(image.getOriginName());
         beforeImage.setServerName(image.getServerName());
     }

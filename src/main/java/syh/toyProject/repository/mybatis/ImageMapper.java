@@ -13,7 +13,7 @@ public interface ImageMapper {
 
     List<Image> findByPostId(Long postId);
 
-    void editImage(Long imageId, Image imageEditDto);
+    void editImage(@Param("image") Image imageEditDto);
 
     void deleteImage(Long imageId);
 

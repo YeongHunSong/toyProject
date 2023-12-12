@@ -3,6 +3,10 @@ package syh.toyProject.controller.board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +17,8 @@ import syh.toyProject.Dto.comment.CommentAddDto;
 import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.Dto.comment.CommentEditStatus;
 import syh.toyProject.Dto.comment.EditCommentMode;
-import syh.toyProject.Dto.image.ImageDto;
+import syh.toyProject.Dto.image.ImageBoardDto;
+import syh.toyProject.Dto.image.ImageUploadDto;
 import syh.toyProject.Dto.post.PostAddDto;
 import syh.toyProject.Dto.post.PostEditDto;
 import syh.toyProject.Dto.post.PostEditStatus;
@@ -37,6 +42,8 @@ import syh.toyProject.service.post.PostService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
@@ -50,36 +57,54 @@ public class BoardController {
     private final LoginService loginService;
     private final CommentService commentService;
 
-    @Value("${file.dir}")
-    private String fileDir;
+    @Value("${image.dir}")
+    private String imageDir;
 
 
     @GetMapping("/imageUpload")
-    public String fileTest(@ModelAttribute ImageDto imageDto) {
-        log.info("fileDir = {}", fileDir);
-
+    public String fileTest(@ModelAttribute ImageUploadDto imageUploadDto) {
         return "image/imageForm";
     }
 
-    @ResponseBody
     @PostMapping("/imageUpload")
-    public String saveFile(@ModelAttribute ImageDto imageDto) throws IOException {
-        if (imageDto != null) {
-            List<UploadImage> uploadImages = imageStore.storeFiles(imageDto);
+    public String saveFile(@ModelAttribute ImageUploadDto imageUploadDto,
+                           RedirectAttributes redirectAttributes) throws IOException {
+        if (imageUploadDto != null) {
+            List<UploadImage> uploadImages = imageStore.storeFiles(imageUploadDto);
 
             for (UploadImage uploadImage : uploadImages) {
                 imageService.uploadImage(new Image(uploadImage));
             }
         }
 
-        return "good";
-//        return "redirect:/imageview/{imageDto.postId}";
+        redirectAttributes.addAttribute("postId", imageUploadDto.getPostId());
+        return "redirect:/imageView/{postId}";
     }
 
-    @GetMapping("/imageview/{postId}")
-    public String imageView(@PathVariable Long postId) {
+    @GetMapping("/imageView/{postId}")
+    public String imageView(@PathVariable Long postId, Model model) {
+        ImageBoardDto imageBoardDto = new ImageBoardDto(postId, imageService.findByPostId(postId), imageDir);
+        log.info("imageBoardDto = {}", imageBoardDto);
 
+        // fileSize 변환해서 값 넣기 -> ImageDto
+
+
+
+        model.addAttribute("imageBoardDto", imageBoardDto);
         return "image/imageView";
+    }
+
+    @ResponseBody
+    @GetMapping("/post/{postId}/image/{serverName}")
+    public ResponseEntity<Resource> imageRender(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
+
+
+        Resource resource = new InputStreamResource(Files.newInputStream(Paths.get(imageStore.getFullPath(postId, serverName))));
+//        UrlResource resource = new UrlResource("file:" + imageStore.getFullPath(postId, serverName));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, imageService.getMediaType(serverName))
+                .body(resource);
     }
 
 
@@ -117,7 +142,7 @@ public class BoardController {
 
     @GetMapping("/post/add")
     public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName,
-                              @ModelAttribute ImageDto imageDto) {
+                              @ModelAttribute ImageUploadDto imageUploadDto) {
         if (loginMemberName == null) {
             // redirectAttribute 추가
             return "redirect:/postHome";
@@ -134,7 +159,7 @@ public class BoardController {
     @PostMapping("/post/add")
     public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
                           @Login Long loginMemberId, @LoginName String loginMemberName,
-                          @ModelAttribute ImageDto imageDto) throws IOException {
+                          @ModelAttribute ImageUploadDto imageUploadDto) throws IOException {
         if (bindingResult.hasErrors()) {
             globalErrorReject(bindingResult, "failed", "게시글 작성");
             return "board/postWriteForm";

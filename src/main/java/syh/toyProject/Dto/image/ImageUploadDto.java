@@ -7,13 +7,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ImageDto {
+public class ImageUploadDto {
 
     private Long postId;
-    private String fileSize;
     private LocalDateTime uploadDate;
     private List<MultipartFile> uploadImages;
 
-    public ImageDto() {
+    public ImageUploadDto() {
     }
 }

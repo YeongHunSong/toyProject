@@ -10,7 +10,7 @@ public interface ImageRepository {
 
     List<Image> findByPostId(Long postId);
 
-    void editImage(Long imageId, Image imageEditDto);
+    void editImage(Image imageEditDto);
 
     void deleteImage(Long imageId);
 

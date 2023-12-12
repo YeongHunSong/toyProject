@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriUtils;
 import syh.toyProject.domain.image.Image;
 import syh.toyProject.repository.image.ImageRepository;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -20,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageService {
 
+    private final ImageStore imageStore;
     private final ImageRepository imageRepository;
 
     public void uploadImage(Image image) {
@@ -30,8 +29,8 @@ public class ImageService {
         return imageRepository.findByPostId(postId);
     }
 
-    public void editImage(Long imageId, Image imageEditDto) {
-        imageRepository.editImage(imageId, imageEditDto);
+    public void editImage(Image imageEditDto) {
+        imageRepository.editImage(imageEditDto);
     }
 
     public void deleteImage(Long imageId) {
@@ -41,22 +40,18 @@ public class ImageService {
     public void deleteImageAll(Long postId) {
         imageRepository.deleteImageAll(postId);
     }
+
+
+
+
     
     // TODO 부가 기능 추가
-
-
-
-    public String getMediaType(String fileName) throws IOException {
+    public String getMediaType(String serverName) throws IOException {
         return MediaType
                 .parseMediaType(
                         Files.probeContentType(
-                                Paths.get(ImageStore.getFullPath(0L, fileName))))
+                                Paths.get(imageStore.getFullPath(0L, serverName))))
                 .toString();
-    }
-
-    public String contentDisposition(String uploadFileName) {
-        String encodedUploadFileName = encodedUploadFileName(uploadFileName);
-        return "attachment; filename=\"" + encodedUploadFileName + "\"";
     }
 
     public String byteToMB(Long fileSize) {
@@ -73,9 +68,5 @@ public class ImageService {
             retFormat += " "+ strArr[0];
         }
         return retFormat;
-    }
-
-    private String encodedUploadFileName(String uploadFileName) {
-        return UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);
     }
 }

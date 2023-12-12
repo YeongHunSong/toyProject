@@ -10,15 +10,16 @@
     </insert>
 
     <select id="findByPostId" resultType="image">
-        SELECT image_id, post_id, origin_name, server_name, upload_date
+        SELECT image_id, post_id, origin_name, server_name, file_size, upload_date
         FROM image
         WHERE post_id = #{postId}
     </select>
 
     <update id="editImage">
         UPDATE image
-        SET origin_name = #{originName}, server_name = #{serverName}
-        WHERE image_id = #{imageId}
+        SET origin_name = #{image.originName}, server_name = #{image.serverName},
+        file_size = #{image.file_size}, upload_date = now()
+        WHERE image_id = #{image.imageId}
     </update>
 
     <delete id="deleteImage">

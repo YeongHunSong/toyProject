@@ -27,8 +27,8 @@ public class MyBatisImageRepository implements ImageRepository {
     }
 
     @Override
-    public void editImage(Long imageId, Image imageEditDto) {
-        imageMapper.editImage(imageId, imageEditDto);
+    public void editImage(Image imageEditDto) {
+        imageMapper.editImage(imageEditDto);
     }
 
     @Override

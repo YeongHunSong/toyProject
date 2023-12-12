@@ -11,10 +11,9 @@
         <h2>이미지 조회</h2>
     </div>
 
-    postId : <span th:text="${.postId}"></span>
+    postId : <span th:text="${imageBoardDto.postId}"></span>
     <br>
-    <img th:each="imageFile : ${image.imageFiles}" th:src="|/files/images/${imageFile.getStoreFileName()}|" width="300" height="300"/>
-
+    <img th:each="image : ${imageBoardDto.imageList}" th:src="|/post/${imageBoardDto.postId}/image/${image.getServerName()}|" width="300" height="300"/>
 </div> <!-- /container -->
 </body>
 </html>
