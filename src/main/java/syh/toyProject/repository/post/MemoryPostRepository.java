@@ -23,12 +23,12 @@ public class MemoryPostRepository implements PostRepository {
     private static long sequence = 0L;
 
     @Override
-    public Post addPost(Post post) {
+    public Long addPost(Post post) {
         post.setPostId(++sequence);
         post.setWritingDate(LocalDateTime.now());
         post.setLastEditDate(LocalDateTime.now());
         store.put(post.getPostId(), post);
-        return post;
+        return post.getPostId();
     }
 
     @Override

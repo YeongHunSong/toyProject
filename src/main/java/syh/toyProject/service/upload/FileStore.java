@@ -1,7 +1,6 @@
 package syh.toyProject.service.upload;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import syh.toyProject.domain.upload.UploadFile;
 
@@ -11,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
-public class FileStore {
+public class FileStore { // TODO File 관련 다 삭제 예정
 
     @Value("${file.dir}")
     private String fileDir;

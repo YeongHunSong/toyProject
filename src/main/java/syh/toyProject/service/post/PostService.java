@@ -24,7 +24,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
 
-    public Post addPost(Post post) {
+    public Long addPost(Post post) {
         return postRepository.addPost(post);
     }
 

@@ -20,10 +20,9 @@ public class MyBatisPostRepository implements PostRepository {
 
 
     @Override
-    public Post addPost(Post post) {
+    public Long addPost(Post post) {
         postMapper.addPost(post);
-
-        return findByPostId(post.getPostId());
+        return post.getPostId();
     }
 
     @Override

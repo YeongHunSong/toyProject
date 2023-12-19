@@ -3,8 +3,8 @@ package syh.toyProject.controller.board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,8 +17,7 @@ import syh.toyProject.Dto.comment.CommentAddDto;
 import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.Dto.comment.CommentEditStatus;
 import syh.toyProject.Dto.comment.EditCommentMode;
-import syh.toyProject.Dto.image.ImageBoardDto;
-import syh.toyProject.Dto.image.ImageUploadDto;
+import syh.toyProject.Dto.image.ImageListBoardDto;
 import syh.toyProject.Dto.post.PostAddDto;
 import syh.toyProject.Dto.post.PostEditDto;
 import syh.toyProject.Dto.post.PostEditStatus;
@@ -42,9 +41,6 @@ import syh.toyProject.service.post.PostService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -62,35 +58,31 @@ public class BoardController {
 
 
     @GetMapping("/imageUpload")
-    public String fileTest(@ModelAttribute ImageUploadDto imageUploadDto) {
+    public String fileTest(@ModelAttribute PostAddDto postAddDto) {
         return "image/imageForm";
     }
 
-    @PostMapping("/imageUpload")
-    public String saveFile(@ModelAttribute ImageUploadDto imageUploadDto,
-                           RedirectAttributes redirectAttributes) throws IOException {
-        if (imageUploadDto != null) {
-            List<UploadImage> uploadImages = imageStore.storeFiles(imageUploadDto);
-
-            for (UploadImage uploadImage : uploadImages) {
-                imageService.uploadImage(new Image(uploadImage));
-            }
-        }
-
-        redirectAttributes.addAttribute("postId", imageUploadDto.getPostId());
-        return "redirect:/imageView/{postId}";
-    }
+//    @PostMapping("/imageUpload")
+//    public String saveFile(@ModelAttribute PostAddDto postAddDto,
+//                           RedirectAttributes redirectAttributes) throws IOException {
+//        if (postAddDto.getUploadDate() != null) {
+//            log.info("imageUploadDto = {}", postAddDto);
+//            List<UploadImage> uploadImages = imageStore.storeFiles(postAddDto, postAddDto.getPostId());
+//
+//            for (UploadImage uploadImage : uploadImages) {
+//                imageService.uploadImage(new Image(uploadImage));
+//            }
+//            redirectAttributes.addAttribute("postId", postAddDto.getPostId());
+//            return "redirect:/imageView/{postId}";
+//        }
+//        return "image/imageForm";
+//    }
 
     @GetMapping("/imageView/{postId}")
     public String imageView(@PathVariable Long postId, Model model) {
-        ImageBoardDto imageBoardDto = new ImageBoardDto(postId, imageService.findByPostId(postId), imageDir);
-        log.info("imageBoardDto = {}", imageBoardDto);
+        ImageListBoardDto imageListBoardDto = new ImageListBoardDto(postId, imageService.findByPostId(postId));
 
-        // fileSize 변환해서 값 넣기 -> ImageDto
-
-
-
-        model.addAttribute("imageBoardDto", imageBoardDto);
+        model.addAttribute("imageList", imageListBoardDto);
         return "image/imageView";
     }
 
@@ -99,8 +91,8 @@ public class BoardController {
     public ResponseEntity<Resource> imageRender(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
 
 
-        Resource resource = new InputStreamResource(Files.newInputStream(Paths.get(imageStore.getFullPath(postId, serverName))));
-//        UrlResource resource = new UrlResource("file:" + imageStore.getFullPath(postId, serverName));
+//        Resource resource = new InputStreamResource(Files.newInputStream(Paths.get(imageStore.getFullPath(postId, serverName))));
+        UrlResource resource = new UrlResource("file:" + imageStore.getFullPath(postId, serverName));
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, imageService.getMediaType(serverName))
@@ -141,32 +133,30 @@ public class BoardController {
 
 
     @GetMapping("/post/add")
-    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName,
-                              @ModelAttribute ImageUploadDto imageUploadDto) {
+    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
         if (loginMemberName == null) {
-            // redirectAttribute 추가
+            // TODO redirectAttribute 추가
             return "redirect:/postHome";
-            // 비로그인 상태에서 글 작성 하기
-//            return "board/postWriteForm";
         }
-
-
-        // 비회원 글쓰기를 아예 막는다면 이 코드도 지우고, 그냥 session 에서 이름 가져오는 걸로 변경
-        postAddDto.setUsername(loginMemberName);
         return "board/postWriteForm";
     }
 
     @PostMapping("/post/add")
     public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
-                          @Login Long loginMemberId, @LoginName String loginMemberName,
-                          @ModelAttribute ImageUploadDto imageUploadDto) throws IOException {
+                          @Login Long loginMemberId, @LoginName String loginMemberName) throws IOException {
         if (bindingResult.hasErrors()) {
             globalErrorReject(bindingResult, "failed", "게시글 작성");
             return "board/postWriteForm";
         }
 
-        if (loginMemberName != null) {
-            postService.addPost(new Post(postAddDto.getCategory(), postAddDto.getPostTitle(), postAddDto.getPostContent(), loginMemberId));
+
+        if (loginMemberName != null) { // 로그인 체크
+            Long genPostId = postService.addPost(postAddDto.newPost(loginMemberId));
+            if (postAddDto.getUploadImages() != null) {
+                for (UploadImage uploadImage : imageStore.storeImages(postAddDto, genPostId)) {
+                    imageService.uploadImage(new Image(uploadImage));
+                }
+            }
         }
 
         return "redirect:/postHome";
@@ -211,7 +201,6 @@ public class BoardController {
         
         // 중복 추천 방지 추가
         if (postService.recommendDuplicateCheck(postId, loginMemberId)) {
-            // 추천 중복 불가
             return "redirect:/post/{postId}";
         }
 
@@ -226,6 +215,7 @@ public class BoardController {
             return "redirect:/post/{postId}";
         }
 
+        imageService.deleteImageAll(postId);
         postService.deletePost(postId);
         return "redirect:/postHome";
     }
@@ -237,28 +227,24 @@ public class BoardController {
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
                              @Login Long loginMemberId, @LoginName String loginMemberName,
-                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
-                             @ModelAttribute(name = "pageDto") PageDto pageDto,
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto, @ModelAttribute(name = "pageDto") PageDto pageDto,
                              @RequestParam(name = "pageView", defaultValue = "5") int pageView) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
             BindingResult addDtoError = (BindingResult) model.getAttribute("addCommentError");
             commentAddBindingResult.addAllErrors(addDtoError);
 
-            // 비회원 댓글 작성 기능용으로 // 댓글 작성 실패한 bindingResult 값을 받아오는 용도
+            // TODO 비회원 댓글 X 삭제 // 비회원 댓글 작성 기능용으로 // 댓글 작성 실패한 bindingResult 값을 받아오는 용도
             CommentAddDto addDto = (CommentAddDto) model.getAttribute("addCommentDto");
             commentAddDto.setCommentWriter(addDto.getCommentWriter());
             commentAddDto.setCommentContent(addDto.getCommentContent());
         }
 
-//        editPostAccessDeniedCheck
-        if (postEditStatus.isAccessDenied()) {
-            globalErrorReject(postEditBindingResult, "accessDenied.editPost", "게시글수정");
-        }
+        editPostAccessDeniedCheck(postEditStatus, postEditBindingResult);
 
         // loginSessionCheck
         if (loginMemberName != null) {
-            commentAddDto.setCommentWriter(loginMemberName); // 로그인 되어있는 경우 작성자 이름 넣어줌.
+            commentAddDto.setCommentWriter(loginMemberName);  // 로그인 되어있는 경우 작성자 이름 넣어줌.
             commentAuthMember.setAuthMemberId(loginMemberId); // 댓글 수정 권한 있는 회원만 수정 버튼 표시 체크용
 
             if (loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId))) {
@@ -270,13 +256,13 @@ public class BoardController {
 
         postService.addViewCount(postId);
         pageDto.setPageView(pageView);
-        PageControl pageControl = new PageControl(pageDto, commentService.totalCount(postId));
 
-        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("pageControl", new PageControl(pageDto, commentService.totalCount(postId)));
         model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
         model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
         return "board/postDetail";
     }
+
 
     @PostMapping("/post/{postId}/{commentId}")
     public String editCommentModeChange(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
@@ -307,7 +293,7 @@ public class BoardController {
                              @Login Long loginMemberId, @LoginName String loginMemberName) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("addCommentError", bindingResult);
-            redirectAttributes.addFlashAttribute("addCommentDto", commentAddDto);
+            redirectAttributes.addFlashAttribute("addCommentDto", commentAddDto); // TODO
             return "redirect:/post/{postId}";
         }
 
@@ -363,6 +349,12 @@ public class BoardController {
         if (loginMemberName == null) { // 일단 회원만 작성 가능 하도록.
             globalErrorReject(bindingResult, "accessDenied.addComment", "댓글작성");
             redirectAttributes.addFlashAttribute("addCommentError", bindingResult);
+        }
+    }
+
+    private void editPostAccessDeniedCheck(PostEditStatus postEditStatus, BindingResult postEditBindingResult) {
+        if (postEditStatus.isAccessDenied()) {
+            globalErrorReject(postEditBindingResult, "accessDenied.editPost", "게시글수정");
         }
     }
 

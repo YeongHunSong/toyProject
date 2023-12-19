@@ -24,7 +24,6 @@ public class Post {
 
     public Post() {
     }
-
     public Post(PostCategory category, String postTitle, String postContent) {
         this.category = category;
         this.postTitle = postTitle;

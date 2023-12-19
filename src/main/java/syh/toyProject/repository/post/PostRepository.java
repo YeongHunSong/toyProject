@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PostRepository {
 
-    Post addPost(Post post);
+    Long addPost(Post post);
 
     int totalCount(PostSearchCond cond);
 

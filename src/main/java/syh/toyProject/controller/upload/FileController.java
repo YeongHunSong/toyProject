@@ -6,7 +6,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,7 +20,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 @Slf4j
-@Controller
 @RequestMapping("/files")
 @RequiredArgsConstructor
 public class FileController {

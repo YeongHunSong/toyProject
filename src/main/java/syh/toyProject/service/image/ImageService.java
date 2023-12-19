@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import syh.toyProject.Dto.image.ImageDto;
 import syh.toyProject.domain.image.Image;
 import syh.toyProject.repository.image.ImageRepository;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,8 +27,24 @@ public class ImageService {
         imageRepository.uploadImage(image);
     }
 
-    public List<Image> findByPostId(Long postId) {
-        return imageRepository.findByPostId(postId);
+    public List<ImageDto> findByPostId(Long postId) {
+        List<ImageDto> imageDtoList = new ArrayList<>();
+        imageRepository.findByPostId(postId)
+                .forEach(image -> imageDtoList.add(new ImageDto(image)));
+
+        log.info("imageDtoList = {}", imageDtoList);
+        return imageDtoList;
+
+
+//        return imageRepository.findByPostId(postId);
+
+//         TODO 수정 혹은 삭제
+//        List<ImageDto> imageDtoList = new ArrayList<>();
+//        for (Image image : imageList) {
+//            ImageDto imageDto = new ImageDto(image);
+//            imageDtoList.add(imageDto);
+//        }
+//        return imageDtoList;
     }
 
     public void editImage(Image imageEditDto) {

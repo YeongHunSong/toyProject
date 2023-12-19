@@ -11,7 +11,7 @@
         <h2>이미지 업로드</h2>
     </div>
 
-    <form th:action method="post" enctype="multipart/form-data" th:object="${imageUploadDto}">
+    <form th:action method="post" enctype="multipart/form-data" th:object="${postAddDto}">
         <ul>
             <li>일단포스트id
                 <input type="text" th:field="*{postId}">

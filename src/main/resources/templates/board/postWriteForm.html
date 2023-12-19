@@ -9,7 +9,7 @@
             <h2>게시글 작성</h2>
         </div>
 
-        <form th:action th:object="${postAddDto}" method="post">
+        <form th:action th:object="${postAddDto}" method="post" enctype="multipart/form-data">
             <div>
                 <label for="postTitle">제목</label>
                 <input type="text" id="postTitle" class="form-control" placeholder="제목을 입력해주세요" th:field="*{postTitle}" th:errorclass="field-error">
@@ -23,8 +23,12 @@
             </div>
             <br>
             <div>
+                <input type="file" class="form-control" multiple="multiple" th:field="*{uploadImages}" accept="image/*">
+            </div>
+            <br>
+            <div> <!-- TODO 작성자 란은 어차피 수정이 불가능하니 input hidden 으로 값 넘기고 입력창을 아예 없애고 그냥 텍스트만 보이도록 -->
                 <label for="username">작성자</label> <!-- TODO 로그인 사용자는 readonly, 비로그인 사용자는 그냥 가능하게 // 회색 -->
-                <input type="text" id="username" class="form-control" th:field="*{username}" readonly>
+                <input type="text" id="username" class="form-control" th:value="${session.username}" readonly>
             </div>
 
 

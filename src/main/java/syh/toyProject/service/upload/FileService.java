@@ -3,7 +3,6 @@ package syh.toyProject.service.upload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 import syh.toyProject.domain.upload.File;
 import syh.toyProject.repository.upload.FileRepository;
@@ -14,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class FileService {
 

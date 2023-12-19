@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
-import syh.toyProject.Dto.image.ImageUploadDto;
+import syh.toyProject.Dto.post.PostAddDto;
 import syh.toyProject.domain.image.UploadImage;
 
 import java.io.File;
@@ -26,17 +26,17 @@ public class ImageStore {
         return imageDir + postId.toString() + File.separator + serverName;
     }
 
-    public List<UploadImage> storeFiles(ImageUploadDto imageUploadDto) throws IOException {
-        List<UploadImage> storeFileResult = new ArrayList<>();
-        for (MultipartFile multipartFile : imageUploadDto.getUploadImages()) {
-            if (!imageUploadDto.getUploadImages().isEmpty()) {
-                storeFileResult.add(storeFile(multipartFile, imageUploadDto.getPostId()));
+    public List<UploadImage> storeImages(PostAddDto postAddDto, Long postId) throws IOException {
+        List<UploadImage> uploadImageList = new ArrayList<>();
+        for (MultipartFile multipartFile : postAddDto.getUploadImages()) {
+            if (!postAddDto.getUploadImages().isEmpty()) {
+                uploadImageList.add(storeImage(multipartFile, postId));
             }
         }
-        return storeFileResult;
+        return uploadImageList;
     }
 
-    public UploadImage storeFile(MultipartFile multipartFile, Long postId) throws IOException {
+    public UploadImage storeImage(MultipartFile multipartFile, Long postId) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -45,7 +45,7 @@ public class ImageStore {
         String storeFileName = createStoreFileName(originalFilename);
 
         File saveFile = new File(getFullPath(postId, storeFileName));
-        saveFile.mkdirs();
+        saveFile.mkdirs(); // 폴더 생성
 
         log.info("saveFile = {}", saveFile);
 

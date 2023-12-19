@@ -11,9 +11,13 @@
         <h2>이미지 조회</h2>
     </div>
 
-    postId : <span th:text="${imageBoardDto.postId}"></span>
+    postId : <span th:text="${imageList.postId}"></span>
     <br>
-    <img th:each="image : ${imageBoardDto.imageList}" th:src="|/post/${imageBoardDto.postId}/image/${image.getServerName()}|" width="300" height="300"/>
+    <div th:each="image : ${imageList.imageDtoList}">
+        <img th:src="|/post/${imageList.postId}/image/${image.getServerName()}|" width="300" height="300"/>
+        <p th:text="|용량 : ${image.fileSize}|"></p>
+    </div>
+<!--        <img th:each="imageDto : ${imageListBoardDto.imageDtoList}" th:src="|/post/${imageListBoardDto.postId}/image/${imageDto.getServerName()}|" width="300" height="300"/>-->
 </div> <!-- /container -->
 </body>
 </html>

@@ -34,7 +34,7 @@
         </if>
     </sql>
 
-    <insert id="addPost" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="addPost" useGeneratedKeys="true" keyColumn="post_id" keyProperty="postId">
         INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count)
         VALUES (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0)
     </insert>
