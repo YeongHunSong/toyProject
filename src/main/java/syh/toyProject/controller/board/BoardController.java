@@ -78,13 +78,13 @@ public class BoardController {
 //        return "image/imageForm";
 //    }
 
-    @GetMapping("/imageView/{postId}")
-    public String imageView(@PathVariable Long postId, Model model) {
-        ImageListBoardDto imageListBoardDto = new ImageListBoardDto(postId, imageService.findByPostId(postId));
-
-        model.addAttribute("imageList", imageListBoardDto);
-        return "image/imageView";
-    }
+//    @GetMapping("/imageView/{postId}")
+//    public String imageView(@PathVariable Long postId, Model model) {
+//        ImageListBoardDto imageListBoardDto = new ImageListBoardDto(postId, imageService.findByPostId(postId));
+//
+//        model.addAttribute("imageList", imageListBoardDto);
+//        return "image/imageView";
+//    }
 
     @ResponseBody
     @GetMapping("/post/{postId}/image/{serverName}")
@@ -257,8 +257,9 @@ public class BoardController {
         postService.addViewCount(postId);
         pageDto.setPageView(pageView);
 
-        model.addAttribute("pageControl", new PageControl(pageDto, commentService.totalCount(postId)));
         model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
+        model.addAttribute("pageControl", new PageControl(pageDto, commentService.totalCount(postId)));
+        model.addAttribute("imageList", new ImageListBoardDto(postId, imageService.findByPostId(postId)));
         model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
         return "board/postDetail";
     }

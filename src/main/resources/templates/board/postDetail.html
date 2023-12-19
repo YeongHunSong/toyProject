@@ -9,10 +9,12 @@
             <h3 th:text="${post.postTitle}">게시글 제목</h3>
         </div>
 
-        <h2 th:if="${param.status}" th:text="'저장 완료'"></h2> <!-- TODO ##############삭제############### -->
-
-        <div>
-            <p class="form-control" th:text="${post.postContent}"> 게시글 내용</p>
+        <div class="form-control">
+            <br>
+            <p th:text="${post.postContent}"> 게시글 내용</p>
+            <div class="mb-2" th:each="image : ${imageList.imageDtoList}">
+                <img class="img-fluid" th:src="|/post/${imageList.postId}/image/${image.getServerName()}|">
+            </div>
         </div>
 
         <div class="row py-4">
