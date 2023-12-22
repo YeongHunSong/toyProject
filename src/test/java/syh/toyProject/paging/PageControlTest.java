@@ -8,8 +8,8 @@ class PageControlTest {
 
     @Test
     void pageGenerateTest() {
-        PageDto pageDto = new PageDto(100, 5);
-        PageControl pageControl = new PageControl(pageDto, 191);
+        PageDto pageDto = PageDto.create(100, 5);
+        PageControl pageControl = PageControl.create(pageDto, 191);
 
         log.info("pageControl = {}", pageControl);
 

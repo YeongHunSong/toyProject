@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class PostAddDto {
+public class PostAddEditDto {
 
     private PostCategory category;
 
@@ -24,10 +24,16 @@ public class PostAddDto {
     private LocalDateTime uploadDate;
     private List<MultipartFile> uploadImages;
 
-    public PostAddDto() {
-    }
-
     public Post newPost(Long memberId) {
         return new Post(memberId, postTitle, postContent);
+    }
+
+    private PostAddEditDto(String postTitle, String postContent) {
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+    }
+
+    public static PostAddEditDto create(Post post) {
+        return new PostAddEditDto(post.getPostTitle(), post.getPostContent());
     }
 }

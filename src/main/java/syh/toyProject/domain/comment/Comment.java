@@ -16,16 +16,24 @@ public class Comment {
 
     private String commentContent; // 댓글은 따로 제목이 없도록.
 
-    public Comment() {
+    private Comment() {
     }
 
-    public Comment(String commentContent) {
+    private Comment(String commentContent) {
         this.commentContent = commentContent;
     }
 
-    public Comment(Long postId, Long memberId, String commentContent) {
+    private Comment(Long postId, Long memberId, String commentContent) {
         this.postId = postId;
         this.memberId = memberId;
         this.commentContent = commentContent;
+    }
+
+    public static Comment editFrom(String commentContent) {
+        return new Comment(commentContent);
+    }
+
+    public static Comment addFrom(Long postId, Long memberId, String commentContent) {
+        return new Comment(postId, memberId, commentContent);
     }
 }

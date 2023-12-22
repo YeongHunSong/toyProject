@@ -22,9 +22,10 @@ public class Post {
     private Long commentCount = 0L;
     private Long recommendCount = 0L;
 
-    public Post() {
+    private Post() {
     }
-    public Post(PostCategory category, String postTitle, String postContent) {
+
+    private Post(PostCategory category, String postTitle, String postContent) {
         this.category = category;
         this.postTitle = postTitle;
         this.postContent = postContent;
@@ -42,5 +43,9 @@ public class Post {
         this.memberId = memberId;
         this.postTitle = postTitle;
         this.postContent = postContent;
+    }
+
+    public static Post postEdit(PostCategory category, String postTitle, String postContent) {
+        return new Post(category, postTitle, postContent);
     }
 }

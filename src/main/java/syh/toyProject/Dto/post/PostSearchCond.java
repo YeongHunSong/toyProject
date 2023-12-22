@@ -12,9 +12,6 @@ public class PostSearchCond {
 
     private String searchKeyword;
 
-    public PostSearchCond() {
-    }
-
     public PostSearchCond(String searchType, String searchKeyword) {
         this.searchType = searchType;
         this.searchKeyword = searchKeyword;

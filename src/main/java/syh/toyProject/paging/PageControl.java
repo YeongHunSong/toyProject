@@ -36,9 +36,13 @@ public class PageControl {
         }
     }
 
-    public PageControl(PageDto pageDto, int totalCount) {
+    private PageControl(PageDto pageDto, int totalCount) {
         this.pageDto = pageDto;
         this.totalCount = totalCount;
         pageProcess();
+    }
+
+    public static PageControl create(PageDto pageDto, int totalCount) {
+        return new PageControl(pageDto, totalCount);
     }
 }

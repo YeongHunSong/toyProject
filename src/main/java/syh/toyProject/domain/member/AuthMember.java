@@ -9,8 +9,6 @@ public class AuthMember {
 
     public static final Long ADMIN_MEMBER_ID = 1L; // 관리자 MEMBER ID
 
-
-
     public AuthMember(Long authMemberId) {
         this.authMemberId = authMemberId;
     }

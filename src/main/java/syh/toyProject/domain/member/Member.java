@@ -24,7 +24,7 @@ public class Member {
     // 주소값은 주소 API 입력을 통해 받도록 설정
     private Address address;
 
-    public Member() { // DB용
+    private Member() { // DB용
     }
 
     public Member(String password, String username) {

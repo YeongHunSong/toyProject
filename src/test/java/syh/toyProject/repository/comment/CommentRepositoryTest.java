@@ -85,7 +85,7 @@ class CommentRepositoryTest {
         CommentEditDto commentDto = new CommentEditDto("댓글은이걸로변경");
         Comment beforeComment = newComment(1L);
 
-        Comment commentEditTemp = new Comment(commentDto.getCommentContent());
+        Comment commentEditTemp = Comment.editFrom(commentDto.getCommentContent());
         sleep(1);
         commentRepository.editComment(beforeComment.getCommentId(), commentEditTemp);
         Comment afterComment = commentRepository.findByCommentId(beforeComment.getCommentId());
@@ -123,6 +123,7 @@ class CommentRepositoryTest {
     }
 
     private Comment newComment(Long number) {
-        return commentRepository.addComment(new Comment(number, number, "댓글생성테스트" + number));
+        return commentRepository.addComment(Comment.addFrom(number, number, "댓글생성테스트" + number));
+
     }
 }

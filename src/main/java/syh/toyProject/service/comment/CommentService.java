@@ -3,7 +3,9 @@ package syh.toyProject.service.comment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import syh.toyProject.Dto.comment.CommentAddDto;
 import syh.toyProject.Dto.comment.CommentBoardDto;
+import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.domain.comment.Comment;
 import syh.toyProject.paging.PageDto;
 import syh.toyProject.paging.SortingDto;
@@ -21,8 +23,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
 
-    public Comment addComment(Comment comment) {
-        return commentRepository.addComment(comment);
+    public Comment addComment(Long postId, Long loginMemberId, CommentAddDto commentAddDto) {
+        return commentRepository.addComment(Comment.addFrom(postId, loginMemberId, commentAddDto.getCommentContent()));
     }
 
     public int totalCount(Long postId) {
@@ -54,8 +56,8 @@ public class CommentService {
     }
 
 
-    public void editComment(Long CommentId, Comment commentEditDto) {
-        commentRepository.editComment(CommentId, commentEditDto);
+    public void editComment(Long CommentId, CommentEditDto commentEditDto) {
+        commentRepository.editComment(CommentId, Comment.editFrom(commentEditDto.getCommentContent()));
     }
 
 

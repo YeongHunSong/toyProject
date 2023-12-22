@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import syh.toyProject.Dto.image.ImageDto;
 import syh.toyProject.domain.image.Image;
+import syh.toyProject.domain.image.UploadImage;
 import syh.toyProject.repository.image.ImageRepository;
 
 import java.io.IOException;
@@ -23,8 +24,8 @@ public class ImageService {
     private final ImageStore imageStore;
     private final ImageRepository imageRepository;
 
-    public void uploadImage(Image image) {
-        imageRepository.uploadImage(image);
+    public void uploadImage(UploadImage uploadImage) {
+        imageRepository.uploadImage(Image.from(uploadImage));
     }
 
     public List<ImageDto> findByPostId(Long postId) {

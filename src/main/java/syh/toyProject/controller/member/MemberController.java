@@ -44,10 +44,9 @@ public class MemberController {
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
                              @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
                              @ModelAttribute(name = "pageDto") PageDto pageDto) {
-        PageControl pageControl = new PageControl(pageDto, memberService.totalCount(username));
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("pageControl", PageControl.create(pageDto, memberService.totalCount(username)));
         model.addAttribute("memberList", memberService.findAll(username, pageDto, sortingDto));
         return "member/memberHome";
     }
@@ -98,16 +97,14 @@ public class MemberController {
             globalErrorReject(bindingResult, "accessDenied.editMember", "회원수정");
         }
 
-        PageDto postPageDto = new PageDto(postPageNum, 7);
-        PageDto commentPageDto = new PageDto(commentPageNum, 7);
-        PageControl postPageControl = new PageControl(postPageDto, postService.totalCountByMemberId(memberId));
-        PageControl commentPageControl = new PageControl(commentPageDto, commentService.totalCountByMemberId(memberId));
-
         status.setAuthority(loginService.authAndAdminCheck(loginMemberId, memberId)); // 권한이 있는 회원만 회원수정 버튼이 표시되도록
 
+        PageDto postPageDto = PageDto.create(postPageNum, 7);
+        PageDto commentPageDto = PageDto.create(commentPageNum, 7);
+
         model.addAttribute("memberDetail", memberService.findByMemberId(memberId)); // 나중에 넣을 객체 DTO 로 수정 필요
-        model.addAttribute("postPageControl", postPageControl);
-        model.addAttribute("commentPageControl", commentPageControl);
+        model.addAttribute("postPageControl", PageControl.create(postPageDto, postService.totalCountByMemberId(memberId)));
+        model.addAttribute("commentPageControl", PageControl.create(commentPageDto, commentService.totalCountByMemberId(memberId)));
         model.addAttribute("postList", postService.findByMemberIdAll(memberId, postPageDto)); // 나중에 넣을 객체 DTO 로 수정 필요
         model.addAttribute("commentList", commentService.findByMemberIdAll(memberId, commentPageDto)); // 나중에 넣을 객체 DTO 로 수정 필요
 //        List<PostBoardDto> postDtoList = postService.postListToPostDto(postService.findByMemberIdAll(memberId));

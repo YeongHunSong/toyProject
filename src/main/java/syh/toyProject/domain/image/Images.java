@@ -17,5 +17,4 @@ public class Images {
     private LocalDateTime lastEditDate;
 
     private List<UploadImage> uploadImages;
-
 }

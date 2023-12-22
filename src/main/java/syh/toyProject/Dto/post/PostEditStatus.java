@@ -7,10 +7,11 @@ public class PostEditStatus {
 
     private boolean accessDenied = false;
 
-    public PostEditStatus() {
+    private PostEditStatus(boolean accessDenied) {
+        this.accessDenied = accessDenied;
     }
 
-    public PostEditStatus(boolean accessDenied) {
-        this.accessDenied = accessDenied;
+    public static PostEditStatus accessDenied() {
+        return new PostEditStatus(true);
     }
 }

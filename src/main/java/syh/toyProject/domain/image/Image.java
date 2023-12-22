@@ -16,13 +16,17 @@ public class Image {
 
     private LocalDateTime uploadDate;
 
-    public Image() {
+    private Image() {
     }
 
-    public Image(UploadImage uploadImage) {
+    private Image(UploadImage uploadImage) {
         this.postId = uploadImage.getPostId();
         this.fileSize = uploadImage.getFileSize();
         this.originName = uploadImage.getOriginName();
         this.serverName = uploadImage.getServerName();
+    }
+
+    public static Image from(UploadImage uploadImage) {
+        return new Image(uploadImage);
     }
 }

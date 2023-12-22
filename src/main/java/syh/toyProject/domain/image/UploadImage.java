@@ -6,14 +6,21 @@ import lombok.Data;
 public class UploadImage {
 
     private Long postId;
+
     private Long fileSize;
+
     private String originName;
+
     private String serverName;
 
-    public UploadImage(Long postId, Long fileSize, String originName, String serverName) {
+    private UploadImage(Long postId, Long fileSize, String originName, String serverName) {
         this.postId = postId;
         this.fileSize = fileSize;
         this.originName = originName;
         this.serverName = serverName;
+    }
+
+    public static UploadImage create(Long postId, Long fileSize, String originName, String serverName) {
+        return new UploadImage(postId, fileSize, originName, serverName);
     }
 }

@@ -3,7 +3,6 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="syh.toyProject.repository.mybatis.ImageMapper">
 
-
     <insert id="uploadImage" useGeneratedKeys="true" keyProperty="imageId">
         INSERT INTO image (post_id, origin_name, server_name, file_size, upload_date)
         VALUES (#{image.postId}, #{image.originName}, #{image.serverName}, #{image.fileSize}, now())

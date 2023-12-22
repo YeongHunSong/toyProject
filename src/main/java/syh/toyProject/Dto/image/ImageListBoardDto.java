@@ -9,11 +9,12 @@ public class ImageListBoardDto {
     private Long postId;
     private List<ImageDto> imageDtoList;
 
-    public ImageListBoardDto() {
-    }
-
-    public ImageListBoardDto(Long postId, List<ImageDto> imageDtoList) {
+    private ImageListBoardDto(Long postId, List<ImageDto> imageDtoList) {
         this.postId = postId;
         this.imageDtoList = imageDtoList;
+    }
+
+    public static ImageListBoardDto create(Long postId, List<ImageDto> imageDtoList) {
+        return new ImageListBoardDto(postId, imageDtoList);
     }
 }

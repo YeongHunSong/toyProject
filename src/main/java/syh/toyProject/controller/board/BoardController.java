@@ -18,14 +18,11 @@ import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.Dto.comment.CommentEditStatus;
 import syh.toyProject.Dto.comment.EditCommentMode;
 import syh.toyProject.Dto.image.ImageListBoardDto;
-import syh.toyProject.Dto.post.PostAddDto;
-import syh.toyProject.Dto.post.PostEditDto;
+import syh.toyProject.Dto.post.PostAddEditDto;
 import syh.toyProject.Dto.post.PostEditStatus;
 import syh.toyProject.Dto.post.PostSearchCond;
 import syh.toyProject.argumentResolver.Login;
 import syh.toyProject.argumentResolver.LoginName;
-import syh.toyProject.domain.comment.Comment;
-import syh.toyProject.domain.image.Image;
 import syh.toyProject.domain.image.UploadImage;
 import syh.toyProject.domain.member.AuthMember;
 import syh.toyProject.domain.post.Post;
@@ -58,7 +55,7 @@ public class BoardController {
 
 
     @GetMapping("/imageUpload")
-    public String fileTest(@ModelAttribute PostAddDto postAddDto) {
+    public String fileTest(@ModelAttribute PostAddEditDto postAddEditDto) {
         return "image/imageForm";
     }
 
@@ -100,18 +97,20 @@ public class BoardController {
     }
 
 
+
     @GetMapping("/postHome")
     public String postHome(@ModelAttribute(name = "cond") PostSearchCond cond, Model model,
                            @CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
                            @ModelAttribute(name = "sortingDto") SortingDto sortingDto,
                            @ModelAttribute(name = "pageDto") PageDto pageDto) {
-        PageControl pageControl = new PageControl(pageDto, postService.totalCount(cond));
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("pageControl", pageControl);
+        model.addAttribute("pageControl", PageControl.create(pageDto, postService.totalCount(cond)));
         model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto, sortingDto)));
         return "board/postHome";
     }
+
+
 
     @PostMapping("/postHome/search")
     public String memberSearchModeChange(@CookieValue(name = "postSearchTrg", defaultValue = "off") String searchTrg,
@@ -132,29 +131,32 @@ public class BoardController {
     }
 
 
+
     @GetMapping("/post/add")
-    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
+    public String addPostForm(@ModelAttribute PostAddEditDto postAddEditDto, @LoginName String loginMemberName) {
         if (loginMemberName == null) {
             // TODO redirectAttribute 추가
             return "redirect:/postHome";
         }
-        return "board/postWriteForm";
+        return "board/addPostForm";
     }
 
+
+
     @PostMapping("/post/add")
-    public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
+    public String addPost(@Validated @ModelAttribute PostAddEditDto postAddEditDto, BindingResult bindingResult,
                           @Login Long loginMemberId, @LoginName String loginMemberName) throws IOException {
         if (bindingResult.hasErrors()) {
             globalErrorReject(bindingResult, "failed", "게시글 작성");
-            return "board/postWriteForm";
+            return "board/addPostForm";
         }
 
 
         if (loginMemberName != null) { // 로그인 체크
-            Long genPostId = postService.addPost(postAddDto.newPost(loginMemberId));
-            if (postAddDto.getUploadImages() != null) {
-                for (UploadImage uploadImage : imageStore.storeImages(postAddDto, genPostId)) {
-                    imageService.uploadImage(new Image(uploadImage));
+            Long genPostId = postService.addPost(postAddEditDto.newPost(loginMemberId));
+            if (postAddEditDto.getUploadImages() != null) {
+                for (UploadImage uploadImage : imageStore.storeImages(postAddEditDto, genPostId)) {
+                    imageService.uploadImage(uploadImage);
                 }
             }
         }
@@ -162,25 +164,29 @@ public class BoardController {
         return "redirect:/postHome";
     }
 
+
+
     @GetMapping("/post/{postId}/edit") // ##### 수정
     public String editPostForm(@PathVariable Long postId, Model model, RedirectAttributes redirectAttributes,
                                @Login Long loginMemberId) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
-            redirectAttributes.addFlashAttribute("postEditStatus", new PostEditStatus(true));
+            redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
             return "redirect:/post/{postId}";
         }
 
         Post findPost = postService.findByPostId(postId);
-        model.addAttribute("postEditDto", new PostEditDto(findPost.getPostTitle(), findPost.getPostContent()));
+        // TODO 사진 불러와서 모델에 넣기
+        model.addAttribute("postAddEditDto", PostAddEditDto.create(findPost));
         return "board/editPostForm";
-
     }
+
+
 
     @PostMapping("/post/{postId}/edit")
     public String editPost(@PathVariable Long postId, RedirectAttributes redirectAttributes, @Login Long loginMemberId,
-                           @Validated @ModelAttribute PostEditDto postEditDto, BindingResult bindingResult) {
+                           @Validated @ModelAttribute PostAddEditDto postAddEditDto, BindingResult bindingResult) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
-            redirectAttributes.addFlashAttribute("postEditStatus", new PostEditStatus(true));
+            redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
             return "redirect:/post/{postId}";
         }
 
@@ -188,9 +194,11 @@ public class BoardController {
             return "board/editPostForm";
         }
 
-        postService.editPost(postId, new Post(postEditDto.getCategory(), postEditDto.getPostTitle(), postEditDto.getPostContent()));
+        postService.editPost(postId, postAddEditDto);
         return "redirect:/post/{postId}";
     }
+
+
 
     @PostMapping("/post/{postId}/recommend")
     public String recommendPost(@PathVariable Long postId, @Login Long loginMemberId,  @LoginName String loginMemberName) {
@@ -208,10 +216,12 @@ public class BoardController {
         return "redirect:/post/{postId}";
     }
 
+
+
     @PostMapping("/post/{postId}/delete")
     public String deletePost(@PathVariable Long postId, @Login Long loginMemberId, RedirectAttributes redirectAttributes) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
-            redirectAttributes.addFlashAttribute("postEditStatus", new PostEditStatus(true));
+            redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
             return "redirect:/post/{postId}";
         }
 
@@ -219,6 +229,8 @@ public class BoardController {
         postService.deletePost(postId);
         return "redirect:/postHome";
     }
+
+
 
     @GetMapping("/post/{postId}")
     public String postDetail(@PathVariable Long postId, Model model, // postAuth => 게시글 수정 노출 트리거
@@ -258,11 +270,12 @@ public class BoardController {
         pageDto.setPageView(pageView);
 
         model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
-        model.addAttribute("pageControl", new PageControl(pageDto, commentService.totalCount(postId)));
-        model.addAttribute("imageList", new ImageListBoardDto(postId, imageService.findByPostId(postId)));
+        model.addAttribute("pageControl", PageControl.create(pageDto, commentService.totalCount(postId)));
+        model.addAttribute("imageList", ImageListBoardDto.create(postId, imageService.findByPostId(postId)));
         model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
         return "board/postDetail";
     }
+
 
 
     @PostMapping("/post/{postId}/{commentId}")
@@ -272,21 +285,25 @@ public class BoardController {
         return "redirect:/post/{postId}";
     }
 
+
+
     @PostMapping("/post/{postId}/{commentId}/edit") // 포스트 ID와 멤버 ID, 코멘트 ID 가 일치하는 경우에 수정을 누르면 th:if로 입력폼으로 변경 & 저장
     public String editComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
                               @Validated @ModelAttribute CommentEditDto commentEditDto, BindingResult bindingResult,
                               @Login Long loginMemberId) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("commentEditStatus", new CommentEditStatus(commentId, EditCommentMode.ERR));
+            redirectAttributes.addFlashAttribute("commentEditStatus", CommentEditStatus.editError(commentId));
             redirectAttributes.addFlashAttribute("commentEditDtoError", bindingResult);
             return "redirect:/post/{postId}";
         }
 
         editCommentAuthAndAdminCheck(commentId, redirectAttributes, loginMemberId);
 
-        commentService.editComment(commentId, new Comment(commentEditDto.getCommentContent()));
+        commentService.editComment(commentId, commentEditDto);
         return "redirect:/post/{postId}";
     }
+
+
 
     @PostMapping("/post/{postId}")
     public String addComment(@Validated @ModelAttribute CommentAddDto commentAddDto, BindingResult bindingResult,
@@ -294,15 +311,17 @@ public class BoardController {
                              @Login Long loginMemberId, @LoginName String loginMemberName) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("addCommentError", bindingResult);
-            redirectAttributes.addFlashAttribute("addCommentDto", commentAddDto); // TODO
+            redirectAttributes.addFlashAttribute("addCommentDto", commentAddDto);
             return "redirect:/post/{postId}";
         }
 
         addCommentAuthAndAdminCheck(bindingResult, redirectAttributes, loginMemberName);
 
-        commentService.addComment(new Comment(postId, loginMemberId, commentAddDto.getCommentContent()));
+        commentService.addComment(postId, loginMemberId, commentAddDto);
         return "redirect:/post/{postId}";
     }
+
+
 
     @PostMapping("/post/{postId}/{commentId}/delete")
     public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
@@ -314,17 +333,20 @@ public class BoardController {
     }
 
 
+
     private void globalErrorReject(BindingResult bindingResult, String errorCode, Object... errorArgs) {
         bindingResult.reject(errorCode, errorArgs, null);
     }
 
     private void editCommentModeChangeAuthAndAdminCheck(Long commentId, RedirectAttributes redirectAttributes, Long loginMemberId) {
         if (loginService.authAndAdminCheck(loginMemberId, commentService.findByMemberId(commentId))) {
-            redirectAttributes.addFlashAttribute("commentEditStatus", new CommentEditStatus(commentId, EditCommentMode.ON));
+            redirectAttributes.addFlashAttribute("commentEditStatus", CommentEditStatus.editOn(commentId));
         } else { // 세션 X or 권한 X
-            redirectAttributes.addFlashAttribute("commentEditStatus", new CommentEditStatus(commentId, true));
+            redirectAttributes.addFlashAttribute("commentEditStatus", CommentEditStatus.accessDenied(commentId));
         }
     }
+
+
 
     private void editCommentModeCheck(Model model, CommentEditDto commentEditDto, BindingResult commentEditBindingResult, CommentEditStatus commentEditStatus) {
         if (commentEditStatus.isAccessDenied()) { // 권한 없이 댓글 수정 관련 기능 접근 시 에러 처리 (postman 등 접근 방지)
@@ -339,12 +361,16 @@ public class BoardController {
         }
     }
 
+
+
     private void editCommentAuthAndAdminCheck(Long commentId, RedirectAttributes redirectAttributes, Long loginMemberId) {
         if (!loginService.authAndAdminCheck(loginMemberId, commentService.findByMemberId(commentId))) {
-            redirectAttributes.addFlashAttribute("commentEditStatus", new CommentEditStatus(commentId, true));
+            redirectAttributes.addFlashAttribute("commentEditStatus", CommentEditStatus.accessDenied(commentId));
             // 세션 X or 권한 X
         }
     }
+
+
 
     private void addCommentAuthAndAdminCheck(BindingResult bindingResult, RedirectAttributes redirectAttributes, String loginMemberName) {
         if (loginMemberName == null) { // 일단 회원만 작성 가능 하도록.
@@ -353,11 +379,14 @@ public class BoardController {
         }
     }
 
+
+
     private void editPostAccessDeniedCheck(PostEditStatus postEditStatus, BindingResult postEditBindingResult) {
         if (postEditStatus.isAccessDenied()) {
             globalErrorReject(postEditBindingResult, "accessDenied.editPost", "게시글수정");
         }
     }
+
 
 
 //    @PostConstruct

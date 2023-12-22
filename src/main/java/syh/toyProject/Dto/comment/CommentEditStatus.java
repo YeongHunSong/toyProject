@@ -13,17 +13,38 @@ public class CommentEditStatus {
     public CommentEditStatus() {
     }
 
-    public CommentEditStatus(Long commentId, EditCommentMode mode) {
+    private CommentEditStatus(Long commentId, EditCommentMode mode) {
         this.flag = true;
         this.commentId = commentId;
         this.editCommentMode = mode;
     }
 
-    public CommentEditStatus(long commentId, boolean accessDenied) {
+    private CommentEditStatus(long commentId, boolean accessDenied) {
         this.commentId = commentId;
         this.accessDenied = accessDenied;
     }
+
+    public static CommentEditStatus accessDenied(Long commentId) {
+        return new CommentEditStatus(commentId, true);
+    }
+
+    public static CommentEditStatus editOn(Long commentId) {
+        return new CommentEditStatus(commentId, EditCommentMode.ON);
+    }
+
+    public static CommentEditStatus editError(Long commentId) {
+        return new CommentEditStatus(commentId, EditCommentMode.ERR);
+    }
 }
+
+
+
+
+
+
+
+
+
 
 /*
 댓글 수정 절차

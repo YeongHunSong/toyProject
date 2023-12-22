@@ -5,11 +5,7 @@
 <body>
     <div class="container" layout:fragment="content">
 
-        <div class="py-3 text-center">
-            <h2>게시글 작성</h2>
-        </div>
-
-        <form th:action th:object="${postAddDto}" method="post" enctype="multipart/form-data">
+        <form th:action th:object="${postAddEditDto}" method="post" enctype="multipart/form-data">
             <div>
                 <label for="postTitle">제목</label>
                 <input type="text" id="postTitle" class="form-control" placeholder="제목을 입력해주세요" th:field="*{postTitle}" th:errorclass="field-error">
@@ -23,7 +19,8 @@
             </div>
             <br>
             <div>
-                <input type="file" class="form-control" multiple="multiple" th:field="*{uploadImages}" accept="image/*">
+                <label for="uploadImages">이미지 업로드 (다중 선택 가능)</label>
+                <input type="file" id="uploadImages" class="form-control" multiple="multiple" th:field="*{uploadImages}" accept="image/*">
             </div>
             <br>
             <div> <!-- TODO 작성자 란은 어차피 수정이 불가능하니 input hidden 으로 값 넘기고 입력창을 아예 없애고 그냥 텍스트만 보이도록 -->
