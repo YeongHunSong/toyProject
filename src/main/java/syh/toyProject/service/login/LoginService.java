@@ -23,7 +23,7 @@ public class LoginService {
     }
 
     public LoginToMainDto sessionMemberIdToLoginDto(Long sessionMemberId) {
-        return new LoginToMainDto(memberRepository.findByMemberId(sessionMemberId));
+        return LoginToMainDto.create(memberRepository.findByMemberId(sessionMemberId));
     }
 
     public boolean memberCheck(Long loginMemberId) { // 세션의 memberId 가 회원 목록에 있는지 확인

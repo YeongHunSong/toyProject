@@ -1,7 +1,7 @@
-package syh.toyProject.domain.upload;
+package syh.toyProject.domain.UNUSE_upload;
 
 import lombok.Data;
-import syh.toyProject.Dto.upload.FileDto;
+import syh.toyProject.Dto.UNUSE_upload.FileDto;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Grade {
+public enum UNUSE_Grade {
 
     ADMIN("관리자", 0),
     COMMON("일반회원", 1);

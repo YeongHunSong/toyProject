@@ -269,7 +269,7 @@ public class BoardController {
         postService.addViewCount(postId);
         pageDto.setPageView(pageView);
 
-        model.addAttribute("post", postService.postToPostDto(postService.findByPostId(postId)));
+        model.addAttribute("postDto", postService.postToPostDto(postService.findByPostId(postId)));
         model.addAttribute("pageControl", PageControl.create(pageDto, commentService.totalCount(postId)));
         model.addAttribute("imageList", ImageListBoardDto.create(postId, imageService.findByPostId(postId)));
         model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
@@ -386,15 +386,4 @@ public class BoardController {
             globalErrorReject(postEditBindingResult, "accessDenied.editPost", "게시글수정");
         }
     }
-
-
-
-//    @PostConstruct
-//    public void init() {
-//        postService.addPost(new Post(1L, "테스트글 제목1", "테스트글 내용1"));
-//        postService.addPost(new Post(2L, "테스트글 제목2", "테스트글 내용2"));
-//
-//        commentService.addComment(new Comment(1L, 1L, "댓글^^"));
-//        commentService.addComment(new Comment(2L, 2L, "댓글 달아드렸읍니다2 ^^"));
-//    }
 }

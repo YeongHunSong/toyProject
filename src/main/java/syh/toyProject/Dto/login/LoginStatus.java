@@ -11,10 +11,11 @@ public class LoginStatus {
 
     private boolean accessDenied = false;
 
-    public LoginStatus() {
+    private LoginStatus(boolean accessDenied) {
+        this.accessDenied = accessDenied;
     }
 
-    public LoginStatus(boolean accessDenied) {
-        this.accessDenied = accessDenied;
+    public static LoginStatus accessDenied() {
+        return new LoginStatus(true);
     }
 }

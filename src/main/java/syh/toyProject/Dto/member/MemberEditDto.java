@@ -1,7 +1,6 @@
 package syh.toyProject.Dto.member;
 
 import lombok.Data;
-import syh.toyProject.domain.member.Address;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,10 +13,12 @@ public class MemberEditDto {
     @NotBlank
     private String username;
 
-    private Address address;
-
-    public MemberEditDto(String password, String username) {
+    private MemberEditDto(String password, String username) {
         this.password = password;
         this.username = username;
+    }
+
+    public static MemberEditDto create(String password, String username) {
+        return new MemberEditDto(password, username);
     }
 }

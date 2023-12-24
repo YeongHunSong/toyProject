@@ -1,6 +1,6 @@
 package syh.toyProject.repository.upload;
 
-import syh.toyProject.domain.upload.File;
+import syh.toyProject.domain.UNUSE_upload.File;
 
 public interface FileRepository {
 

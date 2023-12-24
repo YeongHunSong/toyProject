@@ -84,7 +84,7 @@ public class PostService {
     }
 
     public PostBoardDto postToPostDto(Post post) {
-        return new PostBoardDto(post, findUsername(post.getMemberId()));
+        return PostBoardDto.create(post, findUsername(post.getMemberId()));
     }
 
 

@@ -1,4 +1,4 @@
-package syh.toyProject.Dto.upload;
+package syh.toyProject.Dto.UNUSE_upload;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

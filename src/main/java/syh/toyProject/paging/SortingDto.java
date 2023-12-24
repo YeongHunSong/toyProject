@@ -10,10 +10,10 @@ public class SortingDto {
     // 기본값 최신순
     private String sorting = "DESC";
 
-    public SortingDto() {
+    private SortingDto() {
     }
 
-    public SortingDto(String sorting) {
+    private SortingDto(String sorting) {
         if (sorting.equals("ASC")) {
             this.sorting = sorting;
         }

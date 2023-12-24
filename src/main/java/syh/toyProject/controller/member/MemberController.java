@@ -84,7 +84,7 @@ public class MemberController {
         }
         // 따로 아이디 중복 확인 기능 넣기
 
-        memberService.addMember(new Member(memberDto.getLoginId(), memberDto.getPassword(), memberDto.getUsername()));
+        memberService.addMember(Member.create(memberDto.getLoginId(), memberDto.getPassword(), memberDto.getUsername()));
         return "redirect:" + redirectURL; // redirectAttributes.addFlashAttribute 로 회원가입 성공 메시지 넘기기 추가
     }
 
@@ -123,7 +123,7 @@ public class MemberController {
         Member findMember = memberService.findByMemberId(memberId);
 
         model.addAttribute("memberNonEditData", findMember); //TODO ##추후 Dto 로 변경하기##
-        model.addAttribute("memberEditDto", new MemberEditDto(findMember.getPassword(), findMember.getUsername()));
+        model.addAttribute("memberEditDto", MemberEditDto.create(findMember.getPassword(), findMember.getUsername()));
         return "member/editMemberForm";
     }
 
@@ -139,7 +139,7 @@ public class MemberController {
             return "member/editMemberForm";
         }
 
-        memberService.editMember(memberId, new Member(memberDto.getPassword(), memberDto.getUsername()));
+        memberService.editMember(memberId, Member.edit(memberDto.getPassword(), memberDto.getUsername()));
         return "redirect:/member/{memberId}";
     }
 
@@ -148,7 +148,7 @@ public class MemberController {
         if (loginService.authAndAdminCheck(loginMemberId, authId)) {
             return true; // 권한 유저 혹은 관리자
         }
-        redirectAttributes.addFlashAttribute("status", new LoginStatus(true)); // 접근 권한 없음 표시
+        redirectAttributes.addFlashAttribute("status", LoginStatus.accessDenied()); // 접근 권한 없음 표시
         return false; // 권한 없음
     }
 

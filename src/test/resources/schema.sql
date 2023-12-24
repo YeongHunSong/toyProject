@@ -16,7 +16,7 @@ create table post
    last_edit_date datetime,
    view_count bigint,
    post_title varchar(50),
-   post_content varchar(100)
+   post_content varchar(100),
    primary key (post_id)
 );
 
@@ -47,4 +47,4 @@ create table image
     file_size bigint,
     upload_date datetime,
     primary key (image_id)
-)
+);

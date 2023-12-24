@@ -31,15 +31,7 @@ public class Post {
         this.postContent = postContent;
     }
 
-    public Post(PostCategory category, String postTitle, String postContent, Long memberId) {
-        this.category = category;
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-
-        this.memberId = memberId;
-    }
-
-    public Post(Long memberId, String postTitle, String postContent) {
+    private Post(Long memberId, String postTitle, String postContent) {
         this.memberId = memberId;
         this.postTitle = postTitle;
         this.postContent = postContent;
@@ -47,5 +39,9 @@ public class Post {
 
     public static Post postEdit(PostCategory category, String postTitle, String postContent) {
         return new Post(category, postTitle, postContent);
+    }
+
+    public static Post postAdd(Long memberId, String postTitle, String  postContent) {
+        return new Post(memberId, postTitle, postContent);
     }
 }

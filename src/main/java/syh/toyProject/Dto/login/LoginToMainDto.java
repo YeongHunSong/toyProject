@@ -16,10 +16,14 @@ public class LoginToMainDto {
 
     private LocalDateTime signupDate;
 
-    public LoginToMainDto(Member member) {
+    private LoginToMainDto(Member member) {
         this.username = member.getUsername();
         this.loginId = member.getLoginId();
         this.memberId = member.getMemberId();
         this.signupDate = member.getSignupDate();
+    }
+
+    public static LoginToMainDto create(Member member) {
+        return new LoginToMainDto(member);
     }
 }

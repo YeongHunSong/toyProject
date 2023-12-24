@@ -2,7 +2,7 @@ package syh.toyProject.service.upload;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
-import syh.toyProject.domain.upload.UploadFile;
+import syh.toyProject.domain.UNUSE_upload.UploadFile;
 
 import java.io.File;
 import java.io.IOException;

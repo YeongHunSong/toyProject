@@ -1,4 +1,4 @@
-package syh.toyProject.domain.upload;
+package syh.toyProject.domain.UNUSE_upload;
 
 import lombok.Data;
 

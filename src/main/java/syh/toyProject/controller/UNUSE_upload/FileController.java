@@ -1,4 +1,4 @@
-package syh.toyProject.controller.upload;
+package syh.toyProject.controller.UNUSE_upload;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import syh.toyProject.Dto.upload.FileDto;
-import syh.toyProject.domain.upload.File;
-import syh.toyProject.domain.upload.UploadFile;
+import syh.toyProject.Dto.UNUSE_upload.FileDto;
+import syh.toyProject.domain.UNUSE_upload.File;
+import syh.toyProject.domain.UNUSE_upload.UploadFile;
 import syh.toyProject.service.upload.FileService;
 import syh.toyProject.service.upload.FileStore;
 

@@ -84,10 +84,10 @@ class MemberRepositoryTest {
 
     @Test
     void editMemberTest() {
-        MemberEditDto memberEditDto = new MemberEditDto("변경이후PW",  "변경이후별칭");
+        MemberEditDto memberEditDto = MemberEditDto.create("변경이후PW",  "변경이후별칭");
         Member beforeMember = newMember(1L);
 
-        Member memberEditTemp = new Member(memberEditDto.getPassword(), memberEditDto.getUsername());
+        Member memberEditTemp = Member.edit(memberEditDto.getPassword(), memberEditDto.getUsername());
         memberRepository.editMember(beforeMember.getMemberId(), memberEditTemp);
         Member afterMember = memberRepository.findByMemberId(beforeMember.getMemberId());
 
@@ -96,6 +96,6 @@ class MemberRepositoryTest {
     }
 
     private Member newMember(Long number) {
-        return memberRepository.addMember(new Member("test" + number, "pw" + number, "테스트" + number + "호"));
+        return memberRepository.addMember(Member.create("test" + number, "pw" + number, "테스트" + number + "호"));
     }
 }

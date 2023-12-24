@@ -1,7 +1,7 @@
 package syh.toyProject.repository.upload;
 
 import org.springframework.stereotype.Repository;
-import syh.toyProject.domain.upload.File;
+import syh.toyProject.domain.UNUSE_upload.File;
 
 import java.util.HashMap;
 import java.util.Map;

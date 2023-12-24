@@ -22,19 +22,27 @@ public class Member {
     private String emailAddress; // 이메일 검증을 추가한다면 사용합시다
 
     // 주소값은 주소 API 입력을 통해 받도록 설정
-    private Address address;
+    private UNUSE_Address address;
 
     private Member() { // DB용
     }
 
-    public Member(String password, String username) {
+    private Member(String password, String username) {
         this.password = password;
         this.username = username;
     }
 
-    public Member(String loginId, String password, String username) {
+    private Member(String loginId, String password, String username) {
         this.loginId = loginId;
         this.password = password;
         this.username = username;
+    }
+
+    public static Member create(String loginId, String password, String username) {
+        return new Member(loginId, password, username);
+    }
+
+    public static Member edit(String password, String username) {
+        return new Member(password, username);
     }
 }

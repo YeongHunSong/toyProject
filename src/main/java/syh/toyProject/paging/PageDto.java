@@ -16,7 +16,7 @@ public class PageDto {
         this.pageCount = (page - 1) * pageView;
     }
 
-    public PageDto() {
+    private PageDto() {
         this.page = 1;
         this.pageCount = 0;
         this.pageView = 10;

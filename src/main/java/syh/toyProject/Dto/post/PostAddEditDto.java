@@ -25,7 +25,7 @@ public class PostAddEditDto {
     private List<MultipartFile> uploadImages;
 
     public Post newPost(Long memberId) {
-        return new Post(memberId, postTitle, postContent);
+        return Post.postAdd(memberId, postTitle, postContent);
     }
 
     private PostAddEditDto(String postTitle, String postContent) {

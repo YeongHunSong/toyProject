@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriUtils;
-import syh.toyProject.domain.upload.File;
+import syh.toyProject.domain.UNUSE_upload.File;
 import syh.toyProject.repository.upload.FileRepository;
 
 import java.io.IOException;

@@ -12,9 +12,4 @@ public class LoginDto {
 
     @NotBlank
     private final String password;
-
-    public LoginDto(String loginId, String password) {
-        this.loginId = loginId;
-        this.password = password;
-    }
 }

@@ -22,11 +22,10 @@ public class PostBoardDto {
     private String postTitle;
     private String postContent;
 
-    // 댓글 관련
     private Long commentCount;
     private Long recommendCount;
 
-    public PostBoardDto(Post post, String username) {
+    private PostBoardDto(Post post, String username) {
         this.postId = post.getPostId();
         this.memberId = post.getMemberId();
         this.category = post.getCategory();
@@ -39,5 +38,9 @@ public class PostBoardDto {
         this.commentCount = post.getCommentCount();
 
         this.username = username;
+    }
+
+    public static PostBoardDto create(Post post, String username) {
+        return new PostBoardDto(post, username);
     }
 }

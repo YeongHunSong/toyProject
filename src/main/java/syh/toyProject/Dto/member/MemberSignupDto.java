@@ -1,7 +1,6 @@
 package syh.toyProject.Dto.member;
 
 import lombok.Data;
-import syh.toyProject.domain.member.Address;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,12 +19,4 @@ public class MemberSignupDto {
 
     @Email
     private String emailAddress; // 추후 이메일 검증 시 사용, 안 쓰면 걍 지우는 것도.
-
-    private Address address;
-
-    public MemberSignupDto(String loginId, String password, String username) {
-        this.loginId = loginId;
-        this.password = password;
-        this.username = username;
-    }
 }

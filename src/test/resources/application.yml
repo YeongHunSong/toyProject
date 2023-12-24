@@ -1,3 +1,7 @@
+
+image:
+  dir: C:\Users\0628c\OneDrive\바탕 화면\toyP\toyproject\src\main\resources\static\image\
+
 spring:
   profiles:
     active: test
