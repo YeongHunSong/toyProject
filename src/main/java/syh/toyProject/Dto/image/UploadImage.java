@@ -1,4 +1,4 @@
-package syh.toyProject.domain.image;
+package syh.toyProject.Dto.image;
 
 import lombok.Data;
 
@@ -12,6 +12,9 @@ public class UploadImage {
     private String originName;
 
     private String serverName;
+
+    private UploadImage() {
+    }
 
     private UploadImage(Long postId, Long fileSize, String originName, String serverName) {
         this.postId = postId;

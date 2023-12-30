@@ -82,7 +82,7 @@ class CommentRepositoryTest {
 
     @Test
     void editCommentTest() throws InterruptedException {
-        CommentEditDto commentDto = new CommentEditDto("댓글은이걸로변경");
+        CommentEditDto commentDto = CommentEditDto.create("댓글은이걸로변경");
         Comment beforeComment = newComment(1L);
 
         Comment commentEditTemp = Comment.editFrom(commentDto.getCommentContent());

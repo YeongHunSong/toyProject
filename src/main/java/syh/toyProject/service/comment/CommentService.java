@@ -71,7 +71,7 @@ public class CommentService {
     }
 
     public CommentBoardDto commentToCommentDto(Comment comment) {
-        return new CommentBoardDto(comment, findUsername(comment.getMemberId()));
+        return CommentBoardDto.create(comment, findUsername(comment.getMemberId()));
     }
 
 

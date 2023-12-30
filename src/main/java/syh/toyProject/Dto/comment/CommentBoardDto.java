@@ -18,10 +18,10 @@ public class CommentBoardDto {
 
     private String commentContent;
 
-    public CommentBoardDto() {
+    private CommentBoardDto() {
     }
 
-    public CommentBoardDto(Comment comment, String username) {
+    private CommentBoardDto(Comment comment, String username) {
         this.commentId = comment.getCommentId();
         this.postId = comment.getPostId();
         this.memberId = comment.getMemberId();
@@ -30,5 +30,9 @@ public class CommentBoardDto {
         this.commentContent = comment.getCommentContent();
 
         this.username = username;
+    }
+
+    public static CommentBoardDto create(Comment comment, String username) {
+        return new CommentBoardDto(comment, username);
     }
 }

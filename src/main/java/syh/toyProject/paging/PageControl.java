@@ -36,6 +36,9 @@ public class PageControl {
         }
     }
 
+    private PageControl() {
+    }
+
     private PageControl(PageDto pageDto, int totalCount) {
         this.pageDto = pageDto;
         this.totalCount = totalCount;

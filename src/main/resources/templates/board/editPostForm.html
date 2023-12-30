@@ -5,17 +5,17 @@
 <body>
 <div class="container" layout:fragment="content">
 
-    <form th:action th:object="${postAddEditDto}" method="post">
+    <form th:action th:object="${postEditDto}" method="post">
         <div>
             <label for="postTitle">제목</label>
             <input type="text" id="postTitle" class="form-control" placeholder="제목을 입력해주세요" th:field="*{postTitle}">
             <div class="field-error" th:errors="*{postTitle}">제목 수정 오류</div>
         </div>
         <br>
-        <div>
-            <label for="postContent">내용</label>
+        <div class="form-control">
             <input type="text" id="postContent" class="form-control" placeholder="내용을 입력해주세요" th:field="*{postContent}">
             <div class="field-error" th:errors="*{postContent}">내용 수정 오류</div>
+            <br>
         </div>
 
         <hr class="my-3">
@@ -30,6 +30,15 @@
             </div>
         </div>
     </form>
+    <br><br>
+    <div class="row" th:object="${postEditDto}"> <!-- 큰 form 안에 button 이 여러 개 있어서 form 태그 하나가 날아가버림. 어떻게 해결해야 할지? -->
+        <div class="mb-2 col col-auto mx-auto" th:each="image : *{imageDtoList}">
+            <img class="rounded mx-auto d-block mb-1" th:src="|/post/*{postId}/image/${image.getServerName()}|" width="150" height="150"/>
+            <form class="row mx-auto" method="post" th:action="|/post/*{postId}/image/${image.getImageId()}/delete|">
+                <button class="btn btn-secondary btn-sm mb-2" type="submit">삭제</button>
+            </form>
+        </div>
+    </div>
 
 </div> <!-- /container -->
 </body>

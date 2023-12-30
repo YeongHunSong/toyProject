@@ -23,7 +23,8 @@
 
     <delete id="deleteImage">
         DELETE FROM image
-        WHERE image_id = #{imageId}
+        WHERE post_id = #{image.postId}
+        AND image_id = #{image.imageId}
     </delete>
 
     <delete id="deleteImageAll">

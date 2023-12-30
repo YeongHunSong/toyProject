@@ -1,11 +1,11 @@
-package syh.toyProject.service.upload;
+package syh.toyProject.service.UN_USEupload;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriUtils;
 import syh.toyProject.domain.UNUSE_upload.File;
-import syh.toyProject.repository.upload.FileRepository;
+import syh.toyProject.repository.UN_USEupload.FileRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

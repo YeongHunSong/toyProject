@@ -13,7 +13,7 @@
             <br>
             <p th:text="${postDto.postContent}"> 게시글 내용</p>
             <div class="mb-2" th:each="image : ${imageList.imageDtoList}">
-                <img class="img-fluid" th:src="|/post/${imageList.postId}/image/${image.getServerName()}|">
+                <img class="img-fluid rounded mx-auto d-block img-thumbnail" th:src="|/post/${imageList.postId}/image/${image.getServerName()}|" width="400">
             </div>
         </div>
 
@@ -87,7 +87,7 @@
                 </form>
             </div>
             <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
-                <button class="w-auto btn btn-success float-end "
+                <button class="w-auto btn btn-success float-end"
                         th:onclick="|location.href='@{|/post/${postId}/edit|}'|" type="button">수정</button>
             </div>
             <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
@@ -163,12 +163,12 @@
                                         <button class="w-auto col-auto btn btn-secondary" th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
                                     </div>
                                 </form>
-                                <div class="btn-group" role="group">
-                                    <form th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
+                                <div class="btn-group">
+                                    <form class="btn-group" th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
                                           th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
                                         <button class="w-auto col-auto btn btn-success float-start btn-sm" type="submit">수정</button>
                                     </form>
-                                    <form th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
+                                    <form  class="btn-group" th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
                                           th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
                                         <button class="w-auto col-auto btn btn-danger float-end btn-sm" type="submit">삭제</button>
                                     </form>

@@ -32,8 +32,8 @@ public class MyBatisImageRepository implements ImageRepository {
     }
 
     @Override
-    public void deleteImage(Long imageId) {
-        imageMapper.deleteImage(imageId);
+    public void deleteImage(Image image) {
+        imageMapper.deleteImage(image);
     }
 
     @Override

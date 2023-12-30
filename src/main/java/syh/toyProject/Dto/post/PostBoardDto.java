@@ -25,6 +25,9 @@ public class PostBoardDto {
     private Long commentCount;
     private Long recommendCount;
 
+    private PostBoardDto() {
+    }
+
     private PostBoardDto(Post post, String username) {
         this.postId = post.getPostId();
         this.memberId = post.getMemberId();

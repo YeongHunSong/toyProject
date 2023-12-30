@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
-import syh.toyProject.Dto.post.PostAddEditDto;
-import syh.toyProject.domain.image.UploadImage;
+import syh.toyProject.Dto.image.UploadImage;
+import syh.toyProject.Dto.post.PostAddDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +26,10 @@ public class ImageStore {
         return imageDir + postId.toString() + File.separator + serverName;
     }
 
-    public List<UploadImage> storeImages(PostAddEditDto postAddEditDto, Long postId) throws IOException {
+    public List<UploadImage> storeImages(PostAddDto postAddDto, Long postId) throws IOException {
         List<UploadImage> uploadImageList = new ArrayList<>();
-        for (MultipartFile multipartFile : postAddEditDto.getUploadImages()) {
-            if (!postAddEditDto.getUploadImages().isEmpty()) {
+        for (MultipartFile multipartFile : postAddDto.getUploadImages()) {
+            if (!postAddDto.getUploadImages().isEmpty()) {
                 uploadImageList.add(storeImage(multipartFile, postId));
             }
         }

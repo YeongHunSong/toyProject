@@ -9,6 +9,9 @@ public class ImageListBoardDto {
     private Long postId;
     private List<ImageDto> imageDtoList;
 
+    private ImageListBoardDto() {
+    }
+
     private ImageListBoardDto(Long postId, List<ImageDto> imageDtoList) {
         this.postId = postId;
         this.imageDtoList = imageDtoList;

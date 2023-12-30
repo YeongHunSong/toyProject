@@ -3,8 +3,8 @@ package syh.toyProject.service.post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import syh.toyProject.Dto.post.PostAddEditDto;
 import syh.toyProject.Dto.post.PostBoardDto;
+import syh.toyProject.Dto.post.PostEditDto;
 import syh.toyProject.Dto.post.PostSearchCond;
 import syh.toyProject.domain.post.Post;
 import syh.toyProject.paging.PageDto;
@@ -53,7 +53,7 @@ public class PostService {
         return postRepository.findByPostId(postId).getMemberId();
     }
 
-    public void editPost(Long postId, PostAddEditDto postEditDto) {
+    public void editPost(Long postId, PostEditDto postEditDto) {
         postRepository.editPost(postId, Post.postEdit(postEditDto.getCategory(), postEditDto.getPostTitle(), postEditDto.getPostContent()));
     }
 

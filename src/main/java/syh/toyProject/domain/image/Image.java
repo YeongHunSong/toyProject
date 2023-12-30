@@ -1,6 +1,7 @@
 package syh.toyProject.domain.image;
 
 import lombok.Data;
+import syh.toyProject.Dto.image.UploadImage;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +27,16 @@ public class Image {
         this.serverName = uploadImage.getServerName();
     }
 
-    public static Image from(UploadImage uploadImage) {
+    private Image(Long postId, Long imageId) {
+        this.postId = postId;
+        this.imageId = imageId;
+    }
+
+    public static Image create(UploadImage uploadImage) {
         return new Image(uploadImage);
+    }
+
+    public static Image deleteDto(Long postId, Long imageId) {
+        return new Image(postId, imageId);
     }
 }

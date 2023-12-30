@@ -32,8 +32,8 @@ public class MemoryImageRepository implements ImageRepository {
     }
 
     @Override
-    public void deleteImage(Long imageId) {
-        store.remove(imageId);
+    public void deleteImage(Image image) {
+        store.remove(image);
     }
 
     @Override

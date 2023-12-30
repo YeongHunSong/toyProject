@@ -12,5 +12,4 @@ public enum EditCommentMode {
     ERR("댓글수정오류");
 
     private final String desc;
-
 }

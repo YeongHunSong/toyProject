@@ -10,7 +10,7 @@ public class CommentEditStatus {
     private EditCommentMode editCommentMode = EditCommentMode.OFF;
     private boolean accessDenied = false;
 
-    public CommentEditStatus() {
+    private CommentEditStatus() {
     }
 
     private CommentEditStatus(Long commentId, EditCommentMode mode) {

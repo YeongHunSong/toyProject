@@ -11,6 +11,9 @@ public class LoginStatus {
 
     private boolean accessDenied = false;
 
+    private LoginStatus() {
+    }
+
     private LoginStatus(boolean accessDenied) {
         this.accessDenied = accessDenied;
     }

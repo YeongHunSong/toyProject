@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import syh.toyProject.Dto.image.ImageDto;
+import syh.toyProject.Dto.image.UploadImage;
 import syh.toyProject.domain.image.Image;
-import syh.toyProject.domain.image.UploadImage;
 import syh.toyProject.repository.image.ImageRepository;
 
 import java.io.IOException;
@@ -25,13 +25,13 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     public void uploadImage(UploadImage uploadImage) {
-        imageRepository.uploadImage(Image.from(uploadImage));
+        imageRepository.uploadImage(Image.create(uploadImage));
     }
 
     public List<ImageDto> findByPostId(Long postId) {
         List<ImageDto> imageDtoList = new ArrayList<>();
         imageRepository.findByPostId(postId)
-                .forEach(image -> imageDtoList.add(new ImageDto(image)));
+                .forEach(image -> imageDtoList.add(ImageDto.create(image)));
 
         log.info("imageDtoList = {}", imageDtoList);
         return imageDtoList;
@@ -52,8 +52,8 @@ public class ImageService {
         imageRepository.editImage(imageEditDto);
     }
 
-    public void deleteImage(Long imageId) {
-        imageRepository.deleteImage(imageId);
+    public void deleteImage(Image image) {
+        imageRepository.deleteImage(image);
     }
 
     public void deleteImageAll(Long postId) {

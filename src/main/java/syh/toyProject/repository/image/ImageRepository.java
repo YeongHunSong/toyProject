@@ -12,7 +12,7 @@ public interface ImageRepository {
 
     void editImage(Image imageEditDto);
 
-    void deleteImage(Long imageId);
+    void deleteImage(Image image);
 
     void deleteImageAll(Long postId);
 }

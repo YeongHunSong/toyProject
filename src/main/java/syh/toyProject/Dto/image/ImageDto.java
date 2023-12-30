@@ -18,15 +18,19 @@ public class ImageDto {
 
     private LocalDateTime uploadDate;
 
-    public ImageDto() {
+    private ImageDto() {
     }
 
-    public ImageDto(Image image) {
+    private ImageDto(Image image) {
         this.imageId = image.getImageId();
         this.fileSize = byteToMB(image.getFileSize());
         this.originName = image.getOriginName();
         this.serverName = image.getServerName();
         this.uploadDate = image.getUploadDate();
+    }
+
+    public static ImageDto create(Image image) {
+        return new ImageDto(image);
     }
 
     private String byteToMB(Long fileSize) {

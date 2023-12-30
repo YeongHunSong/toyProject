@@ -16,6 +16,9 @@ public class LoginToMainDto {
 
     private LocalDateTime signupDate;
 
+    private LoginToMainDto() {
+    }
+
     private LoginToMainDto(Member member) {
         this.username = member.getUsername();
         this.loginId = member.getLoginId();

@@ -13,6 +13,9 @@ public class MemberEditDto {
     @NotBlank
     private String username;
 
+    private MemberEditDto() {
+    }
+
     private MemberEditDto(String password, String username) {
         this.password = password;
         this.username = username;

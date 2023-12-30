@@ -15,7 +15,7 @@ public interface ImageMapper {
 
     void editImage(@Param("image") Image imageEditDto);
 
-    void deleteImage(Long imageId);
+    void deleteImage(@Param("image") Image image);
 
     void deleteImageAll(Long postId);
 

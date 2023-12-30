@@ -12,7 +12,6 @@ public class CommentAddDto {
     @NotBlank
     private String commentContent;
 
-    public CommentAddDto(String commentContent) {
-        this.commentContent = commentContent;
+    private CommentAddDto() {
     }
 }

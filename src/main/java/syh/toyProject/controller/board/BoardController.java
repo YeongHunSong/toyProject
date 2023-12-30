@@ -18,14 +18,15 @@ import syh.toyProject.Dto.comment.CommentEditDto;
 import syh.toyProject.Dto.comment.CommentEditStatus;
 import syh.toyProject.Dto.comment.EditCommentMode;
 import syh.toyProject.Dto.image.ImageListBoardDto;
-import syh.toyProject.Dto.post.PostAddEditDto;
+import syh.toyProject.Dto.image.UploadImage;
+import syh.toyProject.Dto.post.PostAddDto;
+import syh.toyProject.Dto.post.PostEditDto;
 import syh.toyProject.Dto.post.PostEditStatus;
 import syh.toyProject.Dto.post.PostSearchCond;
 import syh.toyProject.argumentResolver.Login;
 import syh.toyProject.argumentResolver.LoginName;
-import syh.toyProject.domain.image.UploadImage;
+import syh.toyProject.domain.image.Image;
 import syh.toyProject.domain.member.AuthMember;
-import syh.toyProject.domain.post.Post;
 import syh.toyProject.paging.PageControl;
 import syh.toyProject.paging.PageDto;
 import syh.toyProject.paging.SortingDto;
@@ -55,7 +56,7 @@ public class BoardController {
 
 
     @GetMapping("/imageUpload")
-    public String fileTest(@ModelAttribute PostAddEditDto postAddEditDto) {
+    public String fileTest(@ModelAttribute PostAddDto postAddDto) {
         return "image/imageForm";
     }
 
@@ -85,15 +86,23 @@ public class BoardController {
 
     @ResponseBody
     @GetMapping("/post/{postId}/image/{serverName}")
-    public ResponseEntity<Resource> imageRender(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
-
-
+    public ResponseEntity<Resource> renderImage(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
 //        Resource resource = new InputStreamResource(Files.newInputStream(Paths.get(imageStore.getFullPath(postId, serverName))));
         UrlResource resource = new UrlResource("file:" + imageStore.getFullPath(postId, serverName));
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, imageService.getMediaType(serverName))
                 .body(resource);
+    }
+
+
+
+    @PostMapping("/post/{postId}/image/{imageId}/delete")
+    public String deleteImage(@PathVariable Long postId, @PathVariable Long imageId) {
+        // TODO 권한 로직
+
+        imageService.deleteImage(Image.deleteDto(postId, imageId));
+        return "redirect:/post/{postId}/edit";
     }
 
 
@@ -133,7 +142,7 @@ public class BoardController {
 
 
     @GetMapping("/post/add")
-    public String addPostForm(@ModelAttribute PostAddEditDto postAddEditDto, @LoginName String loginMemberName) {
+    public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
         if (loginMemberName == null) {
             // TODO redirectAttribute 추가
             return "redirect:/postHome";
@@ -144,7 +153,7 @@ public class BoardController {
 
 
     @PostMapping("/post/add")
-    public String addPost(@Validated @ModelAttribute PostAddEditDto postAddEditDto, BindingResult bindingResult,
+    public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
                           @Login Long loginMemberId, @LoginName String loginMemberName) throws IOException {
         if (bindingResult.hasErrors()) {
             globalErrorReject(bindingResult, "failed", "게시글 작성");
@@ -153,9 +162,9 @@ public class BoardController {
 
 
         if (loginMemberName != null) { // 로그인 체크
-            Long genPostId = postService.addPost(postAddEditDto.newPost(loginMemberId));
-            if (postAddEditDto.getUploadImages() != null) {
-                for (UploadImage uploadImage : imageStore.storeImages(postAddEditDto, genPostId)) {
+            Long genPostId = postService.addPost(postAddDto.newPost(loginMemberId));
+            if (postAddDto.getUploadImages() != null) {
+                for (UploadImage uploadImage : imageStore.storeImages(postAddDto, genPostId)) {
                     imageService.uploadImage(uploadImage);
                 }
             }
@@ -174,9 +183,7 @@ public class BoardController {
             return "redirect:/post/{postId}";
         }
 
-        Post findPost = postService.findByPostId(postId);
-        // TODO 사진 불러와서 모델에 넣기
-        model.addAttribute("postAddEditDto", PostAddEditDto.create(findPost));
+        model.addAttribute("postEditDto", PostEditDto.create(postService.findByPostId(postId), imageService.findByPostId(postId)));
         return "board/editPostForm";
     }
 
@@ -184,7 +191,7 @@ public class BoardController {
 
     @PostMapping("/post/{postId}/edit")
     public String editPost(@PathVariable Long postId, RedirectAttributes redirectAttributes, @Login Long loginMemberId,
-                           @Validated @ModelAttribute PostAddEditDto postAddEditDto, BindingResult bindingResult) {
+                           @Validated @ModelAttribute PostEditDto postEditDto, BindingResult bindingResult) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
             redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
             return "redirect:/post/{postId}";
@@ -194,7 +201,7 @@ public class BoardController {
             return "board/editPostForm";
         }
 
-        postService.editPost(postId, postAddEditDto);
+        postService.editPost(postId, postEditDto);
         return "redirect:/post/{postId}";
     }
 
@@ -270,8 +277,8 @@ public class BoardController {
         pageDto.setPageView(pageView);
 
         model.addAttribute("postDto", postService.postToPostDto(postService.findByPostId(postId)));
+        model.addAttribute("imageList", ImageListBoardDto.create(postId, imageService.findByPostId(postId))); // TODO postDto 와 통합
         model.addAttribute("pageControl", PageControl.create(pageDto, commentService.totalCount(postId)));
-        model.addAttribute("imageList", ImageListBoardDto.create(postId, imageService.findByPostId(postId)));
         model.addAttribute("commentList", commentService.commentListToCommentDto(commentService.findByPostIdAll(postId, pageDto, sortingDto)));
         return "board/postDetail";
     }

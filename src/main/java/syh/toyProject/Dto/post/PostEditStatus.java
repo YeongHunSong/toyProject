@@ -7,6 +7,9 @@ public class PostEditStatus {
 
     private boolean accessDenied = false;
 
+    private PostEditStatus() {
+    }
+
     private PostEditStatus(boolean accessDenied) {
         this.accessDenied = accessDenied;
     }
