@@ -51,7 +51,7 @@ public class BoardController {
     private final LoginService loginService;
     private final CommentService commentService;
 
-    @Value("${image.dir}")
+    @Value("${image.dir}") // TODO
     private String imageDir;
 
 
@@ -84,6 +84,7 @@ public class BoardController {
 //        return "image/imageView";
 //    }
 
+
     @ResponseBody
     @GetMapping("/post/{postId}/image/{serverName}")
     public ResponseEntity<Resource> renderImage(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
@@ -91,15 +92,18 @@ public class BoardController {
         UrlResource resource = new UrlResource("file:" + imageStore.getFullPath(postId, serverName));
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, imageService.getMediaType(serverName))
+                .header(HttpHeaders.CONTENT_TYPE, imageService.getMediaType(serverName)) // UncheckedException - InvalidMimeTypeException
                 .body(resource);
     }
 
 
 
     @PostMapping("/post/{postId}/image/{imageId}/delete")
-    public String deleteImage(@PathVariable Long postId, @PathVariable Long imageId) {
-        // TODO 권한 로직
+    public String deleteImage(@PathVariable Long postId, @PathVariable Long imageId, @Login Long loginMemberId) {
+        if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
+//            redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
+            return "redirect:/post/{postId}";
+        }
 
         imageService.deleteImage(Image.deleteDto(postId, imageId));
         return "redirect:/post/{postId}/edit";
@@ -160,11 +164,10 @@ public class BoardController {
             return "board/addPostForm";
         }
 
-
         if (loginMemberName != null) { // 로그인 체크
             Long genPostId = postService.addPost(postAddDto.newPost(loginMemberId));
-            if (postAddDto.getUploadImages() != null) {
-                for (UploadImage uploadImage : imageStore.storeImages(postAddDto, genPostId)) {
+            if (postAddDto.getUploadImages().get(0).getSize() != 0L) {
+                for (UploadImage uploadImage : imageStore.storeImages(postAddDto.getUploadImages(), genPostId)) {
                     imageService.uploadImage(uploadImage);
                 }
             }
@@ -191,7 +194,7 @@ public class BoardController {
 
     @PostMapping("/post/{postId}/edit")
     public String editPost(@PathVariable Long postId, RedirectAttributes redirectAttributes, @Login Long loginMemberId,
-                           @Validated @ModelAttribute PostEditDto postEditDto, BindingResult bindingResult) {
+                           @Validated @ModelAttribute PostEditDto postEditDto, BindingResult bindingResult) throws IOException {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
             redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
             return "redirect:/post/{postId}";
@@ -202,6 +205,12 @@ public class BoardController {
         }
 
         postService.editPost(postId, postEditDto);
+        if (postEditDto.getUploadImages().get(0).getSize() != 0L) {
+            for (UploadImage uploadImage : imageStore.storeImages(postEditDto.getUploadImages(), postId)) {
+                imageService.uploadImage(uploadImage);
+            }
+        }
+
         return "redirect:/post/{postId}";
     }
 

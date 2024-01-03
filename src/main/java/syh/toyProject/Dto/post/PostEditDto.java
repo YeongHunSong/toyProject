@@ -1,6 +1,7 @@
 package syh.toyProject.Dto.post;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 import syh.toyProject.Dto.image.ImageDto;
 import syh.toyProject.domain.post.Post;
 import syh.toyProject.domain.post.PostCategory;
@@ -23,6 +24,8 @@ public class PostEditDto {
 
 
     private List<ImageDto> imageDtoList;
+
+    private List<MultipartFile> uploadImages;
 
     private PostEditDto() {
     }

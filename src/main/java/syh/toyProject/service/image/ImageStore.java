@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import syh.toyProject.Dto.image.UploadImage;
-import syh.toyProject.Dto.post.PostAddDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +25,10 @@ public class ImageStore {
         return imageDir + postId.toString() + File.separator + serverName;
     }
 
-    public List<UploadImage> storeImages(PostAddDto postAddDto, Long postId) throws IOException {
+    public List<UploadImage> storeImages(List<MultipartFile> uploadImages, Long postId) throws IOException {
         List<UploadImage> uploadImageList = new ArrayList<>();
-        for (MultipartFile multipartFile : postAddDto.getUploadImages()) {
-            if (!postAddDto.getUploadImages().isEmpty()) {
+        for (MultipartFile multipartFile : uploadImages) {
+            if (!uploadImages.isEmpty()) {
                 uploadImageList.add(storeImage(multipartFile, postId));
             }
         }
@@ -41,7 +40,9 @@ public class ImageStore {
             return null;
         }
 
-        String originalFilename = multipartFile.getOriginalFilename();
+        String originalFilename = multipartFile.getOriginalFilename().length() > 95 ?
+                multipartFile.getOriginalFilename().substring(0, 95) + "." + extractExt(multipartFile.getOriginalFilename())
+                : multipartFile.getOriginalFilename();
         String storeFileName = createStoreFileName(originalFilename);
 
         File saveFile = new File(getFullPath(postId, storeFileName));
@@ -60,6 +61,9 @@ public class ImageStore {
     }
 
     private String extractExt(String originalFilename) {
+        if (!(originalFilename.contains("."))) { // 확장자가 없을 경우 임의 반환.
+            return "";
+        }
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
     }
