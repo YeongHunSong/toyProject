@@ -22,7 +22,7 @@ public class PageDto {
         this.pageView = 10;
     }
 
-    private PageDto(int page, int pageView) { // 기존 로직용 (modelAttribute 를 사용하지 않고)
+    PageDto(int page, int pageView) { // 기존 로직용 (modelAttribute 를 사용하지 않고)
         this.page = page;
         this.pageView = pageView;
     }

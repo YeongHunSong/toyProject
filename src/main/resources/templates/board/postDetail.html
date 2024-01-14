@@ -96,10 +96,11 @@
                 </form>
             </div>
 
-            <div th:object="${postEditStatus}">
+            <div th:object="${postEditStatus}" class="text-center">
+                    <p class="field-error my-3" th:if="|${recErrMessage} != null|" th:text="${recErrMessage}"></p>
+
                 <div th:if="${#fields.hasGlobalErrors()}">
-                    <br>
-                    <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">게시글 수정 오류 메시지</p>
+                    <p class="field-error my-3" th:each="err : ${#fields.globalErrors()}" th:text="${err}">게시글 수정 오류 메시지</p>
                 </div>
             </div>
         </div>
@@ -125,7 +126,6 @@
                             </label>
                         </div>
                         <div class="col-auto">
-                            <input type="hidden">
                             <button type="submit" class="btn-primary btn btn-sm">변경</button>
                         </div>
                     </form>
@@ -138,40 +138,49 @@
                         <tr>
                             <th class="col-3">작성자</th>
                             <th class="col-3">작성일</th>
-                            <th class="col-5">댓글</th>
-                            <th class="col-3"></th>
+                            <th class="col-6">댓글</th>
+                            <th class="col-3">댓글관리</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="comment : ${commentList}">
                             <td class="p-1">
-                                <a href="" class="d-inline-block text-truncate text-nowrap w-100" th:href="@{|/member/${comment.memberId}|}" th:text="${comment.username}">작성자</a>
+                                <a class="d-inline-block text-truncate text-nowrap w-100" th:href="@{|/member/${comment.memberId}|}" th:text="${comment.username}">작성자</a>
                             </td>
                             <td class="p-1">
                                 <p th:text="${#temporals.format(comment.writingDate, 'MM-dd HH:mm')}">작성일</p> <!-- 'yy-MM-dd HH:mm' -->
                             </td>
-                            <td class="p-1" th:if="${commentEditStatus?.flag == false or commentEditStatus?.commentId != comment.commentId}">
-                                <p th:text="${comment.commentContent}">댓글 내용</p>
-                            </td>
                             <td class="p-1">
-                                <form th:action="@{|/post/${postId}/${comment.commentId}/edit|}" method="post" th:object="${commentEditDto}"
-                                      th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
-                                    <input type="text" class="form-control col-auto w-auto" th:field="*{commentContent}">
-                                    <div class="field-error" th:errors="*{commentContent}">댓글 수정 오류</div>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button class="w-auto col-auto btn btn-primary" type="submit">저장</button>
-                                        <button class="w-auto col-auto btn btn-secondary" th:onclick="|location.href='@{|/post/${postId}|}'|" type="button">취소</button>
+                                <p th:if="${commentEditStatus?.flag == false or commentEditStatus?.commentId != comment.commentId}" th:text="${comment.commentContent}">댓글 내용</p>
+                                <form th:action="@{|/post/${postId}/${comment.commentId}/edit|}" method="post" th:object="${commentEditDto}" th:id="${comment.commentId}">
+                                    <input type="hidden" th:field="${sortingDto.sorting}">
+                                    <input type="hidden" th:field="${pageDto.page}">
+                                    <input type="hidden" th:field="${pageDto.pageView}">
+                                    <div th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
+                                        <input type="text" class="form-control col-auto w-auto" th:field="*{commentContent}">
+                                        <div class="field-error" th:errors="*{commentContent}">댓글 수정 오류</div>
                                     </div>
                                 </form>
-                                <div class="btn-group">
-                                    <form class="btn-group" th:action="@{|/post/${postId}/${comment.commentId}|}" method="post"
-                                          th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                                        <button class="w-auto col-auto btn btn-success float-start btn-sm" type="submit">수정</button>
-                                    </form>
-                                    <form  class="btn-group" th:action="@{|/post/${postId}/${comment.commentId}/delete|}" method="post"
-                                          th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                                        <button class="w-auto col-auto btn btn-danger float-end btn-sm" type="submit">삭제</button>
-                                    </form>
+                            </td>
+                            <td class="p-1">
+                                <div>
+                                    <div class="btn-group" th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
+                                        <div class="w-auto col-auto">
+                                            <button class="btn btn-sm btn-primary float-start" type="submit" th:form="${comment.commentId}">저장</button>
+                                        </div>
+                                        <form th:action method="get" class="w-auto col-auto">
+                                            <input type="hidden" th:field="${sortingDto.sorting}">
+                                            <input type="hidden" th:field="${pageDto.page}">
+                                            <input type="hidden" th:field="${pageDto.pageView}">
+                                            <button class="btn btn-sm btn-secondary float-end" type="submit">취소</button>
+                                        </form>
+                                    </div>
+                                    <div class="btn-group btn-group-sm" th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
+                                        <button class="w-auto col-auto btn btn-success float-start"
+                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}|}">수정</button>
+                                        <button class="w-auto col-auto btn btn-danger float-end"
+                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}/delete|}">삭제</button>
+                                    </div>
                                 </div>
                                 <div th:object="${commentEditDto}">
                                     <div th:if="${#fields.hasGlobalErrors() and commentEditStatus?.commentId == comment.commentId}">
@@ -182,11 +191,12 @@
                         </tr>
                     </tbody>
                 </table>
-                <p class="text-center" th:if="${#lists.size(commentList) == 0}">작성된 댓글이 없습니다.</p>
 
-                <div th:if="${pageControl.totalCount == 0}"></div>
+                <div th:if="${pageControl.totalCount == 0}"> <!-- th:if="${#lists.size(commentList) == 0}" -->
+                    <p class="text-center">작성된 댓글이 없습니다.</p>
+                </div>
+
             </div>
-
             <div th:if="${pageControl.totalCount > pageControl.pageDto.pageView}">
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
@@ -239,17 +249,15 @@
             <div>
                 <form th:action th:object="${commentAddDto}" method="post">
                     <div class="row">
-                        <div class="col">
-                            <input type="text" id="commentWriter" class="form-control" placeholder="닉네임" th:field="*{commentWriter}" th:errorclass="field-error" readonly>
+                        <div class="col-4">
+                            <input type="text" class="border form-control-plaintext rounded" placeholder="로그인이 필요합니다" th:field="*{commentWriter}" th:errorclass="field-error" readonly>
                             <div class="field-error" th:errors="*{commentWriter}">닉네임 작성 오류</div>
                         </div>
-                        <div class="col">
-                            <label for="commentContent">
+                        <div class="col-6">
                                 <input type="text" id="commentContent" class="form-control" placeholder="댓글을 입력해주세요" th:field="*{commentContent}" th:errorclass="field-error">
                                 <div class="field-error" th:errors="*{commentContent}">댓글 작성 오류</div>
-                            </label>
                         </div>
-                        <div class="col">
+                        <div class="col-2">
                             <button class="w-auto btn btn-primary" type="submit">작성</button>
                         </div>
                     </div>

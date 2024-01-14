@@ -2,7 +2,6 @@ package syh.toyProject.controller.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +26,7 @@ import syh.toyProject.argumentResolver.Login;
 import syh.toyProject.argumentResolver.LoginName;
 import syh.toyProject.domain.image.Image;
 import syh.toyProject.domain.member.AuthMember;
+import syh.toyProject.paging.CommentPageDto;
 import syh.toyProject.paging.PageControl;
 import syh.toyProject.paging.PageDto;
 import syh.toyProject.paging.SortingDto;
@@ -51,38 +51,6 @@ public class BoardController {
     private final LoginService loginService;
     private final CommentService commentService;
 
-    @Value("${image.dir}") // TODO
-    private String imageDir;
-
-
-    @GetMapping("/imageUpload")
-    public String fileTest(@ModelAttribute PostAddDto postAddDto) {
-        return "image/imageForm";
-    }
-
-//    @PostMapping("/imageUpload")
-//    public String saveFile(@ModelAttribute PostAddDto postAddDto,
-//                           RedirectAttributes redirectAttributes) throws IOException {
-//        if (postAddDto.getUploadDate() != null) {
-//            log.info("imageUploadDto = {}", postAddDto);
-//            List<UploadImage> uploadImages = imageStore.storeFiles(postAddDto, postAddDto.getPostId());
-//
-//            for (UploadImage uploadImage : uploadImages) {
-//                imageService.uploadImage(new Image(uploadImage));
-//            }
-//            redirectAttributes.addAttribute("postId", postAddDto.getPostId());
-//            return "redirect:/imageView/{postId}";
-//        }
-//        return "image/imageForm";
-//    }
-
-//    @GetMapping("/imageView/{postId}")
-//    public String imageView(@PathVariable Long postId, Model model) {
-//        ImageListBoardDto imageListBoardDto = new ImageListBoardDto(postId, imageService.findByPostId(postId));
-//
-//        model.addAttribute("imageList", imageListBoardDto);
-//        return "image/imageView";
-//    }
 
 
     @ResponseBody
@@ -217,14 +185,15 @@ public class BoardController {
 
 
     @PostMapping("/post/{postId}/recommend")
-    public String recommendPost(@PathVariable Long postId, @Login Long loginMemberId,  @LoginName String loginMemberName) {
-        if (loginMemberName == null) { // 비회원 추천 시 돌려보내기
-            //TODO redirect attribute 추가
+    public String recommendPost(@PathVariable Long postId, @Login Long loginMemberId, @LoginName String loginMemberName,
+                                RedirectAttributes redirectAttributes) {
+        if (loginMemberName == null) {
+            redirectAttributes.addFlashAttribute("recErrMessage", "로그인이 필요합니다");
             return "redirect:/post/{postId}";
         }
         
-        // 중복 추천 방지 추가
         if (postService.recommendDuplicateCheck(postId, loginMemberId)) {
+            redirectAttributes.addFlashAttribute("recErrMessage", "추천은 한 번만 가능합니다");
             return "redirect:/post/{postId}";
         }
 
@@ -255,8 +224,7 @@ public class BoardController {
                              @ModelAttribute CommentAddDto commentAddDto, BindingResult commentAddBindingResult,
                              @ModelAttribute PostEditStatus postEditStatus, BindingResult postEditBindingResult,
                              @Login Long loginMemberId, @LoginName String loginMemberName,
-                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto, @ModelAttribute(name = "pageDto") PageDto pageDto,
-                             @RequestParam(name = "pageView", defaultValue = "5") int pageView) {
+                             @ModelAttribute(name = "sortingDto") SortingDto sortingDto, @ModelAttribute(name = "pageDto") CommentPageDto pageDto) {
 //        addCommentErrorCheck
         if (model.getAttribute("addCommentError") != null) {
             BindingResult addDtoError = (BindingResult) model.getAttribute("addCommentError");
@@ -283,7 +251,6 @@ public class BoardController {
         editCommentModeCheck(model, commentEditDto, commentEditBindingResult, commentEditStatus);
 
         postService.addViewCount(postId);
-        pageDto.setPageView(pageView);
 
         model.addAttribute("postDto", postService.postToPostDto(postService.findByPostId(postId)));
         model.addAttribute("imageList", ImageListBoardDto.create(postId, imageService.findByPostId(postId))); // TODO postDto 와 통합
@@ -296,17 +263,17 @@ public class BoardController {
 
     @PostMapping("/post/{postId}/{commentId}")
     public String editCommentModeChange(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
-                                        @Login Long loginMemberId) {
+                                        @Login Long loginMemberId, @ModelAttribute SortingDto sortingDto, @ModelAttribute CommentPageDto pageDto) {
         editCommentModeChangeAuthAndAdminCheck(commentId, redirectAttributes, loginMemberId);
+        redirectAttributes.addFlashAttribute("sortingDto", sortingDto);
+        redirectAttributes.addFlashAttribute("pageDto", pageDto);
         return "redirect:/post/{postId}";
     }
 
-
-
     @PostMapping("/post/{postId}/{commentId}/edit") // 포스트 ID와 멤버 ID, 코멘트 ID 가 일치하는 경우에 수정을 누르면 th:if로 입력폼으로 변경 & 저장
     public String editComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
-                              @Validated @ModelAttribute CommentEditDto commentEditDto, BindingResult bindingResult,
-                              @Login Long loginMemberId) {
+                              @Validated @ModelAttribute CommentEditDto commentEditDto, BindingResult bindingResult, @Login Long loginMemberId,
+                              @ModelAttribute SortingDto sortingDto, @ModelAttribute CommentPageDto pageDto) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("commentEditStatus", CommentEditStatus.editError(commentId));
             redirectAttributes.addFlashAttribute("commentEditDtoError", bindingResult);
@@ -314,7 +281,8 @@ public class BoardController {
         }
 
         editCommentAuthAndAdminCheck(commentId, redirectAttributes, loginMemberId);
-
+        redirectAttributes.addFlashAttribute("sortingDto", sortingDto);
+        redirectAttributes.addFlashAttribute("pageDto", pageDto);
         commentService.editComment(commentId, commentEditDto);
         return "redirect:/post/{postId}";
     }
@@ -332,7 +300,6 @@ public class BoardController {
         }
 
         addCommentAuthAndAdminCheck(bindingResult, redirectAttributes, loginMemberName);
-
         commentService.addComment(postId, loginMemberId, commentAddDto);
         return "redirect:/post/{postId}";
     }
@@ -341,9 +308,10 @@ public class BoardController {
 
     @PostMapping("/post/{postId}/{commentId}/delete")
     public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
-                                @Login Long loginMemberId) {
+                                @Login Long loginMemberId, @ModelAttribute SortingDto sortingDto, @ModelAttribute CommentPageDto pageDto) {
         editCommentAuthAndAdminCheck(commentId, redirectAttributes, loginMemberId);
-
+        redirectAttributes.addFlashAttribute("sortingDto", sortingDto);
+        redirectAttributes.addFlashAttribute("pageDto", pageDto);
         commentService.deleteComment(commentId);
         return "redirect:/post/{postId}";
     }
@@ -403,3 +371,5 @@ public class BoardController {
         }
     }
 }
+
+

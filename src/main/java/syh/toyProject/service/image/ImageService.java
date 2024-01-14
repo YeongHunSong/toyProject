@@ -33,7 +33,6 @@ public class ImageService {
         imageRepository.findByPostId(postId)
                 .forEach(image -> imageDtoList.add(ImageDto.create(image)));
 
-        log.info("imageDtoList = {}", imageDtoList);
         return imageDtoList;
 
 

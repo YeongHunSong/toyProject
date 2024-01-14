@@ -12,7 +12,6 @@
             <div class="field-error" th:errors="*{postTitle}">제목 수정 오류</div>
         </div>
         <br>
-
     </form>
 
     <div class="form-control" th:object="${postEditDto}">
@@ -27,8 +26,8 @@
         <div class="row">
             <div class="mb-2 col col-auto mx-auto" th:each="image : *{imageDtoList}">
                 <img class="rounded mx-auto d-block mb-1" th:src="|/post/*{postId}/image/${image.getServerName()}|" width="150" height="150"/>
-                <form class="row mx-auto" method="post" th:action="|/post/*{postId}/image/${image.getImageId()}/delete|" th:id="${image.getServerName()}">
-                    <button class="btn btn-secondary btn-sm mb-2" type="submit" th:form="${image.getServerName()}">삭제</button>
+                <form class="row mx-auto" method="post" th:action="|/post/*{postId}/image/${image.getImageId()}/delete|">
+                    <button class="btn btn-secondary btn-sm mb-2" type="submit">삭제</button>
                 </form>
             </div>
         </div>
