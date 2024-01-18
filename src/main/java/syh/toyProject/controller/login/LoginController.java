@@ -49,7 +49,7 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@Validated @ModelAttribute LoginDto loginDto, BindingResult bindingResult,
                         @ModelAttribute(name = "redirectURL") String error, // 로그인 실패 후 return 시 null 값으로 인한 에러 방지용
-                        @RequestParam(defaultValue = "/memberHome") String redirectURL, HttpServletRequest request) {
+                        @RequestParam(defaultValue = "/postHome") String redirectURL, HttpServletRequest request) {
         if (bindingResult.hasErrors()) { // 로그인 입력 확인
             return "login/loginForm";
         }
@@ -68,12 +68,12 @@ public class LoginController {
     }
 
     @GetMapping("/cancel")
-    public String cancel(@RequestParam(defaultValue = "/memberHome") String redirectURL) {
+    public String cancel(@RequestParam(defaultValue = "/postHome") String redirectURL) {
         return "redirect:" + redirectURL;
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, @RequestParam(defaultValue = "/memberHome") String redirectURL) {
+    public String logout(HttpServletRequest request, @RequestParam(defaultValue = "/postHome") String redirectURL) {
         HttpSession session = request.getSession(false); // false 일 경우, 세션이 없을 때는 null 만 반환.
         if (session != null) session.invalidate();
         return "redirect:" + redirectURL;

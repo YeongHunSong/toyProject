@@ -6,7 +6,8 @@
     <sql id="searchCond">
         <where>
             <if test="searchUsername != null and !searchUsername.equals('')">
-                AND username LIKE CONCAT('%', #{searchUsername}, '%')
+                AND
+                    M.USERNAME LIKE CONCAT('%', #{searchUsername}, '%')
             </if>
         </where>
     </sql>
@@ -14,57 +15,87 @@
     <sql id="sorting">
         <choose>
             <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
-                ORDER BY signup_date DESC
+                ORDER BY
+                    M.SIGNUP_DATE DESC
             </when>
             <otherwise>
-                ORDER BY signup_date ASC
+                ORDER BY
+                    M.SIGNUP_DATE ASC
             </otherwise>
         </choose>
     </sql>
 
     <sql id="paging">
         <if test="pageDto != null">
-            LIMIT #{pageDto.pageCount}, #{pageDto.pageView}
+            LIMIT
+                #{pageDto.pageCount}, #{pageDto.pageView}
         </if>
     </sql>
 
 
     <insert id="addMember" useGeneratedKeys="true" keyProperty="memberId">
-        INSERT INTO member (signup_date, login_id, password, username)
-        VALUES (now(), #{loginId}, #{password}, #{username})
+        INSERT INTO
+            MEMBER (SIGNUP_DATE, LOGIN_ID, PASSWORD, USERNAME)
+        VALUES
+            (now(), #{loginId}, #{password}, #{username})
     </insert>
 
     <update id="editMember">
-        UPDATE member
-        SET username = #{memberEditDto.username},
-            password = #{memberEditDto.password}
-        WHERE member_id = #{memberId}
+        UPDATE
+            MEMBER M
+        SET
+            M.USERNAME = #{memberEditDto.username}
+            , M.PASSWORD = #{memberEditDto.password}
+        WHERE
+            M.MEMBER_ID = #{memberId}
     </update>
 
     <select id="totalCount" resultType="int">
-        SELECT COUNT(*)
-        FROM member
+        SELECT
+            COUNT(M.*)
+        FROM
+            MEMBER M
         <include refid="searchCond"/>
     </select>
 
     <select id="findAll" resultType="Member">
-        SELECT signup_date, username, member_id, login_id, password
-        FROM member
+        SELECT
+            M.SIGNUP_DATE
+            , M.USERNAME
+            , M.MEMBER_ID
+            , M.LOGIN_ID
+            , M.PASSWORD
+        FROM
+            MEMBER M
         <include refid="searchCond"/>
         <include refid="sorting"/>
         <include refid="paging"/>
     </select>
 
     <select id="findByMemberId" resultType="Member">
-        SELECT signup_date, username, member_id, login_id, password
-        FROM member
-        WHERE member_id = #{memberId}
+        SELECT
+            M.SIGNUP_DATE
+            , M.USERNAME
+            , M.MEMBER_ID
+            , M.LOGIN_ID
+            , M.PASSWORD
+        FROM
+            MEMBER M
+        WHERE
+            M.MEMBER_ID = #{memberId}
     </select>
 
     <select id="findByLoginId" resultType="Member">
-        SELECT signup_date, username, member_id, login_id, password
-        FROM member
-        WHERE login_id = #{loginId}
+        SELECT
+            M.SIGNUP_DATE
+            , M.USERNAME
+            , M.MEMBER_ID
+            , M.LOGIN_ID
+            , M.PASSWORD
+        FROM
+            MEMBER M
+        WHERE
+            M.LOGIN_ID = #{loginId}
     </select>
 
 </mapper>

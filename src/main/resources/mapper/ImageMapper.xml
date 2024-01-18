@@ -4,32 +4,51 @@
 <mapper namespace="syh.toyProject.repository.mybatis.ImageMapper">
 
     <insert id="uploadImage" useGeneratedKeys="true" keyProperty="imageId">
-        INSERT INTO image (post_id, origin_name, server_name, file_size, upload_date)
-        VALUES (#{image.postId}, #{image.originName}, #{image.serverName}, #{image.fileSize}, now())
+        INSERT INTO
+            IMAGE (POST_ID, ORIGIN_NAME, SERVER_NAME, FILE_SIZE, UPLOAD_DATE)
+        VALUES
+            (#{image.postId}, #{image.originName}, #{image.serverName}, #{image.fileSize}, now())
     </insert>
 
     <select id="findByPostId" resultType="image">
-        SELECT image_id, post_id, origin_name, server_name, file_size, upload_date
-        FROM image
-        WHERE post_id = #{postId}
+        SELECT
+            I.IMAGE_ID
+            , I.POST_ID
+            , I.ORIGIN_NAME
+            , I.SERVER_NAME
+            , I.FILE_SIZE
+            , I.UPLOAD_DATE
+        FROM
+            IMAGE I
+        WHERE
+            I.POST_ID = #{postId}
     </select>
 
     <update id="editImage">
-        UPDATE image
-        SET origin_name = #{image.originName}, server_name = #{image.serverName},
-        file_size = #{image.file_size}, upload_date = now()
-        WHERE image_id = #{image.imageId}
+        UPDATE
+            IMAGE I
+        SET
+            I.ORIGIN_NAME = #{image.originName}
+            , I.SERVER_NAME = #{image.serverName}
+            , I.FILE_SIZE = #{image.file_size}, upload_date = now()
+        WHERE
+            I.IMAGE_ID = #{image.imageId}
     </update>
 
     <delete id="deleteImage">
-        DELETE FROM image
-        WHERE post_id = #{image.postId}
-        AND image_id = #{image.imageId}
+        DELETE FROM
+            IMAGE I
+        WHERE
+            I.POST_ID = #{image.postId}
+        AND
+            I.IMAGE_ID = #{image.imageId}
     </delete>
 
     <delete id="deleteImageAll">
-        DELETE FROM image
-        WHERE post_id = #{postId}
+        DELETE FROM
+            IMAGE I
+        WHERE
+            I.POST_ID = #{postId}
     </delete>
 
 </mapper>

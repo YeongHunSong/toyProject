@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout (title = ${postDto.postTitle})}">
 <body>
-    <div class="container" layout:fragment="content">
+    <div class="container" layout:fragment="content" style="max-width: 600px">
 
         <div class="py-3 text-center">
             <h3 th:text="${postDto.postTitle}">게시글 제목</h3>
@@ -136,7 +136,7 @@
                 <table class="table table-hover text-center" style="table-layout: fixed">
                     <thead>
                         <tr>
-                            <th class="col-3">작성자</th>
+                            <th class="col-4">작성자</th>
                             <th class="col-3">작성일</th>
                             <th class="col-6">댓글</th>
                             <th class="col-3">댓글관리</th>

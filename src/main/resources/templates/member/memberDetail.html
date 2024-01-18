@@ -119,6 +119,7 @@
                 </tr>
                 </tbody>
             </table>
+
             <p class="text-center" th:if="${#lists.size(postList) == 0}">작성한 글이 없습니다.</p>
 
             <div th:if="${postPageControl?.totalCount != 0}">
@@ -169,7 +170,7 @@
         <hr class="my-3">
 
         <div class="py-3 text-center">
-            <p th:text="|작성 댓글 목록 (${commentPageControl.totalCount } 개)|">작성 댓글 목록</p>
+            <p th:text="|작성 댓글 목록 (${commentPageControl.totalCount} 개)|">작성 댓글 목록</p>
             <table class="table table-hover text-center" style="table-layout: fixed">
                 <thead>
                 <tr>
@@ -184,6 +185,7 @@
                 </tr>
                 </tbody>
             </table>
+
             <p class="text-center" th:if="${#lists.size(commentList) == 0}">작성한 댓글이 없습니다.</p>
 
             <div th:if="${commentPageControl?.totalCount != 0}">

@@ -6,10 +6,12 @@
     <sql id="sorting">
         <choose>
             <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
-                ORDER BY writing_date DESC
+                ORDER BY
+                    C.WRITING_DATE DESC
             </when>
             <otherwise>
-                ORDER BY writing_date ASC
+                ORDER BY
+                    C.WRITING_DATE ASC
             </otherwise>
         </choose>
     </sql>
@@ -22,62 +24,110 @@
 
 
     <insert id="addComment" useGeneratedKeys="true" keyProperty="commentId">
-        INSERT INTO comment (post_id, member_id, writing_date, last_edit_date, comment_content)
-        VALUES (#{postId}, #{memberId}, now(), now(), #{commentContent})
+        INSERT INTO
+            COMMENT (POST_ID, MEMBER_ID, WRITING_DATE, LAST_EDIT_DATE, COMMENT_CONTENT)
+        VALUES
+            (#{postId}, #{memberId}, now(), now(), #{commentContent})
     </insert>
 
     <update id="editComment">
-        UPDATE comment
-        SET comment_content = #{commentEditDto.commentContent}, last_edit_date = now() + 0.00001
-        WHERE comment_id = #{commentId}
+        UPDATE
+            COMMENT C
+        SET
+            C.COMMENT_CONTENT = #{commentEditDto.commentContent}, last_edit_date = now() + 0.00001
+        WHERE
+            C.COMMENT_ID = #{commentId}
     </update>
 
     <select id="totalCount" resultType="int">
-        SELECT COUNT(*)
-        FROM comment
-        WHERE post_id = #{postId}
+        SELECT
+            COUNT(C.*)
+        FROM
+            COMMENT C
+        WHERE
+            C.POST_ID = #{postId}
     </select>
     
     <select id="totalCountByMemberId" resultType="int">
-        SELECT COUNT(*)
-        FROM comment
-        WHERE member_id = #{memberId}
+        SELECT
+            COUNT(C.*)
+        FROM
+            COMMENT C
+        WHERE
+            C.MEMBER_ID = #{memberId}
     </select>
 
     <select id="findAll" resultType="Comment">
-        SELECT comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
-        FROM comment
+        SELECT
+            C.COMMENT_ID
+            , C.POST_ID
+            , C.MEMBER_ID
+            , C.WRITING_DATE
+            , C.LAST_EDIT_DATE
+            , C.COMMENT_CONTENT
+        FROM
+            COMMENT C
     </select>
 
     <select id="findByPostIdAll" resultType="Comment">
-        SELECT comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
-        FROM comment
-        WHERE post_id = #{postId}
+        SELECT
+            C.COMMENT_ID
+            , C.POST_ID
+            , C.MEMBER_ID
+            , C.WRITING_DATE
+            , C.LAST_EDIT_DATE
+            , C.COMMENT_CONTENT
+        FROM
+            COMMENT C
+        WHERE
+            C.POST_ID = #{postId}
         <include refid="sorting"/>
         <include refid="paging"/>
     </select>
 
     <select id="findByMemberIdAll" resultType="Comment">
-        SELECT comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
-        FROM comment
-        WHERE member_id = #{memberId}
+        SELECT
+            C.COMMENT_ID
+            , C.POST_ID
+            , C.MEMBER_ID
+            , C.WRITING_DATE
+            , C.LAST_EDIT_DATE
+            , C.COMMENT_CONTENT
+        FROM
+            COMMENT C
+        WHERE
+            C.MEMBER_ID = #{memberId}
+        ORDER BY
+            C.WRITING_DATE DESC
         <include refid="paging"/>
     </select>
 
     <select id="findByCommentId" resultType="Comment">
-        SELECT comment_id, post_id, member_id, writing_date, last_edit_date, comment_Content
-        FROM comment
-        WHERE comment_id = #{commentId}
+        SELECT
+            C.COMMENT_ID
+            , C.POST_ID
+            , C.MEMBER_ID
+            , C.WRITING_DATE
+            , C.LAST_EDIT_DATE
+            , C.COMMENT_CONTENT
+        FROM
+            COMMENT C
+        WHERE
+            C.COMMENT_ID = #{commentId}
     </select>
 
     <delete id="deleteComment">
-        DELETE FROM comment
-        WHERE comment_id = #{commentId}
+        DELETE FROM
+            COMMENT C
+        WHERE
+            C.COMMENT_ID = #{commentId}
     </delete>
 
     <delete id="deleteAllCommentByPostId">
-        DELETE FROM comment
-        WHERE post_id = #{postId}
+        DELETE FROM
+            COMMENT C
+        WHERE
+            C.POST_ID = #{postId}
     </delete>
 
 </mapper>

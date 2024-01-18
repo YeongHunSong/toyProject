@@ -23,9 +23,9 @@
                 <input type="file" id="uploadImages" class="form-control" multiple="multiple" th:field="*{uploadImages}" accept="image/*">
             </div>
             <br>
-            <div> <!-- TODO 작성자 란은 어차피 수정이 불가능하니 input hidden 으로 값 넘기고 입력창을 아예 없애고 그냥 텍스트만 보이도록 -->
-                <label for="username">작성자</label> <!-- TODO 로그인 사용자는 readonly, 비로그인 사용자는 그냥 가능하게 // 회색 -->
-                <input type="text" id="username" class="form-control" th:value="${session.username}" readonly>
+            <div>
+                <label for="username">작성자</label>
+                <input type="text" id="username" class="border form-control-plaintext rounded" th:value="${session.username}" readonly>
             </div>
 
 

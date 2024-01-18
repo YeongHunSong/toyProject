@@ -6,13 +6,13 @@
     <sql id="searchCond">
         <where>
             <if test="cond != null and cond.searchType == 'title' and cond.searchKeyword != ''">
-                p.post_title LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                P.POST_TITLE LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
             <if test="cond != null and cond.searchType == 'content' and cond.searchKeyword != ''">
-                p.post_content LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                P.POST_CONTENT LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
             <if test="cond != null and cond.searchType == 'username' and cond.searchKeyword != ''">
-                m.username LIKE CONCAT('%', #{cond.searchKeyword}, '%')
+                M.USERNAME LIKE CONCAT('%', #{cond.searchKeyword}, '%')
             </if>
         </where>
     </sql>
@@ -20,10 +20,12 @@
     <sql id="sorting">
         <choose>
             <when test="sortingDto != null and sortingDto.sorting == 'DESC'">
-                ORDER BY p.writing_date DESC
+                ORDER BY
+                    P.WRITING_DATE DESC
             </when>
             <otherwise>
-                ORDER BY p.writing_date ASC
+                ORDER BY
+                    P.WRITING_DATE ASC
             </otherwise>
         </choose>
     </sql>
@@ -35,52 +37,80 @@
     </sql>
 
     <insert id="addPost" useGeneratedKeys="true" keyColumn="post_id" keyProperty="postId">
-        INSERT INTO post (writing_date, last_edit_date, post_title, post_content, member_id, view_count)
-        VALUES (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0)
+        INSERT INTO
+            POST (WRITING_DATE, LAST_EDIT_DATE, POST_TITLE, POST_CONTENT, MEMBER_ID, VIEW_COUNT)
+        VALUES
+            (now(), now(), #{postTitle}, #{postContent}, #{memberId}, 0)
     </insert>
 
     <update id="editPost">
-        UPDATE post
-        SET post_title = #{postEditDto.postTitle},
-            post_content = #{postEditDto.postContent},
-            last_edit_date = now() + 0.00001
-
-        WHERE post_id = #{postId}
+        UPDATE
+            POST P
+        SET
+            P.POST_TITLE = #{postEditDto.postTitle}
+            , P.POST_CONTENT = #{postEditDto.postContent}
+            , P.LAST_EDIT_DATE = now() + 0.00001
+        WHERE
+            P.POST_ID = #{postId}
     </update>
 
     <select id="totalCount" resultType="int">
-        SELECT COUNT(*)
-        FROM post p
-        LEFT JOIN member m ON p.member_id = m.member_id
+        SELECT
+            COUNT(*)
+        FROM
+            POST P
+        LEFT JOIN MEMBER M
+            ON P.MEMBER_ID = M.MEMBER_ID
         <include refid="searchCond"/>
     </select>
     
     <select id="totalCountByMemberId" resultType="int">
-        SELECT COUNT(*)
-        FROM post
-        WHERE member_id = #{memberId}
+        SELECT
+            COUNT(P.*)
+        FROM
+            POST P
+        WHERE
+            P.MEMBER_ID = #{memberId}
     </select>
     
     <!-- ORDER BY post.post_id DESC -->
     <select id="findAll" resultType="Post">
-        SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
-               r.recommend_count, c.comment_count, p.writing_date, p.last_edit_date
-        FROM post AS p
-        INNER JOIN member m ON p.member_id = m.member_id
+        SELECT
+            P.MEMBER_ID
+            , P.POST_ID
+            , P.POST_TITLE
+            , P.POST_CONTENT
+            , P.VIEW_COUNT
+            , R.RECOMMEND_COUNT
+            , C.COMMENT_COUNT
+            , P.WRITING_DATE
+            , P.LAST_EDIT_DATE
+        FROM
+            POST P
+        INNER JOIN MEMBER M
+            ON P.MEMBER_ID = M.MEMBER_ID
         LEFT JOIN
             (
-                SELECT comment.post_id, COUNT(*) comment_count
-                FROM comment
-                GROUP BY comment.post_id
-            ) AS c
-            ON p.post_id = c.post_id
+                SELECT
+                    A.POST_ID
+                    , COUNT(A.*) COMMENT_COUNT
+                FROM
+                    COMMENT A
+                GROUP BY
+                    A.POST_ID
+            ) AS C
+            ON P.POST_ID = C.POST_ID
         LEFT JOIN
             (
-                SELECT recommend.post_id, COUNT(*) recommend_count
-                FROM post_recommend as recommend
-                GROUP BY recommend.post_id
-            ) AS r
-            ON p.post_id = r.post_id
+                SELECT
+                    B.POST_ID
+                    , COUNT(*) RECOMMEND_COUNT
+                FROM
+                    POST_RECOMMEND AS B
+                GROUP BY
+                    B.POST_ID
+            ) AS R
+            ON P.POST_ID = R.POST_ID
         <include refid="searchCond"/>
         <include refid="sorting"/>
         <include refid="paging"/>
@@ -102,43 +132,77 @@
     </select>
 
     <select id="findByMemberIdAll" resultType="Post">
-        SELECT writing_date, last_edit_date, post_title, post_content, member_id, post_id, view_count
-        FROM post
-        WHERE member_id = #{memberId}
+        SELECT
+            P.WRITING_DATE
+            , P.LAST_EDIT_DATE
+            , P.POST_TITLE
+            , P.POST_CONTENT
+            , P.MEMBER_ID
+            , P.POST_ID
+            , P.VIEW_COUNT
+        FROM
+            POST P
+        WHERE
+            P.MEMBER_ID = #{memberId}
+        ORDER BY
+            WRITING_DATE DESC
         <include refid="paging"/>
     </select>
 
     <select id="findByPostId" resultType="Post">
-        SELECT p.member_id, p.post_id, p.post_title, p.post_content, p.view_count,
-        COUNT(r.post_id) recommend_count, p.writing_date, p.last_edit_date
-        FROM post p
-        LEFT JOIN post_recommend AS r ON p.post_id = r.post_id
-        WHERE p.post_id = #{postId}
-        GROUP BY p.post_id
-        ORDER BY p.post_id
+        SELECT
+            P.MEMBER_ID
+            , P.POST_ID
+            , P.POST_TITLE
+            , P.POST_CONTENT
+            , P.VIEW_COUNT
+            , COUNT(R.POST_ID) RECOMMEND_COUNT
+            , P.WRITING_DATE
+            , P.LAST_EDIT_DATE
+        FROM
+            POST P
+        LEFT JOIN POST_RECOMMEND AS R
+            ON P.POST_ID = R.POST_ID
+        WHERE
+            P.POST_ID = #{postId}
+        GROUP BY
+            P.POST_ID
+        ORDER BY
+            P.POST_ID
     </select> <!--COUNT 부분을 COUNT(*) 로 할 경우 null 도 카운팅에 들어가 값의 오류 발생. -->
 
     <delete id="deletePost">
-        DELETE FROM post
-        WHERE post_id = #{postId}
+        DELETE FROM
+            POST P
+        WHERE
+            P.POST_ID = #{postId}
     </delete>
 
     <update id="addViewCount">
-        UPDATE post
-        SET view_count = view_count + 1
-        WHERE post_id = #{postId}
+        UPDATE
+            POST P
+        SET
+            P.VIEW_COUNT = VIEW_COUNT + 1
+        WHERE
+            P.POST_ID = #{postId}
     </update>
 
     <insert id="recommendPost">
-        INSERT INTO post_recommend (post_id, recommender_id, recommend_date)
-        VALUES (#{postId}, #{recommenderId}, now())
+        INSERT INTO
+            POST_RECOMMEND (POST_ID, RECOMMENDER_ID, RECOMMEND_DATE)
+        VALUES
+            (#{postId}, #{recommenderId}, now())
     </insert>
 
     <select id="recommendDuplicateCheck" resultType="Int">
-        SELECT COUNT(*)
-        FROM post_recommend
-        WHERE post_id = #{postId}
-        AND recommender_id = #{recommenderId}
+        SELECT
+            COUNT(R.*)
+        FROM
+            POST_RECOMMEND R
+        WHERE
+            R.POST_ID = #{postId}
+        AND
+            R.RECOMMENDER_ID = #{recommenderId}
     </select>
 
 </mapper>

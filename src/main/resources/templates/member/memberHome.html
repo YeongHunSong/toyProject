@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layoutHome (title = '회원 목록')}">
+      layout:decorate="~{layouts/layout (title = '회원 목록')}">
 <body>
-    <div class="container" layout:fragment="content" style="max-width: 600px">
+    <div class="container" layout:fragment="content">
 
         <div class="row">
             <div class="col" th:if="${searchTrg == 'off'}">
