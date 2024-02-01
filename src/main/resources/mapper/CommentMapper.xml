@@ -41,7 +41,7 @@
 
     <select id="totalCount" resultType="int">
         SELECT
-            COUNT(C.*)
+            COUNT(C.COMMENT_ID)
         FROM
             COMMENT C
         WHERE
@@ -50,11 +50,11 @@
     
     <select id="totalCountByMemberId" resultType="int">
         SELECT
-            COUNT(C.*)
+            COUNT(C.COMMENT_ID)
         FROM
             COMMENT C
         WHERE
-            C.MEMBER_ID = #{memberId}
+            MEMBER_ID = #{memberId}
     </select>
 
     <select id="findAll" resultType="Comment">

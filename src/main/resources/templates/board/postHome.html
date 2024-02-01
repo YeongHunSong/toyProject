@@ -38,7 +38,8 @@
                     </label>
                 </div>
                 <div class="col-auto">
-                    <input type="text" class="form-control" placeholder="검색어를 입력해주세요" th:field="${cond.searchKeyword}">
+                    <input type="text" class="form-control" placeholder="검색어를 입력해주세요"
+                           th:field="${cond.searchKeyword}">
                 </div>
                 <div class="col-auto">
                     <button class="btn btn-success" type="submit">검색</button>
@@ -59,7 +60,8 @@
                     <div class="col-auto">
                         <label>
                             <select class="form-select form-select-sm" th:field="${pageDto.pageView}">
-                                <option th:each="view : ${#numbers.sequence(10, 50, 10)}" th:value="${view}" th:text="|${view}개|"></option>
+                                <option th:each="view : ${#numbers.sequence(10, 50, 10)}"
+                                        th:value="${view}" th:text="|${view}개|"></option>
                             </select>
                         </label>
                         <label>

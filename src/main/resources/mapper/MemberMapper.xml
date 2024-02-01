@@ -52,7 +52,7 @@
 
     <select id="totalCount" resultType="int">
         SELECT
-            COUNT(M.*)
+            COUNT(M.MEMBER_ID)
         FROM
             MEMBER M
         <include refid="searchCond"/>

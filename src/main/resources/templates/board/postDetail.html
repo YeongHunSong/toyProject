@@ -81,7 +81,7 @@
                 <button class="w-auto btn btn-warning float-start" onclick="location.href='postHome.html'"
                         th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
             </div>
-            <div class="col">
+            <div class="col" th:if="${session?.username != null}">
                 <form th:action="@{|/post/${postId}/recommend|}" method="post">
                     <button class="w-auto btn btn-primary float-start" type="submit">추천</button>
                 </form>

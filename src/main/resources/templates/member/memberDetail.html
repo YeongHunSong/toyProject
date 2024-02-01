@@ -15,14 +15,14 @@
                 <input type="text" id="signupDate" name="signupDate" class="form-control" value="23-05-31 12:42:15"
                        th:value="${#temporals.format(memberDetail.signupDate, 'yy-MM-dd HH:mm:ss')}" disabled>
             </div>
-            <div class="mb-3">
-                <label for="loginId">로그인 ID</label>
-                <input type="text" id="loginId" class="form-control" value="abcd1234" th:field="${memberDetail.loginId}" disabled>
-            </div>
-            <div class="mb-3">
-                <label for="password">비밀번호</label>
-                <input type="text" id="password" class="form-control" th:field="${memberDetail.password}" disabled>
-            </div>
+<!--            <div class="mb-3">-->
+<!--                <label for="loginId">로그인 ID</label>-->
+<!--                <input type="text" id="loginId" class="form-control" value="abcd1234" th:field="${memberDetail.loginId}" disabled>-->
+<!--            </div>-->
+<!--            <div class="mb-3">-->
+<!--                <label for="password">비밀번호</label>-->
+<!--                <input type="text" id="password" class="form-control" th:field="${memberDetail.password}" disabled>-->
+<!--            </div>-->
             <div class="mb-3">
                 <label for="username">닉네임</label>
                 <input type="text" id="username" class="form-control" value="홍길동" th:field="${memberDetail.username}" disabled>
@@ -85,9 +85,10 @@
             </div>
         </div>
 
-        <div>
+        <div class="text-center">
             <form th:object="${status}">
                 <div th:if="${#fields.hasGlobalErrors()}">
+                    <br>
                     <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
                 </div>
             </form>

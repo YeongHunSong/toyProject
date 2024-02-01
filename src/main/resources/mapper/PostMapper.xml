@@ -56,7 +56,7 @@
 
     <select id="totalCount" resultType="int">
         SELECT
-            COUNT(*)
+            COUNT(P.POST_ID)
         FROM
             POST P
         LEFT JOIN MEMBER M
@@ -66,7 +66,7 @@
     
     <select id="totalCountByMemberId" resultType="int">
         SELECT
-            COUNT(P.*)
+            COUNT(P.POST_ID)
         FROM
             POST P
         WHERE
@@ -92,23 +92,23 @@
         LEFT JOIN
             (
                 SELECT
-                    A.POST_ID
-                    , COUNT(A.*) COMMENT_COUNT
+                    POST_ID
+                    , COUNT(A.COMMENT_ID) COMMENT_COUNT
                 FROM
                     COMMENT A
                 GROUP BY
-                    A.POST_ID
+                    POST_ID
             ) AS C
             ON P.POST_ID = C.POST_ID
         LEFT JOIN
             (
                 SELECT
-                    B.POST_ID
-                    , COUNT(*) RECOMMEND_COUNT
+                    POST_ID
+                    , COUNT(B.POST_ID) RECOMMEND_COUNT
                 FROM
-                    POST_RECOMMEND AS B
+                    POST_RECOMMEND B
                 GROUP BY
-                    B.POST_ID
+                    POST_ID
             ) AS R
             ON P.POST_ID = R.POST_ID
         <include refid="searchCond"/>
@@ -161,14 +161,10 @@
             , P.LAST_EDIT_DATE
         FROM
             POST P
-        LEFT JOIN POST_RECOMMEND AS R
+        LEFT JOIN POST_RECOMMEND R
             ON P.POST_ID = R.POST_ID
         WHERE
             P.POST_ID = #{postId}
-        GROUP BY
-            P.POST_ID
-        ORDER BY
-            P.POST_ID
     </select> <!--COUNT 부분을 COUNT(*) 로 할 경우 null 도 카운팅에 들어가 값의 오류 발생. -->
 
     <delete id="deletePost">
@@ -182,7 +178,7 @@
         UPDATE
             POST P
         SET
-            P.VIEW_COUNT = VIEW_COUNT + 1
+            P.VIEW_COUNT = P.VIEW_COUNT + 1
         WHERE
             P.POST_ID = #{postId}
     </update>
@@ -196,7 +192,7 @@
 
     <select id="recommendDuplicateCheck" resultType="Int">
         SELECT
-            COUNT(R.*)
+            COUNT(R.POST_ID)
         FROM
             POST_RECOMMEND R
         WHERE

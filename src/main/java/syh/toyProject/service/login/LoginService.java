@@ -15,7 +15,6 @@ public class LoginService {
     private final MemberRepository memberRepository;
 
     public Member login(String loginId, String password) {
-        // 아이디 비밀번호 통합
         return memberRepository.findByLoginId(loginId)
                 .filter(member -> member.getLoginId().equals(loginId))
                 .filter(member -> member.getPassword().equals(password))

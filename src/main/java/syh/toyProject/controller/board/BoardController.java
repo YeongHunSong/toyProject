@@ -86,8 +86,10 @@ public class BoardController {
                            @ModelAttribute(name = "pageDto") PageDto pageDto) {
 
         model.addAttribute("searchTrg", searchTrg);
-        model.addAttribute("pageControl", PageControl.create(pageDto, postService.totalCount(cond)));
-        model.addAttribute("postList", postService.postListToPostDto(postService.findAll(cond, pageDto, sortingDto)));
+        model.addAttribute("pageControl",
+                PageControl.create(pageDto, postService.totalCount(cond)));
+        model.addAttribute("postList",
+                postService.postListToPostDto(postService.findAll(cond, pageDto, sortingDto)));
         return "board/postHome";
     }
 
@@ -134,7 +136,7 @@ public class BoardController {
 
         if (loginMemberName != null) { // 로그인 체크
             Long genPostId = postService.addPost(postAddDto.newPost(loginMemberId));
-            if (postAddDto.getUploadImages().get(0).getSize() != 0L) {
+            if (postAddDto.getUploadImages().get(0).getSize() != 0L) { // 이미지 파일이 있을 경우 업로드
                 for (UploadImage uploadImage : imageStore.storeImages(postAddDto.getUploadImages(), genPostId)) {
                     imageService.uploadImage(uploadImage);
                 }
@@ -188,12 +190,12 @@ public class BoardController {
     public String recommendPost(@PathVariable Long postId, @Login Long loginMemberId, @LoginName String loginMemberName,
                                 RedirectAttributes redirectAttributes) {
         if (loginMemberName == null) {
-            redirectAttributes.addFlashAttribute("recErrMessage", "로그인이 필요합니다");
+            recommendErrorMessage(redirectAttributes, "로그인이 필요합니다.");
             return "redirect:/post/{postId}";
         }
         
         if (postService.recommendDuplicateCheck(postId, loginMemberId)) {
-            redirectAttributes.addFlashAttribute("recErrMessage", "추천은 한 번만 가능합니다");
+            recommendErrorMessage(redirectAttributes, "추천은 한 번만 가능합니다.");
             return "redirect:/post/{postId}";
         }
 
@@ -369,6 +371,10 @@ public class BoardController {
         if (postEditStatus.isAccessDenied()) {
             globalErrorReject(postEditBindingResult, "accessDenied.editPost", "게시글수정");
         }
+    }
+
+    private void recommendErrorMessage(RedirectAttributes redirectAttributes, String message) {
+        redirectAttributes.addFlashAttribute("recErrMessage", message);
     }
 }
 
