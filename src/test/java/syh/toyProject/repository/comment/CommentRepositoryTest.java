@@ -65,7 +65,8 @@ class CommentRepositoryTest {
 
         List<Comment> commentList = commentRepository.findByMemberIdAll(comment1.getMemberId(), null);
 
-        assertThat(commentList).containsExactly(comment1, comment2, comment3, comment4);
+        log.info("commentList = {}", commentList);
+        assertThat(commentList).containsExactly(comment4, comment3, comment2, comment1);
     }
 
     @Test

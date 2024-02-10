@@ -3,6 +3,12 @@ image:
   dir: C:\Users\0628c\OneDrive\바탕 화면\toyP\toyproject\src\main\resources\static\image\
 
 spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;
+    username: sa
+    password:
+
   profiles:
     active: test
 

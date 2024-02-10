@@ -30,7 +30,7 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-//	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -42,4 +42,21 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Task Script
+tasks.jar{                // jar 제작 task 추가
+	manifest {            // 프로젝트가 시작되는 main class 위치 지정
+		attributes 'Main-Class': 'syh.toyProject.ToyProjectApplication'
+	}
+	from { // 의존성 주입을 통해 가져오는 Library를 포함하여 jar를 제작하기 위해 dependency libs 추가
+		configurations.runtimeClasspath.collect{
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE     // 최초 build 후 재 build 시 중복 파일에 대한 전략
+	// EXCLUDE: 중복 불허, 기존 파일 사용
+	// INCLUDE: 중복 가능하면 중복, 불가한 파일은 덮어쓰기
+	// FAIL: 중복 시 Build Fail 처리
 }
