@@ -26,6 +26,7 @@ import syh.toyProject.argumentResolver.Login;
 import syh.toyProject.argumentResolver.LoginName;
 import syh.toyProject.domain.image.Image;
 import syh.toyProject.domain.member.AuthMember;
+import syh.toyProject.domain.post.Post;
 import syh.toyProject.paging.CommentPageDto;
 import syh.toyProject.paging.PageControl;
 import syh.toyProject.paging.PageDto;
@@ -50,6 +51,17 @@ public class BoardController {
     private final ImageService imageService;
     private final LoginService loginService;
     private final CommentService commentService;
+
+
+
+    @ResponseBody
+    @GetMapping("/paging/post")
+    public String post100() {
+        for (int i = 0; i < 100; i++) {
+            postService.addPost(Post.postAdd(1L, "페이징용", "페이징용"));
+        }
+        return "post 100개 ok";
+    }
 
 
 
@@ -377,5 +389,4 @@ public class BoardController {
         redirectAttributes.addFlashAttribute("recErrMessage", message);
     }
 }
-
 

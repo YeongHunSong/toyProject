@@ -39,6 +39,19 @@ public class MemberController {
     private final MemberService memberService;
     private final CommentService commentService;
 
+
+
+    @ResponseBody
+    @GetMapping("/adding/member")
+    public String member5() {
+        for (int i = 0; i < 5; i++) {
+            memberService.addMember(Member.create("common" + i, "common", "일반사용자" + i));
+        }
+        return "회원 5개 ok";
+    }
+
+
+
     @GetMapping("/memberHome")
     public String memberHome(@ModelAttribute(name = "username") String username, Model model,
                              @CookieValue(name = "memberSearchTrg", defaultValue = "off") String searchTrg,
@@ -183,12 +196,4 @@ public class MemberController {
     private void globalErrorReject(BindingResult bindingResult, String errorCode, Object... errorArgs) {
         bindingResult.reject(errorCode, errorArgs, null);
     }
-
-
-//    @PostConstruct
-//    public void init() { // 확인용 값 추가
-//        memberService.addMember(new Member("admin", "admin!", "관리자계정"));
-//        memberService.addMember(new Member("test1", "pw1234", "테스트1호"));
-//        memberService.addMember(new Member("test2", "pw1234", "테스트2호"));
-//    }
 }
