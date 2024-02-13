@@ -1,6 +1,6 @@
 
 image:
-  dir: C:\Users\0628c\OneDrive\바탕 화면\toyP\toyproject\src\main\resources\static\image\
+  dir: C:\Users\car06\Desktop\image\
 
 spring:
   datasource:
