@@ -1,6 +1,6 @@
 #File 경로 @Value("${image.dir") 로 값을 불러올 수 있음.
 image:
-  dir: C:\Users\0628c\OneDrive\바탕 화면\toyP\toyproject\src\main\resources\static\image\
+  dir: C:\Users\car06\Desktop\image\
 
 #ErrorMessage 연결
 spring:
