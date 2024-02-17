@@ -1,3 +1,7 @@
+#TEST 에러 해결용 (이게 왜 필요한지?)
+image:
+  dir:
+
 
 spring:
   datasource:
