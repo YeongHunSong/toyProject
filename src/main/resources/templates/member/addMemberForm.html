@@ -9,7 +9,7 @@
             <h2>회원 가입</h2>
         </div>
 
-        <form th:action th:object="${memberSignupDto}" method="post">
+        <form th:action="@{|/member|}" th:object="${memberSignupDto}" method="post">
             <div> <!-- errors + ? 문법으로 null 방지. null 이 들어오더라도  NullPointerException 발생하는 대신 null 을 반환함. SpringEL 문법 -->
                 <label for="loginId">로그인 ID</label>
                 <input type="text" id="loginId" class="form-control" placeholder="ID를 입력해주세요" th:field="*{loginId}" th:errorclass="field-error">

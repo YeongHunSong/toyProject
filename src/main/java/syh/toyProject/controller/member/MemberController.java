@@ -42,7 +42,7 @@ public class MemberController {
 
 
     @ResponseBody
-    @GetMapping("/adding/member")
+    @GetMapping("/paging/member")
     public String member5() {
         for (int i = 0; i < 5; i++) {
             memberService.addMember(Member.create("common" + i, "common", "일반사용자" + i));
@@ -82,13 +82,13 @@ public class MemberController {
         return "redirect:/memberHome";
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/member/join")
     public String addMemberForm(@ModelAttribute MemberSignupDto memberDto, @ModelAttribute(name = "redirectURL") String redirectURL) {
         // 로그인 체크 후, 로그인이 되어 있지 않는 경우에만 가능하도록 추가 // 다른 웹페이지의 경우에는 그냥 안 막아놓는 것 같기도?
         return "member/addMemberForm";
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/member")
     public String addMember(@Validated @ModelAttribute MemberSignupDto memberDto, BindingResult bindingResult,
                             @ModelAttribute(name = "redirectURL") String error, // 회원가입 실패 후 return 시 null 값으로 인한 에러 방지용
                             @RequestParam(defaultValue = "/memberHome") String redirectURL) {
@@ -125,7 +125,7 @@ public class MemberController {
         return "member/memberDetail";
     }
 
-    @GetMapping("/member/{memberId}/edit")
+    @GetMapping("/member/{memberId}/update")
     public String editMemberForm(@PathVariable Long memberId, Model model, RedirectAttributes redirectAttributes,
                                  @Login Long loginMemberId) {
         // 그냥 단순히 접근할 권한이 없습니다 페이지만 띄워도 괜찮을듯
@@ -140,7 +140,8 @@ public class MemberController {
         return "member/editMemberForm";
     }
 
-    @PostMapping("/member/{memberId}/edit")
+//    @PostMapping("/member/{memberId}/edit")
+    @PutMapping("/member/{memberId}")
     public String editMember(@PathVariable Long memberId, @Login Long loginMemberId, RedirectAttributes redirectAttributes,
                              @Validated @ModelAttribute MemberEditDto memberDto, BindingResult bindingResult, Model model) {
         if (!(editMemberAuthConfirm(memberId, loginMemberId, redirectAttributes))) {

@@ -65,7 +65,7 @@ public class BoardController {
 
 
 
-    @ResponseBody
+    @ResponseBody // 이미지 렌더
     @GetMapping("/post/{postId}/image/{serverName}")
     public ResponseEntity<Resource> renderImage(@PathVariable Long postId, @PathVariable String serverName) throws IOException {
 //        Resource resource = new InputStreamResource(Files.newInputStream(Paths.get(imageStore.getFullPath(postId, serverName))));
@@ -78,7 +78,7 @@ public class BoardController {
 
 
 
-    @PostMapping("/post/{postId}/image/{imageId}/delete")
+    @DeleteMapping("/post/{postId}/image/{imageId}")
     public String deleteImage(@PathVariable Long postId, @PathVariable Long imageId, @Login Long loginMemberId) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
 //            redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
@@ -86,7 +86,7 @@ public class BoardController {
         }
 
         imageService.deleteImage(Image.deleteDto(postId, imageId));
-        return "redirect:/post/{postId}/edit";
+        return "redirect:/post/{postId}/update";
     }
 
 
@@ -127,7 +127,7 @@ public class BoardController {
 
 
 
-    @GetMapping("/post/add")
+    @GetMapping("/post/write")
     public String addPostForm(@ModelAttribute PostAddDto postAddDto, @LoginName String loginMemberName) {
         if (loginMemberName == null) {
             // TODO redirectAttribute 추가
@@ -138,7 +138,7 @@ public class BoardController {
 
 
 
-    @PostMapping("/post/add")
+    @PostMapping("/post")
     public String addPost(@Validated @ModelAttribute PostAddDto postAddDto, BindingResult bindingResult,
                           @Login Long loginMemberId, @LoginName String loginMemberName) throws IOException {
         if (bindingResult.hasErrors()) {
@@ -160,7 +160,7 @@ public class BoardController {
 
 
 
-    @GetMapping("/post/{postId}/edit") // ##### 수정
+    @GetMapping("/post/{postId}/update") // ##### 수정
     public String editPostForm(@PathVariable Long postId, Model model, RedirectAttributes redirectAttributes,
                                @Login Long loginMemberId) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
@@ -174,7 +174,7 @@ public class BoardController {
 
 
 
-    @PostMapping("/post/{postId}/edit")
+    @PutMapping("/post/{postId}")
     public String editPost(@PathVariable Long postId, RedirectAttributes redirectAttributes, @Login Long loginMemberId,
                            @Validated @ModelAttribute PostEditDto postEditDto, BindingResult bindingResult) throws IOException {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
@@ -217,7 +217,7 @@ public class BoardController {
 
 
 
-    @PostMapping("/post/{postId}/delete")
+    @DeleteMapping("/post/{postId}")
     public String deletePost(@PathVariable Long postId, @Login Long loginMemberId, RedirectAttributes redirectAttributes) {
         if (!(loginService.authAndAdminCheck(loginMemberId, postService.findByMemberId(postId)))) {
             redirectAttributes.addFlashAttribute("postEditStatus", PostEditStatus.accessDenied());
@@ -284,7 +284,7 @@ public class BoardController {
         return "redirect:/post/{postId}";
     }
 
-    @PostMapping("/post/{postId}/{commentId}/edit") // 포스트 ID와 멤버 ID, 코멘트 ID 가 일치하는 경우에 수정을 누르면 th:if로 입력폼으로 변경 & 저장
+    @PutMapping("/post/{postId}/{commentId}") // 포스트 ID와 멤버 ID, 코멘트 ID 가 일치하는 경우에 수정을 누르면 th:if로 입력폼으로 변경 & 저장
     public String editComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
                               @Validated @ModelAttribute CommentEditDto commentEditDto, BindingResult bindingResult, @Login Long loginMemberId,
                               @ModelAttribute SortingDto sortingDto, @ModelAttribute CommentPageDto pageDto) {
@@ -320,7 +320,7 @@ public class BoardController {
 
 
 
-    @PostMapping("/post/{postId}/{commentId}/delete")
+    @DeleteMapping("/post/{postId}/{commentId}")
     public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId, RedirectAttributes redirectAttributes,
                                 @Login Long loginMemberId, @ModelAttribute SortingDto sortingDto, @ModelAttribute CommentPageDto pageDto) {
         editCommentAuthAndAdminCheck(commentId, redirectAttributes, loginMemberId);

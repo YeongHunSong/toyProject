@@ -18,7 +18,7 @@
             </div>
             <div class="col" th:if="${session?.username != null}">
                 <button class="w-auto btn btn-primary float-start"
-                        th:onclick="|location.href='@{/post/add}'|" type="button">글쓰기</button>
+                        th:onclick="|location.href='@{/post/write}'|" type="button">글쓰기</button>
             </div>
             <div class="col">
                 <button class="w-auto btn btn-warning float-end"

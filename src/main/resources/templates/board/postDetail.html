@@ -24,58 +24,6 @@
             <p class="col col-auto" th:text="|추천수 : ${postDto.recommendCount} |">추천수</p>
         </div>
 
-
-    <!-- TODO 삭제 -->
-    <!--    <div>-->
-    <!--        <label for="username">회원 이름</label>-->
-    <!--        <input type="text" id="username" class="form-control" value="홍길동" th:field="${member.username}" readonly>-->
-    <!--    </div>-->
-    <!--    <div>-->
-    <!--        <label for="nickname">회원 별칭</label>-->
-    <!--        <input type="text" id="nickname" class="form-control" value="암행어사" th:field="${member.nickname}" readonly>-->
-    <!--    </div>-->
-
-        <!-- single checkbox -->
-    <!--    <div>판매 여부</div>-->
-    <!--    <div>-->
-    <!--        <div class="form-check">-->
-    <!--            <input type="checkbox" id="open" th:field="${item.open}" class="form-check-input" disabled>-->
-    <!--            <label for="open" class="form-check-label">판매 오픈</label>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
-    <!--    &lt;!&ndash; multi checkbox &ndash;&gt;-->
-    <!--    <div>-->
-    <!--        <div>등록 지역</div>-->
-    <!--        <div th:each="region : ${regions}" class="form-check form-check-inline">-->
-    <!--            <input type="checkbox" th:field="${item.regions}" th:value="${region.key}" class="form-check-input" disabled>-->
-    <!--            <label th:for="${#ids.prev('regions')}"-->
-    <!--                   th:text="${region.value}" class="form-check-label">서울</label>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
-    <!--    &lt;!&ndash; radio button &ndash;&gt;-->
-    <!--    <div>-->
-    <!--        <div>상품 종류</div>-->
-    <!--        <div th:each="type : ${itemTypes}" class="form-check form-check-inline">-->
-    <!--            <input type="radio" th:field="${item.itemType}" th:value="${type.name()}" class="form-check-input" disabled>-->
-    <!--            <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">-->
-    <!--                BOOK-->
-    <!--            </label>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
-    <!--    &lt;!&ndash; SELECT &ndash;&gt;-->
-    <!--    <div>-->
-    <!--        <div>배송 방식</div>-->
-    <!--        <select th:field="${item.deliveryCode}" class="form-select" disabled>-->
-    <!--            <option value="">==배송 방식 선택==</option>-->
-    <!--            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"-->
-    <!--                    th:text="${deliveryCode.displayName}">FAST</option>-->
-    <!--        </select>-->
-    <!--    </div>-->
-
-
         <div class="row">
             <div class="col">
                 <button class="w-auto btn btn-warning float-start" onclick="location.href='postHome.html'"
@@ -88,10 +36,10 @@
             </div>
             <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
                 <button class="w-auto btn btn-success float-end"
-                        th:onclick="|location.href='@{|/post/${postId}/edit|}'|" type="button">수정</button>
+                        th:onclick="|location.href='@{|/post/${postId}/update|}'|" type="button">수정</button>
             </div>
             <div class="col" th:if="${postAuth.authMemberId != null and (postAuth?.authMemberId == session?.loginMember or postAuth?.ADMIN_MEMBER_ID == session?.loginMember)}">
-                <form th:action="@{|/post/${postId}/delete|}" method="post">
+                <form th:action="@{|/post/${postId}|}" th:method="delete">
                     <button class="w-auto btn btn-danger float-end" type="submit">삭제</button>
                 </form>
             </div>
@@ -152,7 +100,7 @@
                             </td>
                             <td class="p-1">
                                 <p th:if="${commentEditStatus?.flag == false or commentEditStatus?.commentId != comment.commentId}" th:text="${comment.commentContent}">댓글 내용</p>
-                                <form th:action="@{|/post/${postId}/${comment.commentId}/edit|}" method="post" th:object="${commentEditDto}" th:id="${comment.commentId}">
+                                <form th:action="@{|/post/${postId}/${comment.commentId}|}" th:method="put" th:object="${commentEditDto}" th:id="${comment.commentId}">
                                     <input type="hidden" th:field="${sortingDto.sorting}">
                                     <input type="hidden" th:field="${pageDto.page}">
                                     <input type="hidden" th:field="${pageDto.pageView}">
@@ -166,7 +114,7 @@
                                 <div>
                                     <div class="btn-group" th:if="${commentEditStatus.flag == true and commentEditStatus?.commentId == comment.commentId}">
                                         <div class="w-auto col-auto">
-                                            <button class="btn btn-sm btn-primary float-start" type="submit" th:form="${comment.commentId}">저장</button>
+                                            <button class="btn btn-sm btn-primary float-start" type="submit" th:form="${comment.commentId}">저장</button> <!-- 댓글 수정 저장 -->
                                         </div>
                                         <form th:action method="get" class="w-auto col-auto">
                                             <input type="hidden" th:field="${sortingDto.sorting}">

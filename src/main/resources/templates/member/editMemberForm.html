@@ -29,7 +29,7 @@
         </div>
         <br>
 
-        <form th:action th:object="${memberEditDto}" method="post">
+        <form th:action="@{|/member/${memberNonEditData.memberId}|}" th:object="${memberEditDto}" th:method="PUT">
             <div>
                 <label for="password">비밀번호</label>
                 <input type="text" id="password" class="form-control" th:field="*{password}" th:errorclass="field-error">
