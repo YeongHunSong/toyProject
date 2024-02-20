@@ -19,7 +19,7 @@
 
         <div class="row py-4">
             <a class="col col-auto fw-bolder" th:text="|${postDto.username}| " th:href="@{|/member/${postDto.memberId}|}"></a>
-            <p class="col col-auto" th:text="${#temporals.format(postDto.writingDate, 'yy-MM-dd HH:mm:ss')} ">
+            <p class="col col-auto" th:text="${#temporals.format(postDto.writingDate, 'yy-MM-dd HH:mm:ss')}">
             <p class="col col-auto ms-auto" th:text="|조회수 : ${postDto.viewCount} |">조회수</p>
             <p class="col col-auto" th:text="|추천수 : ${postDto.recommendCount} |">추천수</p>
         </div>
@@ -109,6 +109,8 @@
                                         <div class="field-error" th:errors="*{commentContent}">댓글 수정 오류</div>
                                     </div>
                                 </form>
+                                <form th:id="update + ${comment.commentId}" method="post" th:action="@{|/post/${postId}/${comment.commentId}|}"></form>
+                                <form th:id="delete + ${comment.commentId}" th:method="delete" th:action="@{|/post/${postId}/${comment.commentId}|}"></form>
                             </td>
                             <td class="p-1">
                                 <div>
@@ -123,11 +125,18 @@
                                             <button class="btn btn-sm btn-secondary float-end" type="submit">취소</button>
                                         </form>
                                     </div>
+
                                     <div class="btn-group btn-group-sm" th:if="${(commentEditStatus.flag == false) and ((comment.memberId == commentAuth?.authMemberId or session?.loginMember == commentAuth.ADMIN_MEMBER_ID) and commentAuth.authMemberId != null)}">
-                                        <button class="w-auto col-auto btn btn-success float-start"
-                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}|}">수정</button>
-                                        <button class="w-auto col-auto btn btn-danger float-end"
-                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}/delete|}">삭제</button>
+                                        <button th:form="update + ${comment.commentId}" class="w-auto col-auto btn btn-success float-start" type="submit">수정</button>
+                                        <button th:form="delete + ${comment.commentId}" class="w-auto col-auto btn btn-danger float-end" type="submit">삭제</button>
+
+
+
+<!--                                        <button class="w-auto col-auto btn btn-success float-start"-->
+<!--                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}/update|}">수정</button>-->
+<!--                                        <button class="w-auto col-auto btn btn-danger float-end" name="_method" value="DELETE"-->
+<!--                                                type="submit" th:form="${comment.commentId}" th:formaction="@{|/post/${postId}/${comment.commentId}|}">삭제</button>-->
+
                                     </div>
                                 </div>
                                 <div th:object="${commentEditDto}">
