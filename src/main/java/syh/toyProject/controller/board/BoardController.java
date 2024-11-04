@@ -63,7 +63,11 @@ public class BoardController {
         return "post 100개 ok";
     }
 
+    @GetMapping("/")
+    public String Homepage() {
 
+        return "redirect:/postHome";
+    }
 
     @ResponseBody // 이미지 렌더
     @GetMapping("/post/{postId}/image/{serverName}")
