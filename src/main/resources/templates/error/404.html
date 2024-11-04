@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout (title = '게시판')}">
+<body>
+<div class="container" layout:fragment="content">
+
+    <div class="row">
+
+        <div class="col">
+            <button class="w-auto btn btn-warning float-start"
+                    th:onclick="|location.href='@{/postHome}'|" type="button">게시판</button>
+        </div>
+        <div class="col" th:if="${session?.username != null}">
+            <button class="w-auto btn btn-primary float-start"
+                    th:onclick="|location.href='@{/post/write}'|" type="button">글쓰기</button>
+        </div>
+        <div class="col">
+            <button class="w-auto btn btn-warning float-end"
+                    th:onclick="|location.href='@{/memberHome}'|" type="button">회원 목록</button>
+        </div>
+    </div>
+
+    <div class="py-3 mt-1 text-center">
+        <br>
+        <br>
+        <h3>페이지를 찾을 수 없습니다.</h3>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>
